@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>    
+    <string name="app_name">Balanduino</string>
+    <string name="button">Hold down to start sending data</string>                
+    
+    <string name="not_connected">You are not connected to a device</string>
+    <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>
+    
+    <string name="title_connecting">connecting&#8230;</string>
+    <string name="title_connected_to">connected</string>
+    <string name="title_not_connected">not connected</string>
+
+    <!--  DeviceListActivity -->
+    <string name="scanning">Scanning for devices&#8230;</string>
+    <string name="select_device">Select a device to connect</string>
+    <string name="none_paired">No devices have been paired</string>
+    <string name="none_found">No devices found</string>
+    <string name="title_paired_devices">Paired Devices</string>
+    <string name="title_other_devices">Other Available Devices</string>
+    <string name="button_scan">Scan for devices</string>
+
+    <!-- Options Menu -->
+    <!-- <string name="secure_connect">Connect &amp; pair</string> -->
+    <string name="insecure_connect">Connect</string>    
+    <string name="settings">Settings</string>    
+    
+    <!-- Settings Dialog -->
+    <string name="dialog_title">Set Filter Coefficient</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+        
+    
+    <string name="preferences_title">preferences_title</string>    
+</resources>
