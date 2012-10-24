@@ -1,4 +1,4 @@
-#### Developed by Kristian Lauszus
+#### Developed by Kristian Lauszus, TKJ Electronics 2012
 
 The code is released under the GNU General Public License.
 _________
