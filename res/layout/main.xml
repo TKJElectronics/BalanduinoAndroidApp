@@ -20,14 +20,14 @@
                 android:id="@+id/textView1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Azimuth (z-axis rotation): " />
+                android:text="@string/azimuth" />
 
             <TextView
                 android:id="@+id/textView5"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="0"
+                android:text="@string/zero"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
 
@@ -41,14 +41,14 @@
                 android:id="@+id/textView2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Pitch (x-axis rotation): " />
+                android:text="@string/pitch" />
 
             <TextView
                 android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="0"
+                android:text="@string/zero"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
 
@@ -63,14 +63,14 @@
                 android:id="@+id/textView3"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Roll (y-axis ritation): " />
+                android:text="@string/roll" />
 
             <TextView
                 android:id="@+id/textView7"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="0"
+                android:text="@string/zero"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
         
@@ -85,19 +85,19 @@
                 android:id="@+id/textView4"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Filer Coefficient: " />
+                android:text="@string/coefficient" />
 
             <TextView
                 android:id="@+id/textView8"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="0"
+                android:text="@string/zero"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
         </TableRow>
 
         <TableRow
-            android:id="@+id/tableRow4"
+            android:id="@+id/tableRow5"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
         </TableRow>
@@ -112,20 +112,20 @@
             android:id="@+id/radio0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"            
-            android:text="Accelerometer/Magnetometer Orientation" />
+            android:text="@string/accMacOrientation" />
 
         <RadioButton
             android:id="@+id/radio1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Gyroscope Orientation (drift eliminated)" />
+            android:text="@string/gyroOrientation" />
 
         <RadioButton
             android:id="@+id/radio2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Orientation from Sensor Fusion" />
+            android:text="@string/fusionOrientation" />
     </RadioGroup>
     <Button
         android:id="@+id/button1"

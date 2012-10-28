@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>    
     <string name="app_name">Balanduino</string>
+    
+    <!-- Layout -->
+    <string name="zero">0</string>
+    <string name="accMacOrientation">Accelerometer/Magnetometer Orientation</string>
+    <string name="gyroOrientation">Gyroscope Orientation (drift eliminated)</string>
+    <string name="fusionOrientation">Orientation from Sensor Fusion</string>
+    
+    <string name="azimuth">Azimuth (z-axis rotation): </string>
+    <string name="pitch">Pitch (x-axis rotation): </string>
+    <string name="roll">Roll (y-axis ritation): </string>
+    <string name="coefficient">Filer Coefficient: </string>
+    
     <string name="button">Connect to a device first</string>                
     
     <!-- <string name="not_connected">You are not connected to a device</string> -->
