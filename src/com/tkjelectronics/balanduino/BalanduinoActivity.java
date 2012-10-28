@@ -660,8 +660,7 @@ public class BalanduinoActivity extends Activity implements
 				mButton.setText("Sending stop command");
 			}
 
-		}
-		else
+		} else
 			mButton.setText(R.string.button);
 	}
 
@@ -671,28 +670,32 @@ public class BalanduinoActivity extends Activity implements
 			sendIMUData();
 		}
 	};
-	
+
 	@TargetApi(11)
 	static class VersionHelper {
-	    static void refreshActionBarMenu(Activity activity) {
-	    	activity.invalidateOptionsMenu();
-	    }
-	}	
-	
+		static void refreshActionBarMenu(Activity activity) {
+			activity.invalidateOptionsMenu();
+		}
+	}
+
 	public void updateActionBar() {
 		if (Build.VERSION.SDK_INT >= 11) // Update the icons
-			VersionHelper.refreshActionBarMenu(this);		
+			VersionHelper.refreshActionBarMenu(this);
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
-	    MenuItem menuItemMapView = menu.findItem(R.id.menu_insecure_connect);
-	    if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-	    	menuItemMapView.setIcon(R.drawable.device_access_bluetooth_connected);	    		       
-	    else
-	    	menuItemMapView.setIcon(R.drawable.device_access_bluetooth);	    	
-	    	
-	    return super.onPrepareOptionsMenu(menu);
+		MenuItem menuItemMapView = menu.findItem(R.id.menu_insecure_connect);
+		if (mChatService == null)
+			menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
+		else {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+				menuItemMapView
+						.setIcon(R.drawable.device_access_bluetooth_connected);
+			else
+				menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
+		}
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
@@ -776,7 +779,7 @@ public class BalanduinoActivity extends Activity implements
 
 	// The Handler that gets information back from the BluetoothChatService
 	@SuppressLint("HandlerLeak")
-	private final Handler mHandlerBluetooth = new Handler() {		
+	private final Handler mHandlerBluetooth = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
 			updateActionBar();
@@ -785,18 +788,19 @@ public class BalanduinoActivity extends Activity implements
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
-				case BluetoothChatService.STATE_CONNECTED:					
-					Toast.makeText(getApplicationContext(),
-							getString(R.string.connected_to) + " " + mConnectedDeviceName,
-							Toast.LENGTH_SHORT).show();
+				case BluetoothChatService.STATE_CONNECTED:
+					Toast.makeText(
+							getApplicationContext(),
+							getString(R.string.connected_to) + " "
+									+ mConnectedDeviceName, Toast.LENGTH_SHORT)
+							.show();
 					// mTitle.setText();
 					// mTitle.append(mConnectedDeviceName);
 					// mConversationArrayAdapter.clear();
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					Toast.makeText(getApplicationContext(),
-							R.string.connecting, Toast.LENGTH_SHORT)
-							.show();
+							R.string.connecting, Toast.LENGTH_SHORT).show();
 					break;
 				/*
 				 * case BluetoothChatService.STATE_NONE:
@@ -826,7 +830,7 @@ public class BalanduinoActivity extends Activity implements
 						.show();
 				unregisterListeners();
 				break;
-			}			
+			}
 		}
 	};
 
