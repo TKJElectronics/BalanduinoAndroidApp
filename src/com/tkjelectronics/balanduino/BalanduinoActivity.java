@@ -74,17 +74,20 @@ import android.preference.PreferenceManager;
 import android.util.FloatMath;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.tkjelectronics.balanduino.R;
 
-public class BalanduinoActivity extends Activity implements
+public class BalanduinoActivity extends SherlockActivity implements
 		SensorEventListener, RadioGroup.OnCheckedChangeListener,
 		SeekBar.OnSeekBarChangeListener {
 	// For debugging
@@ -670,7 +673,7 @@ public class BalanduinoActivity extends Activity implements
 			sendIMUData();
 		}
 	};
-
+	
 	@TargetApi(11)
 	static class VersionHelper {
 		static void refreshActionBarMenu(Activity activity) {
@@ -679,8 +682,7 @@ public class BalanduinoActivity extends Activity implements
 	}
 
 	public void updateActionBar() {
-		if (Build.VERSION.SDK_INT >= 11) // Update the icons
-			VersionHelper.refreshActionBarMenu(this);
+		VersionHelper.refreshActionBarMenu(this);
 	}
 
 	@Override
@@ -700,7 +702,8 @@ public class BalanduinoActivity extends Activity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.menu, menu);
+		MenuInflater inflater = getSupportMenuInflater();
+	    inflater.inflate(R.menu.menu, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
 

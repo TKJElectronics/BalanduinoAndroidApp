@@ -36,6 +36,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.actionbarsherlock.app.SherlockActivity;
 import com.tkjelectronics.balanduino.R;
 
 /**
@@ -44,7 +46,7 @@ import com.tkjelectronics.balanduino.R;
  * the MAC address of the device is sent back to the parent Activity in the
  * result Intent.
  */
-public class DeviceListActivity extends Activity {
+public class DeviceListActivity extends SherlockActivity {
 	// Debugging
 	private static final String TAG = "DeviceListActivity";
 	private static final boolean D = BalanduinoActivity.D;
