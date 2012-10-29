@@ -509,11 +509,11 @@ public class BalanduinoActivity extends Activity implements
 			float oneMinusCoeff = 1.0f - filter_coefficient;
 
 			/*
-			 * Fix for 179¡ <--> -179¡ transition problem: Check whether one of
+			 * Fix for 179° <--> -179° transition problem: Check whether one of
 			 * the two orientation angles (gyro or accMag) is negative while the
-			 * other one is positive. If so, add 360¡ (2 * math.PI) to the
-			 * negative value, perform the sensor fusion, and remove the 360¡
-			 * from the result if it is greater than 180¡. This stabilizes the
+			 * other one is positive. If so, add 360° (2 * math.PI) to the
+			 * negative value, perform the sensor fusion, and remove the 360°
+			 * from the result if it is greater than 180°. This stabilizes the
 			 * output in positive-to-negative-transition cases.
 			 */
 
