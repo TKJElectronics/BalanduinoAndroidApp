@@ -11,7 +11,7 @@
     <string name="azimuth">Azimuth (z-axis rotation): </string>
     <string name="pitch">Pitch (x-axis rotation): </string>
     <string name="roll">Roll (y-axis ritation): </string>
-    <string name="coefficient">Filer Coefficient: </string>
+    <string name="coefficient">Filter Coefficient: </string>
     
     <string name="button">Connect to a device first</string>                
     
@@ -36,7 +36,7 @@
     <string name="insecure_connect">Connect</string>    
     <string name="settings">Settings</string>    
     
-    <!-- Settings Dialog -->
+    <!-- Dialog -->
     <string name="dialog_title">Set Filter Coefficient</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>            

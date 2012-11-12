@@ -66,7 +66,6 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -75,6 +74,7 @@ import android.util.FloatMath;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
@@ -88,8 +88,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tkjelectronics.balanduino.R;
 
 public class BalanduinoActivity extends SherlockActivity implements
-		SensorEventListener, RadioGroup.OnCheckedChangeListener,
-		SeekBar.OnSeekBarChangeListener {
+		SensorEventListener, RadioGroup.OnCheckedChangeListener {
 	// For debugging
 	private static final String TAG = "Balanduino";
 	public static final boolean D = true;
@@ -719,13 +718,23 @@ public class BalanduinoActivity extends SherlockActivity implements
 			return true;
 		case R.id.settings:
 			// This is used to add a custom layout to an AlertDialog
-			final View setCoefficient = LayoutInflater.from(this).inflate(
-					R.layout.settings, null);
-			final SeekBar mSeekbar = (SeekBar) setCoefficient
-					.findViewById(R.id.seek);
+			final View setCoefficient = LayoutInflater.from(this).inflate(R.layout.dialog, 
+					(ViewGroup)findViewById(R.id.layout_dialog));			
+			final TextView value = (TextView)setCoefficient.findViewById(R.id.alertText);			
+			final SeekBar mSeekbar = (SeekBar)setCoefficient.findViewById(R.id.seek);
 			mSeekbar.setProgress((int) (filter_coefficient * 100));
-			mSeekbar.setOnSeekBarChangeListener(this);
-
+			mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+				public void onProgressChanged(SeekBar seekBar, int progress,boolean fromTouch) {
+					if (D)
+						Log.d(TAG, Integer.toString(progress));
+					tempFilter_coefficient = ((float) progress) / 100;
+					value.setText(d.format(tempFilter_coefficient));
+					}
+				public void onStartTrackingTouch(SeekBar seekBar) {					
+				}
+				public void onStopTrackingTouch(SeekBar seekBar) {
+				}
+			});
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
 			builder.setTitle(R.string.dialog_title)
 					// Set title
@@ -766,19 +775,6 @@ public class BalanduinoActivity extends SherlockActivity implements
 		default:
 			return super.onOptionsItemSelected(item);
 		}
-	}
-
-	public void onProgressChanged(SeekBar seekBar, int progress,
-			boolean fromTouch) {
-		if (D)
-			Log.d(TAG, Integer.toString(progress));
-		tempFilter_coefficient = ((float) progress) / 100;
-	}
-
-	public void onStartTrackingTouch(SeekBar seekBar) {
-	}
-
-	public void onStopTrackingTouch(SeekBar seekBar) {
 	}
 
 	// The Handler that gets information back from the BluetoothChatService
