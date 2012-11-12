@@ -267,7 +267,8 @@ public class BluetoothChatService {
 							.createInsecureRfcommSocketToServiceRecord(UUID_RFCOMM_GENERIC);
 				}
 			} catch (IOException e) {
-				Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
+				if(D)
+					Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
 			}
 			mmSocket = tmp;
 		}
@@ -290,7 +291,8 @@ public class BluetoothChatService {
 				try {
 					mmSocket.close();
 				} catch (IOException e2) {
-					Log.e(TAG, "unable to close() " + mSocketType
+					if(D)
+						Log.e(TAG, "unable to close() " + mSocketType
 							+ " socket during connection failure", e2);
 				}
 				connectionFailed();
@@ -310,7 +312,8 @@ public class BluetoothChatService {
 			try {
 				mmSocket.close();
 			} catch (IOException e) {
-				Log.e(TAG, "close() of connect " + mSocketType
+				if(D)
+					Log.e(TAG, "close() of connect " + mSocketType
 						+ " socket failed", e);
 			}
 		}
@@ -326,7 +329,8 @@ public class BluetoothChatService {
 		private final OutputStream mmOutStream;
 
 		public ConnectedThread(BluetoothSocket socket, String socketType) {
-			Log.d(TAG, "create ConnectedThread: " + socketType);
+			if(D)
+				Log.d(TAG, "create ConnectedThread: " + socketType);
 			mmSocket = socket;
 			//InputStream tmpIn = null;
 			OutputStream tmpOut = null;
@@ -336,7 +340,8 @@ public class BluetoothChatService {
 				//tmpIn = socket.getInputStream();
 				tmpOut = socket.getOutputStream();
 			} catch (IOException e) {
-				Log.e(TAG, "temp sockets not created", e);
+				if(D)
+					Log.e(TAG, "temp sockets not created", e);
 			}
 
 			//mmInStream = tmpIn;
@@ -381,7 +386,8 @@ public class BluetoothChatService {
 				 * -1, -1, buffer).sendToTarget(); }
 				 */
 			} catch (IOException e) {
-				Log.e(TAG, "Exception during write", e);
+				if(D)
+					Log.e(TAG, "Exception during write", e);
 			}
 		}
 

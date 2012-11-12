@@ -308,21 +308,27 @@ public class BalanduinoActivity extends SherlockActivity implements
 			mSensorManager.registerListener(this,
 					mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
 					SensorManager.SENSOR_DELAY_FASTEST);
-		else
-			Log.i(TAG, "Accelerometer not supported");
+		else {
+			if(D)
+				Log.i(TAG, "Accelerometer not supported");
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null)
 			mSensorManager.registerListener(this,
 					mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
 					SensorManager.SENSOR_DELAY_FASTEST);
-		else
-			Log.i(TAG, "Gyroscope not supported");
+		else {
+			if(D)
+				Log.i(TAG, "Gyroscope not supported");
+		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null)
 			mSensorManager
 					.registerListener(this, mSensorManager
 							.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
 							SensorManager.SENSOR_DELAY_FASTEST);
-		else
-			Log.i(TAG, "Magnetic Field sensor not supported");
+		else {
+			if(D)
+				Log.i(TAG, "Magnetic Field sensor not supported");
+		}
 	}
 
 	private void unregisterListeners() {
@@ -847,7 +853,8 @@ public class BalanduinoActivity extends SherlockActivity implements
 				setupBTService();
 			} else {
 				// User did not enable Bluetooth or an error occured
-				Log.d(TAG, "BT not enabled");
+				if(D)
+					Log.d(TAG, "BT not enabled");
 				Toast.makeText(getApplicationContext(),
 						R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT)
 						.show();

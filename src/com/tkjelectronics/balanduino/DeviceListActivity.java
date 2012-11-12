@@ -202,6 +202,8 @@ public class DeviceListActivity extends SherlockActivity {
 						.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 				// If it's already paired, skip it, because it's been listed
 				// already
+				if(D)
+					Log.e(TAG,"Device name: " + device.getName());
 				if (device.getBondState() != BluetoothDevice.BOND_BONDED) {
 					mNewDevicesArrayAdapter.add(device.getName() + "\n"
 							+ device.getAddress());
