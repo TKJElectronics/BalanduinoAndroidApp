@@ -75,7 +75,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -87,7 +86,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.tkjelectronics.balanduino.R;
 
 public class BalanduinoActivity extends SherlockActivity implements
-		SensorEventListener, RadioGroup.OnCheckedChangeListener {
+		SensorEventListener {
 	// For debugging
 	private static final String TAG = "Balanduino";
 	public static final boolean D = true;
@@ -124,13 +123,12 @@ public class BalanduinoActivity extends SherlockActivity implements
 	private Timer IMUTimer = new Timer();
 
 	// The following members are only for displaying the sensor output.
-	public Handler mHandler;
-	private RadioGroup mRadioGroup;
+	public Handler mHandler;	
 	private TextView mAzimuthView;
 	private TextView mPitchView;
 	private TextView mRollView;
 	private TextView mCoefficient;
-	private int radioSelection;
+	private int IMUOutputSelection;
 	// DecimalFormat d = new DecimalFormat("#.##");
 	DecimalFormat d = (DecimalFormat) NumberFormat
 			.getNumberInstance(Locale.ENGLISH);
@@ -205,16 +203,13 @@ public class BalanduinoActivity extends SherlockActivity implements
 															// every 100ms
 
 		// GUI stuff		
-		radioSelection = 0;
 		d.setRoundingMode(RoundingMode.HALF_UP);
 		d.setMaximumFractionDigits(3);
 		d.setMinimumFractionDigits(3);
-		mRadioGroup = (RadioGroup) findViewById(R.id.radioGroup1);
 		mAzimuthView = (TextView) findViewById(R.id.textView5);
 		mPitchView = (TextView) findViewById(R.id.textView6);
 		mRollView = (TextView) findViewById(R.id.textView7);
 		mCoefficient = (TextView) findViewById(R.id.textView8);
-		mRadioGroup.setOnCheckedChangeListener(this);
 
 		mButton = (Button) findViewById(R.id.button1);
 	}
@@ -310,14 +305,17 @@ public class BalanduinoActivity extends SherlockActivity implements
 		else {
 			if(D)
 				Log.i(TAG, "Accelerometer not supported");
+			finish();
 		}
-		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null)
+		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
 			mSensorManager.registerListener(this,
 					mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
 					SensorManager.SENSOR_DELAY_FASTEST);
-		else {
+			IMUOutputSelection = 2;
+		} else {
 			if(D)
 				Log.i(TAG, "Gyroscope not supported");
+			IMUOutputSelection = 0;
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null)
 			mSensorManager
@@ -327,6 +325,7 @@ public class BalanduinoActivity extends SherlockActivity implements
 		else {
 			if(D)
 				Log.i(TAG, "Magnetic Field sensor not supported");
+			finish();
 		}
 	}
 
@@ -601,35 +600,19 @@ public class BalanduinoActivity extends SherlockActivity implements
 			mHandler.post(sendIMUDataTask);
 		}
 	}
-
-	@Override
-	public void onCheckedChanged(RadioGroup group, int checkedId) {
-		switch (checkedId) {
-		case R.id.radio0:
-			radioSelection = 0;
-			break;
-		case R.id.radio1:
-			radioSelection = 1;
-			break;
-		case R.id.radio2:
-			radioSelection = 2;
-			break;
-		}
-	}
-
+	
 	public void updateOreintationDisplay() {
-		switch (radioSelection) {
+		switch (IMUOutputSelection) {
 		case 0:
-			mAzimuthView
-					.setText(d.format(accMagOrientation[0] * 180 / Math.PI));
+			mAzimuthView.setText(d.format(accMagOrientation[0] * 180 / Math.PI));
 			mPitchView.setText(d.format(accMagOrientation[1] * 180 / Math.PI));
 			mRollView.setText(d.format(accMagOrientation[2] * 180 / Math.PI));
 			break;
-		case 1:
+		/*case 1:
 			mAzimuthView.setText(d.format(gyroOrientation[0] * 180 / Math.PI));
 			mPitchView.setText(d.format(gyroOrientation[1] * 180 / Math.PI));
 			mRollView.setText(d.format(gyroOrientation[2] * 180 / Math.PI));
-			break;
+			break;*/
 		case 2:
 			mAzimuthView.setText(d.format(fusedOrientation[0] * 180 / Math.PI));
 			mPitchView.setText(d.format(fusedOrientation[1] * 180 / Math.PI));
