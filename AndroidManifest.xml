@@ -27,7 +27,7 @@
         <activity 
             android:name=".DeviceListActivity"
             android:label="@string/select_device"      
-            android:theme="@android:style/Theme.Dialog"      
+            android:theme="@style/Theme.Sherlock.Dialog"      
             android:configChanges="orientation|keyboardHidden" 
             android:screenOrientation="portrait" /> 
     </application>

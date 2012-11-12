@@ -5,6 +5,7 @@
     android:layout_height="match_parent" >
     
     <LinearLayout
+        android:id="@+id/coefficientLayout"
     	android:layout_height="wrap_content"
     	android:layout_width="fill_parent"
     	android:orientation="horizontal"
@@ -29,7 +30,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/alertText"
-        android:layout_marginTop="30dp"
+        android:layout_below="@+id/coefficientLayout"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
         android:max="100" />    
 </RelativeLayout>

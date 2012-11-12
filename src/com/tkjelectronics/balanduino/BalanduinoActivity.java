@@ -166,6 +166,8 @@ public class BalanduinoActivity extends SherlockActivity implements
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+		
+		mHandler = new Handler();
 
 		// Get local Bluetooth adapter
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -203,8 +205,7 @@ public class BalanduinoActivity extends SherlockActivity implements
 		IMUTimer.schedule(new sendIMUDataTimer(), 0, 100); // Send IMU data
 															// every 100ms
 
-		// GUI stuff
-		mHandler = new Handler();
+		// GUI stuff		
 		radioSelection = 0;
 		d.setRoundingMode(RoundingMode.HALF_UP);
 		d.setMaximumFractionDigits(3);
@@ -671,18 +672,7 @@ public class BalanduinoActivity extends SherlockActivity implements
 		public void run() {
 			sendIMUData();
 		}
-	};
-	
-	@TargetApi(11)
-	static class VersionHelper {
-		static void refreshActionBarMenu(Activity activity) {
-			activity.invalidateOptionsMenu();
-		}
-	}
-
-	public void updateActionBar() {
-		VersionHelper.refreshActionBarMenu(this);
-	}
+	};	
 
 	@Override
 	public boolean onPrepareOptionsMenu(final Menu menu) {
@@ -720,7 +710,8 @@ public class BalanduinoActivity extends SherlockActivity implements
 			// This is used to add a custom layout to an AlertDialog
 			final View setCoefficient = LayoutInflater.from(this).inflate(R.layout.dialog, 
 					(ViewGroup)findViewById(R.id.layout_dialog));			
-			final TextView value = (TextView)setCoefficient.findViewById(R.id.alertText);			
+			final TextView value = (TextView)setCoefficient.findViewById(R.id.alertText);		
+			value.setText(d.format(filter_coefficient));
 			final SeekBar mSeekbar = (SeekBar)setCoefficient.findViewById(R.id.seek);
 			mSeekbar.setProgress((int) (filter_coefficient * 100));
 			mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -782,7 +773,7 @@ public class BalanduinoActivity extends SherlockActivity implements
 	private final Handler mHandlerBluetooth = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {
-			updateActionBar();
+			supportInvalidateOptionsMenu();
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
 				if (D)
