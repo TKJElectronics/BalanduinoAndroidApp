@@ -1,0 +1,3 @@
+<resources>
+    <style name="dialog_theme" parent="@android:style/Theme.Dialog"/>
+</resources>

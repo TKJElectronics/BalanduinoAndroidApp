@@ -1,0 +1,3 @@
+<resources>
+    <style name="dialog_theme" parent="@style/Theme.Sherlock.Dialog"/>
+</resources>
