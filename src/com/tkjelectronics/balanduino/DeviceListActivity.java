@@ -144,7 +144,7 @@ public class DeviceListActivity extends SherlockActivity {
 			Log.d(TAG, "doDiscovery()");
 
 		// Indicate scanning in the title
-		setProgressBarIndeterminateVisibility(true);
+		setSupportProgressBarIndeterminateVisibility(true);
 		setTitle(R.string.scanning);
 
 		// Turn on sub-title for new devices
@@ -209,7 +209,7 @@ public class DeviceListActivity extends SherlockActivity {
 				// When discovery is finished, change the Activity title
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
 					.equals(action)) {
-				setProgressBarIndeterminateVisibility(false);
+				setSupportProgressBarIndeterminateVisibility(false);
 				setTitle(R.string.select_device);
 				if (mNewDevicesArrayAdapter.getCount() == 0) {
 					String noDevices = getResources().getText(
