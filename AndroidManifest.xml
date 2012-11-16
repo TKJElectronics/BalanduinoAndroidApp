@@ -6,7 +6,7 @@
     android:launchMode="singleTask" >
 
     <uses-sdk android:minSdkVersion="10" 
-        android:targetSdkVersion="16" />
+        android:targetSdkVersion="17" />
     
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
