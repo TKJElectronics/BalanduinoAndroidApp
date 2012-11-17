@@ -167,9 +167,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public void onDestroy() {
-		if (D)
-			Log.e(TAG, "--- ON DESTROY ---");
 		super.onDestroy();
+		if (D)
+			Log.e(TAG, "--- ON DESTROY ---");		
 		// Stop the Bluetooth chat services
 		if (mChatService != null)
 			mChatService.stop();
@@ -225,6 +225,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
+		if(D)
+			Log.e(TAG,"onPrepareOptionsMenu");
 		MenuItem menuItemMapView = menu.findItem(R.id.menu_insecure_connect);
 		if (mChatService == null)
 			menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
@@ -240,7 +242,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.		
+		if(D)
+			Log.e(TAG,"onCreateOptionsMenu");
+		// Inflate the menu; this adds items to the action bar if it is present.
 		MenuInflater inflater = getSupportMenuInflater();	  	
 		inflater.inflate(R.menu.menu, menu);
 		return super.onCreateOptionsMenu(menu);

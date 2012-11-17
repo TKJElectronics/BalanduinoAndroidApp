@@ -25,8 +25,9 @@ public class RemoteControlFragment extends SherlockFragment {
 	private SensorFusion mSensorFusion = null;
 
 	private Handler mHandler;
-	private Timer sendDataTimer = new Timer();	
+	private Timer sendDataTimer = new Timer();
 	private int counter = 0;
+	boolean sendData;
 
 	public RemoteControlFragment() {
 		mChatService = BalanduinoActivity.mChatService;
@@ -39,8 +40,7 @@ public class RemoteControlFragment extends SherlockFragment {
 		// Create a new TextView and set its text to the fragment's section
 		// number argument value.
 
-		View v = inflater
-				.inflate(R.layout.remotecontrol, container, false);
+		View v = inflater.inflate(R.layout.remotecontrol, container, false);
 
 		mAzimuthView = (TextView) v.findViewById(R.id.textView5);
 		mPitchView = (TextView) v.findViewById(R.id.textView6);
@@ -63,12 +63,14 @@ public class RemoteControlFragment extends SherlockFragment {
 			mHandler.post(processIMUDataTask);
 		}
 	}
+
 	private Runnable processIMUDataTask = new Runnable() {
 		@Override
 		public void run() {
 			processIMUData();
 		}
 	};
+
 	public void processIMUData() {
 		mAzimuthView.setText(mSensorFusion.azimut);
 		mPitchView.setText(mSensorFusion.pitch);
@@ -78,13 +80,16 @@ public class RemoteControlFragment extends SherlockFragment {
 		counter++;
 		if (counter > 2) { // Only send data every 150ms time
 			counter = 0;
+			if(!sendData)
+				return;
 			if (mChatService == null) {
 				Toast.makeText(getActivity(), "mChatService == null",
 						Toast.LENGTH_SHORT).show();
 				return;
 			}
 			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				if (mButton.isPressed() && BalanduinoActivity.currentTabSelected == 0) {
+				if (mButton.isPressed()
+						&& BalanduinoActivity.currentTabSelected == 0) {
 					String message = mSensorFusion.pitch + ','
 							+ mSensorFusion.roll + ";";
 					byte[] send = message.getBytes();
@@ -98,5 +103,44 @@ public class RemoteControlFragment extends SherlockFragment {
 			} else
 				mButton.setText(R.string.button);
 		}
+	}
+	@Override
+	public void onStart() {
+		super.onResume();			
+		//Log.e("Fragment: ","onStart");
+		sendData = true;
+	}
+	@Override
+	public void onResume() {
+		super.onResume();			
+		//Log.e("Fragment: ","onResume");
+		sendData = true;
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		//Log.e("Fragment: ","onPause");
+		sendData = false;		
+	}
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		//Log.e("Fragment: ","onDestroyView");
+		sendData = false;		
+	}
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		//Log.e("Fragment: ","onDestroy");
+		sendData = false;
+		sendDataTimer.cancel();
+		sendDataTimer.purge();				
+	}
+	@Override
+	public void onStop() {
+		super.onStop();
+		//Log.e("Fragment: ","onStop");
+		sendData = false;		
 	}
 }
