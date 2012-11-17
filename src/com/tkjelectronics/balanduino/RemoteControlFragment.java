@@ -25,7 +25,7 @@ public class RemoteControlFragment extends Fragment {
 
 	private Handler mHandler;
 	private Timer sendDataTimer = new Timer();	
-	int counter = 0;
+	private int counter = 0;
 
 	public RemoteControlFragment() {
 		mChatService = BalanduinoActivity.mChatService;
@@ -49,7 +49,7 @@ public class RemoteControlFragment extends Fragment {
 		mButton = (Button) v.findViewById(R.id.button);
 
 		mHandler = new Handler();
-		sendDataTimer.schedule(new processIMUDataTimer(), 0, 10); // Update IMU
+		sendDataTimer.schedule(new processIMUDataTimer(), 0, 50); // Update IMU
 																	// data
 																	// every
 																	// 10ms
@@ -75,7 +75,7 @@ public class RemoteControlFragment extends Fragment {
 		mCoefficient.setText(mSensorFusion.coefficient);
 
 		counter++;
-		if (counter > 4) { // Only send data every 50ms time
+		if (counter > 2) { // Only send data every 150ms time
 			counter = 0;
 			if (mChatService == null) {
 				Toast.makeText(getActivity(), "mChatService == null",

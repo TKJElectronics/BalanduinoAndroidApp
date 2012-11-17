@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements
@@ -239,9 +240,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getSupportMenuInflater().inflate(R.menu.menu, menu);
-		return true;
+		// Inflate the menu; this adds items to the action bar if it is present.		
+		MenuInflater inflater = getSupportMenuInflater();	  	
+		inflater.inflate(R.menu.menu, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
@@ -328,14 +330,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	@SuppressLint("HandlerLeak")
 	private final Handler mHandlerBluetooth = new Handler() {
 		@Override
-		public void handleMessage(Message msg) {
-			supportInvalidateOptionsMenu();
+		public void handleMessage(Message msg) {			
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
+					supportInvalidateOptionsMenu();
 					Toast.makeText(
 							getApplicationContext(),
 							getString(R.string.connected_to) + " "
