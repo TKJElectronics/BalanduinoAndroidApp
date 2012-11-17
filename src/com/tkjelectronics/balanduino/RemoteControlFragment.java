@@ -28,6 +28,7 @@ public class RemoteControlFragment extends SherlockFragment {
 	private Timer sendDataTimer = new Timer();
 	private int counter = 0;
 	boolean sendData;
+	boolean buttonState;
 
 	public RemoteControlFragment() {
 		mChatService = BalanduinoActivity.mChatService;
@@ -75,11 +76,14 @@ public class RemoteControlFragment extends SherlockFragment {
 		mAzimuthView.setText(mSensorFusion.azimut);
 		mPitchView.setText(mSensorFusion.pitch);
 		mRollView.setText(mSensorFusion.roll);
-		mCoefficient.setText(mSensorFusion.coefficient);
+		mCoefficient.setText(mSensorFusion.coefficient);				
 
 		counter++;
 		if (counter > 2) { // Only send data every 150ms time
 			counter = 0;
+			buttonState = mButton.isPressed();
+			CustomViewPager.setPagingEnabled(!buttonState);
+			
 			if(!sendData)
 				return;
 			if (mChatService == null) {
@@ -88,8 +92,7 @@ public class RemoteControlFragment extends SherlockFragment {
 				return;
 			}
 			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				if (mButton.isPressed()
-						&& BalanduinoActivity.currentTabSelected == 0) {
+				if (buttonState && BalanduinoActivity.currentTabSelected == 0) {
 					String message = mSensorFusion.pitch + ','
 							+ mSensorFusion.roll + ";";
 					byte[] send = message.getBytes();
