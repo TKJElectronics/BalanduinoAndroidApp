@@ -38,7 +38,6 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Window;
-import com.tkjelectronics.balanduino.R;
 
 /**
  * This Activity appears as a dialog. It lists any paired devices and devices
