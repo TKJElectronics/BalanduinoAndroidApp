@@ -36,7 +36,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
 
 /**
@@ -45,7 +45,7 @@ import com.actionbarsherlock.view.Window;
  * the MAC address of the device is sent back to the parent Activity in the
  * result Intent.
  */
-public class DeviceListActivity extends SherlockActivity {
+public class DeviceListActivity extends SherlockFragmentActivity {
 	// Debugging
 	private static final String TAG = "DeviceListActivity";
 	private static final boolean D = BalanduinoActivity.D;

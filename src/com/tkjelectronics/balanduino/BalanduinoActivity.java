@@ -224,7 +224,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	
 
 	@Override
-	public boolean onPrepareOptionsMenu(final Menu menu) {
+	public boolean onPrepareOptionsMenu(Menu menu) {
 		MenuItem menuItemMapView = menu.findItem(R.id.menu_insecure_connect);
 		if (mChatService == null)
 			menuItemMapView.setIcon(R.drawable.device_access_bluetooth);

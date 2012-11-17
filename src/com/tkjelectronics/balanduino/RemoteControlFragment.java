@@ -3,9 +3,10 @@ package com.tkjelectronics.balanduino;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class RemoteControlFragment extends Fragment {
+public class RemoteControlFragment extends SherlockFragment {
 	private Button mButton;
 	public TextView mAzimuthView;
 	public TextView mPitchView;

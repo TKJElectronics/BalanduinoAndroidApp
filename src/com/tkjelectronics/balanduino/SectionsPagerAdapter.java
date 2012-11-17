@@ -10,6 +10,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.actionbarsherlock.app.SherlockFragment;
+
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of the sections/tabs/pages.
@@ -59,7 +61,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
-	public static class DummySectionFragment extends Fragment {
+	public static class DummySectionFragment extends SherlockFragment {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
