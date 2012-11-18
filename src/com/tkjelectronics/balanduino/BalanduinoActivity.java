@@ -1,3 +1,26 @@
+/*************************************************************************************
+ * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ *
+ * This software may be distributed and modified under the terms of the GNU
+ * General Public License version 2 (GPL2) as published by the Free Software
+ * Foundation and appearing in the file GPL2.TXT included in the packaging of
+ * this file. Please note that GPL2 Section 2[b] requires that all works based
+ * on this software must also be made publicly available under the terms of
+ * the GPL2 ("Copyleft").
+ *
+ * Contact information
+ * -------------------
+ *
+ * Kristian Lauszus, TKJ Electronics
+ * Web      :  http://www.tkjelectronics.com
+ * e-mail   :  kristianl@tkjelectronics.com
+ * 
+ * The fusion algorythme is from this guide: http://www.thousand-thoughts.com/2012/03/android-sensor-fusion-tutorial/
+ * By Paul Lawitzki
+ * The Bluetooth communication is based on the BluetoothChat sample included in the Android SDK, but with some improvements
+ * 
+ ************************************************************************************/
+
 package com.tkjelectronics.balanduino;
 
 import android.annotation.SuppressLint;
