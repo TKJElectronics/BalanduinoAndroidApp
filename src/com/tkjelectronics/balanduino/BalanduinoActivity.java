@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -87,6 +88,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+		actionBar.setDisplayHomeAsUpEnabled(true);
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
@@ -330,6 +332,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					.setView(setCoefficient)
 					// Create and show the AlertDialog
 					.create().show();
+			return true;
+		case android.R.id.home:
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TKJElectronics/BalanduinoAndroidApp"));
+			startActivity(browserIntent);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
