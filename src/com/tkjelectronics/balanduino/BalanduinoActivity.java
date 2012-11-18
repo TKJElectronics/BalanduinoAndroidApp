@@ -61,7 +61,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
-	// public static final int MESSAGE_READ = 2;
+	public static final int MESSAGE_READ = 2;
 	// public static final int MESSAGE_WRITE = 3;
 	public static final int MESSAGE_DEVICE_NAME = 4;
 	public static final int MESSAGE_TOAST = 5;
@@ -88,6 +88,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	ViewPager mViewPager;
 	
 	public static int currentTabSelected;
+	
+	public static String pValue = "";
+	public static String iValue = "";
+	public static String dValue = "";
+	public static String targetAngleValue = "";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -370,21 +375,27 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	private final Handler mHandlerBluetooth = new Handler() {
 		@Override
 		public void handleMessage(Message msg) {			
+			supportInvalidateOptionsMenu();
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					supportInvalidateOptionsMenu();
 					Toast.makeText(
 							getApplicationContext(),
 							getString(R.string.connected_to) + " "
 									+ mConnectedDeviceName, Toast.LENGTH_SHORT)
 							.show();
-					// mTitle.setText();
-					// mTitle.append(mConnectedDeviceName);
-					// mConversationArrayAdapter.clear();
+					if (mChatService == null) {
+						return;
+					}		
+					Handler myHandler = new Handler();
+					myHandler.postDelayed(new Runnable(){
+				        public void run() {
+				        	byte[] send = "G;".getBytes();
+							mChatService.write(send, false);
+				        }}, 1000); // Wait 1 second before sending the message
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					Toast.makeText(getApplicationContext(),
@@ -398,14 +409,28 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				 */
 				}
 				break;
-			/*
-			 * case MESSAGE_READ: byte[] readBuf = (byte[]) msg.obj; //
-			 * construct a string from the valid bytes in the buffer String
-			 * readMessage = new String(readBuf, 0, msg.arg1); if(D) Log.i(TAG,
-			 * "Received string: " + readMessage);
-			 * //Toast.makeText(getApplicationContext
-			 * (),readMessage,Toast.LENGTH_SHORT).show(); break;
-			 */
+			case MESSAGE_READ: 
+				byte[] readBuf = (byte[]) msg.obj; 
+				// construct a string from the valid bytes in the buffer
+				String readMessage = new String(readBuf, 0, msg.arg1); 
+				String[] splitMessage = readMessage.split(",");
+				
+				if(D) {
+					Log.i(TAG,"Received string: " + readMessage);
+					Log.i(TAG,"splitMessage[0]: " + splitMessage[0]);
+					Log.i(TAG,"splitMessage[1]: " + splitMessage[1]);
+				}
+				if(splitMessage[0].equals("P"))
+					pValue = splitMessage[1].trim();
+				else if(splitMessage[0].equals("I"))
+					iValue = splitMessage[1].trim();
+				else if(splitMessage[0].equals("D"))
+					dValue = splitMessage[1].trim();
+				else if(splitMessage[0].equals("T"))
+					targetAngleValue = splitMessage[1].trim();
+				
+				//Toast.makeText(getApplicationContext(),readMessage,Toast.LENGTH_SHORT).show(); 
+				break;				
 			case MESSAGE_DEVICE_NAME:
 				// save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);

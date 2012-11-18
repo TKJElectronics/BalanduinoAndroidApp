@@ -13,7 +13,14 @@
     <string name="roll">Roll (y-axis ritation): </string>
     <string name="coefficient">Filter Coefficient: </string>
     
-    <string name="button">Connect to a device first</string>                
+    <string name="button">Connect to a device first</string>      
+    
+    <!-- PID Fragment -->
+    <string name="Kp">P:</string>
+    <string name="Ki">I:</string>
+    <string name="Kd">D:</string>
+    <string name="targetAngle">Target Angle: </string>
+    <string name="getPIDValues">Press to update PID values</string>
     
     <!-- <string name="not_connected">You are not connected to a device</string> -->
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>

@@ -1,16 +1,8 @@
 package com.tkjelectronics.balanduino;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.view.Gravity;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-
-import com.actionbarsherlock.app.SherlockFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
@@ -29,11 +21,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 			Fragment fragment0 = new RemoteControlFragment();
 			return fragment0;
 		case 1:
+			Fragment fragment1 = new PIDFragment();
+			return fragment1;
+			/*
 			Fragment fragment1 = new DummySectionFragment();
 			Bundle args1 = new Bundle();
 			args1.putInt(DummySectionFragment.ARG_SECTION_NUMBER, position + 1);
 			fragment1.setArguments(args1);
 			return fragment1;
+			*/
 
 		default:
 			return null;
@@ -61,12 +57,13 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 	 * A dummy fragment representing a section of the app, but that simply
 	 * displays dummy text.
 	 */
+	/*
 	public static class DummySectionFragment extends SherlockFragment {
 		/**
 		 * The fragment argument representing the section number for this
 		 * fragment.
 		 */
-		public static final String ARG_SECTION_NUMBER = "section_number";
+	/*	public static final String ARG_SECTION_NUMBER = "section_number";
 
 		public DummySectionFragment() {
 		}
@@ -83,4 +80,5 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 			return textView;
 		}
 	}
+	*/
 }
