@@ -93,6 +93,22 @@ public class BluetoothChatService {
 	public synchronized int getState() {
 		return mState;
 	}
+	
+	/**
+     * Start the chat service. Specifically start AcceptThread to begin a
+     * session in listening (server) mode. Called by the Activity onResume() */
+    public synchronized void start() {
+        if (D) 
+        	Log.d(TAG, "start");
+
+        // Cancel any thread attempting to make a connection
+        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+
+        // Cancel any thread currently running a connection
+        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
+
+        setState(STATE_NONE);
+    }
 
 	/**
 	 * Start the ConnectThread to initiate a connection to a remote device.
@@ -210,25 +226,29 @@ public class BluetoothChatService {
 	 */
 	private void connectionFailed() {
 		// Send a failure message back to the Activity
-		setState(STATE_NONE);
 		Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
 		bundle.putString(BalanduinoActivity.TOAST,
 				"Unable to connect to device");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
+		
+		// Start the service over to restart listening mode
+		BluetoothChatService.this.start();
 	}
 
 	/**
 	 * Indicate that the connection was lost and notify the UI Activity.
 	 */
 	private void connectionLost() { // Send a failure message back to the Activity
-		setState(STATE_NONE);
 		Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
 		bundle.putString(BalanduinoActivity.TOAST, "Device connection was lost");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
+		
+		// Start the service over to restart listening mode
+		BluetoothChatService.this.start();
 	}
 	private void disconnectSuccess() {
 		// Send a success message back to the Activity
@@ -237,6 +257,9 @@ public class BluetoothChatService {
 		bundle.putString(BalanduinoActivity.TOAST, "Disconnected successfully");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
+		
+		// Start the service over to restart listening mode
+		BluetoothChatService.this.start();
 	}
 
 	/**
@@ -353,7 +376,7 @@ public class BluetoothChatService {
             int bytes;
 
             // Keep listening to the InputStream while connected
-            while (mState == STATE_CONNECTED) {
+            while (true) {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
