@@ -25,9 +25,9 @@ public class RemoteControlFragment extends SherlockFragment {
 	private SensorFusion mSensorFusion = null;
 
 	private Handler mHandler;
-	private Timer sendDataTimer = new Timer();
+	private Timer dataTimer = new Timer();
 	private int counter = 0;
-	boolean sendData;
+	boolean update;
 	boolean buttonState;
 
 	public RemoteControlFragment() {
@@ -51,28 +51,27 @@ public class RemoteControlFragment extends SherlockFragment {
 		mButton = (Button) v.findViewById(R.id.button);
 
 		mHandler = new Handler();
-		sendDataTimer.schedule(new processIMUDataTimer(), 0, 50); // Update IMU
-																	// data
-																	// every
-																	// 10ms
+		dataTimer.schedule(new processDataTimer(), 0, 50); // Update IMU data every 50ms
 		return v;
 	}
 
-	class processIMUDataTimer extends TimerTask {
+	class processDataTimer extends TimerTask {
 		public void run() {
 			// Send data to the connected device
-			mHandler.post(processIMUDataTask);
+			mHandler.post(processDataTask);
 		}
 	}
 
-	private Runnable processIMUDataTask = new Runnable() {
+	private Runnable processDataTask = new Runnable() {
 		@Override
 		public void run() {
-			processIMUData();
+			processData();
 		}
 	};
 
-	public void processIMUData() {
+	public void processData() {
+		if(!update)
+			return;
 		mAzimuthView.setText(mSensorFusion.azimut);
 		mPitchView.setText(mSensorFusion.pitch);
 		mRollView.setText(mSensorFusion.roll);
@@ -80,18 +79,16 @@ public class RemoteControlFragment extends SherlockFragment {
 
 		counter++;
 		if (counter > 2) { // Only send data every 150ms time
-			counter = 0;
-			buttonState = mButton.isPressed();
-			CustomViewPager.setPagingEnabled(!buttonState);
-			
-			if(!sendData)
-				return;
+			counter = 0;						
 			if (mChatService == null) {
-				Toast.makeText(getActivity(), "mChatService == null",
-						Toast.LENGTH_SHORT).show();
+				//Log.e("Fragment: ","mChatService == null");
+				//Toast.makeText(getActivity(), "mChatService == null",Toast.LENGTH_SHORT).show();
+				mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely beacuse Bluetooth wasn't enabled at startup
 				return;
 			}
 			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				buttonState = mButton.isPressed();
+				CustomViewPager.setPagingEnabled(!buttonState);
 				if (buttonState && BalanduinoActivity.currentTabSelected == 0) {
 					String message = mSensorFusion.pitch + ','
 							+ mSensorFusion.roll + ";";
@@ -103,47 +100,49 @@ public class RemoteControlFragment extends SherlockFragment {
 					mChatService.write(send, false);
 					mButton.setText("Sending stop command");
 				}
-			} else
+			} else {
 				mButton.setText(R.string.button);
+				CustomViewPager.setPagingEnabled(true);
+			}
 		}
 	}
 	@Override
 	public void onStart() {
 		super.onResume();			
 		//Log.e("Fragment: ","onStart");
-		sendData = true;
+		update = true;
 	}
 	@Override
 	public void onResume() {
 		super.onResume();			
 		//Log.e("Fragment: ","onResume");
-		sendData = true;
+		update = true;
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 		//Log.e("Fragment: ","onPause");
-		sendData = false;		
+		update = false;		
 	}
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
 		//Log.e("Fragment: ","onDestroyView");
-		sendData = false;		
+		update = false;		
 	}
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		//Log.e("Fragment: ","onDestroy");
-		sendData = false;
-		sendDataTimer.cancel();
-		sendDataTimer.purge();				
+		update = false;
+		dataTimer.cancel();
+		dataTimer.purge();				
 	}
 	@Override
 	public void onStop() {
 		super.onStop();
 		//Log.e("Fragment: ","onStop");
-		sendData = false;		
+		update = false;		
 	}
 }
