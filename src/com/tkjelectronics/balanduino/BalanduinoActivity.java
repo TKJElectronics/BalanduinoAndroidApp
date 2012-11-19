@@ -218,6 +218,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// unregister sensor listeners to prevent the activity from draining the
 		// device's battery.
 		mSensorFusion.unregisterListeners();
+		if(mChatService != null) { // Send stop command
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				byte[] send = "S;".getBytes();
+				mChatService.write(send, false);
+			}
+		}
 	}
 
 	@Override
@@ -241,8 +247,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
-		mViewPager.setCurrentItem(tab.getPosition());
 		currentTabSelected = tab.getPosition();
+		mViewPager.setCurrentItem(currentTabSelected);
 		if(currentTabSelected != 0 && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				byte[] send = "S;".getBytes();
@@ -260,8 +266,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
-
-	
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -497,5 +501,4 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// Attempt to connect to the device
 		mChatService.connect(device, secure);
 	}
-
 }
