@@ -418,26 +418,26 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				// construct a string from the valid bytes in the buffer
 				String readMessage = new String(readBuf, 0, msg.arg1); 
 				String[] splitMessage = readMessage.split(",");
-				
 				if(D) {
 					Log.i(TAG,"Received string: " + readMessage);
-					Log.i(TAG,"splitMessage[0]: " + splitMessage[0]);
-					Log.i(TAG,"splitMessage[1]: " + splitMessage[1]);
-				}
-				if(splitMessage[0].equals("P")) {
-					pValue = splitMessage[1].trim();
-					newPValue = true;
-				} else if(splitMessage[0].equals("I")) {
-					iValue = splitMessage[1].trim();
-					newIValue = true;
-				} else if(splitMessage[0].equals("D")) {
-					dValue = splitMessage[1].trim();
-					newDValue = true;
-				}else if(splitMessage[0].equals("T")) {
-					targetAngleValue = splitMessage[1].trim();
-					newTargetAngleValue = true;
-				}
-				
+					for(int i=0;i<splitMessage.length;i++)
+						Log.i(TAG,"splitMessage["+i+"]: " + splitMessage[i]);
+				}				
+				if(splitMessage.length == 2) {
+					if(splitMessage[0].equals("P")) {
+						pValue = splitMessage[1].trim();
+						newPValue = true;
+					} else if(splitMessage[0].equals("I")) {
+						iValue = splitMessage[1].trim();
+						newIValue = true;
+					} else if(splitMessage[0].equals("D")) {
+						dValue = splitMessage[1].trim();
+						newDValue = true;
+					}else if(splitMessage[0].equals("T")) {
+						targetAngleValue = splitMessage[1].trim();
+						newTargetAngleValue = true;
+					}					
+				}				
 				//Toast.makeText(getApplicationContext(),readMessage,Toast.LENGTH_SHORT).show(); 
 				break;				
 			case MESSAGE_DEVICE_NAME:
