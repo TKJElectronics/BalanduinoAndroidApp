@@ -93,6 +93,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static String iValue = "";
 	public static String dValue = "";
 	public static String targetAngleValue = "";
+	public static boolean newPValue;
+	public static boolean newIValue;
+	public static boolean newDValue;
+	public static boolean newTargetAngleValue;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -420,14 +424,19 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					Log.i(TAG,"splitMessage[0]: " + splitMessage[0]);
 					Log.i(TAG,"splitMessage[1]: " + splitMessage[1]);
 				}
-				if(splitMessage[0].equals("P"))
+				if(splitMessage[0].equals("P")) {
 					pValue = splitMessage[1].trim();
-				else if(splitMessage[0].equals("I"))
+					newPValue = true;
+				} else if(splitMessage[0].equals("I")) {
 					iValue = splitMessage[1].trim();
-				else if(splitMessage[0].equals("D"))
+					newIValue = true;
+				} else if(splitMessage[0].equals("D")) {
 					dValue = splitMessage[1].trim();
-				else if(splitMessage[0].equals("T"))
+					newDValue = true;
+				}else if(splitMessage[0].equals("T")) {
 					targetAngleValue = splitMessage[1].trim();
+					newTargetAngleValue = true;
+				}
 				
 				//Toast.makeText(getApplicationContext(),readMessage,Toast.LENGTH_SHORT).show(); 
 				break;				

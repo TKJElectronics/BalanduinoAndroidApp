@@ -12,9 +12,7 @@
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:layout_weight="1" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/textView1"
@@ -34,8 +32,7 @@
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/textView2"
@@ -55,9 +52,7 @@
         <TableRow
             android:id="@+id/tableRow3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:baselineAligned="true" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/textView3"
@@ -77,9 +72,7 @@
         <TableRow
             android:id="@+id/tableRow4"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:baselineAligned="true" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/textView4"
@@ -94,12 +87,6 @@
                 android:layout_marginLeft="10dp"
                 android:text="@string/zero"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" >
         </TableRow>
     </TableLayout>
     

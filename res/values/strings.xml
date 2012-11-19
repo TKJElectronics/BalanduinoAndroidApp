@@ -19,8 +19,10 @@
     <string name="Kp">P:</string>
     <string name="Ki">I:</string>
     <string name="Kd">D:</string>
-    <string name="targetAngle">Target Angle: </string>
-    <string name="getPIDValues">Press to update PID values</string>
+    <string name="targetAngle">Target Angle:</string>
+    <string name="currentValues">Current Values</string>
+    <string name="adjustValues">Adjust Values</string>
+    <string name="updateValues">Press to update PID values</string>
     
     <!-- <string name="not_connected">You are not connected to a device</string> -->
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>
