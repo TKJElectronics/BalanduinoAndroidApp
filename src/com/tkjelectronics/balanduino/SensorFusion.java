@@ -64,7 +64,7 @@ public class SensorFusion implements SensorEventListener {
 	// accelerometer and magnetometer based rotation matrix
 	private float[] rotationMatrix = new float[9];
 
-	public String azimut;
+	//public String azimut;
 	public String pitch;
 	public String roll;
 	public String coefficient;
@@ -425,7 +425,7 @@ public class SensorFusion implements SensorEventListener {
 	public void updateOreintationDisplay() {
 		switch (IMUOutputSelection) {
 		case 0:
-			azimut = d.format(accMagOrientation[0] * 180 / Math.PI);
+			//azimut = d.format(accMagOrientation[0] * 180 / Math.PI);
 			pitch = d.format(accMagOrientation[1] * 180 / Math.PI);
 			roll = d.format(accMagOrientation[2] * 180 / Math.PI);
 			/*
@@ -440,7 +440,7 @@ public class SensorFusion implements SensorEventListener {
 			mRollView.setText(d.format(gyroOrientation[2] * 180 / Math.PI));
 			break;*/
 		case 2:
-			azimut = d.format(fusedOrientation[0] * 180 / Math.PI);
+			//azimut = d.format(fusedOrientation[0] * 180 / Math.PI);
 			pitch = d.format(fusedOrientation[1] * 180 / Math.PI);
 			roll = d.format(fusedOrientation[2] * 180 / Math.PI);
 			/*

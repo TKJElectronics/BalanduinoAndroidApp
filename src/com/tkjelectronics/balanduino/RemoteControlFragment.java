@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 public class RemoteControlFragment extends SherlockFragment {
 	private Button mButton;
-	public TextView mAzimuthView;
+	//public TextView mAzimuthView;
 	public TextView mPitchView;
 	public TextView mRollView;
 	public TextView mCoefficient;
@@ -42,10 +42,10 @@ public class RemoteControlFragment extends SherlockFragment {
 
 		View v = inflater.inflate(R.layout.remotecontrol, container, false);
 
-		mAzimuthView = (TextView) v.findViewById(R.id.textView5);
-		mPitchView = (TextView) v.findViewById(R.id.textView6);
-		mRollView = (TextView) v.findViewById(R.id.textView7);
-		mCoefficient = (TextView) v.findViewById(R.id.textView8);
+		//mAzimuthView = (TextView) v.findViewById(R.id.textView1);
+		mPitchView = (TextView) v.findViewById(R.id.textView2);
+		mRollView = (TextView) v.findViewById(R.id.textView3);
+		mCoefficient = (TextView) v.findViewById(R.id.textView4);
 
 		mButton = (Button) v.findViewById(R.id.button);
 
@@ -71,7 +71,7 @@ public class RemoteControlFragment extends SherlockFragment {
 	public void processData() {
 		if(!update)
 			return;
-		mAzimuthView.setText(mSensorFusion.azimut);
+		//mAzimuthView.setText(mSensorFusion.azimut);
 		mPitchView.setText(mSensorFusion.pitch);
 		mRollView.setText(mSensorFusion.roll);
 		mCoefficient.setText(mSensorFusion.coefficient);				
