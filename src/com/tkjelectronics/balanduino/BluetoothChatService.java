@@ -57,6 +57,8 @@ public class BluetoothChatService {
 													// connection
 	public static final int STATE_CONNECTED = 2; // now connected to a remote
 													// device
+	
+	boolean stopReading; // This is used to stop it from reading on the inpuStream
 
 	/**
 	 * Constructor. Prepares a new BluetoothChat session.
@@ -100,6 +102,8 @@ public class BluetoothChatService {
     public synchronized void start() {
         if (D) 
         	Log.d(TAG, "start");
+        
+        stopReading = true;
 
         // Cancel any thread attempting to make a connection
         if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
@@ -107,7 +111,7 @@ public class BluetoothChatService {
         // Cancel any thread currently running a connection
         if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
 
-        setState(STATE_NONE);
+        //setState(STATE_NONE);
     }
 
 	/**
@@ -121,13 +125,13 @@ public class BluetoothChatService {
 	public synchronized void connect(BluetoothDevice device, boolean secure) {
 		if (D)
 			Log.d(TAG, "connect to: " + device);
+		
+		stopReading = true;
 
 		// Cancel any thread attempting to make a connection
-		if (mState == STATE_CONNECTING) {
-			if (mConnectThread != null) {
-				mConnectThread.cancel();
-				mConnectThread = null;
-			}
+		if (mConnectThread != null) {
+			mConnectThread.cancel();
+			mConnectThread = null;
 		}
 
 		// Cancel any thread currently running a connection
@@ -188,6 +192,7 @@ public class BluetoothChatService {
 	public synchronized void stop() {
 		if (D)
 			Log.d(TAG, "stop");
+		stopReading = true;
 		if (mConnectThread != null) {
 			mConnectThread.cancel();
 			mConnectThread = null;
@@ -297,7 +302,7 @@ public class BluetoothChatService {
 		public void run() {
 			if (D)
 				Log.i(TAG, "BEGIN mConnectThread SocketType: " + mSocketType);
-			setName("ConnectThread" + mSocketType);
+			//setName("ConnectThread" + mSocketType);
 
 			// Always cancel discovery because it will slow down a connection
 			mAdapter.cancelDiscovery();
@@ -367,6 +372,7 @@ public class BluetoothChatService {
 
 			mmInStream = tmpIn;
 			mmOutStream = tmpOut;
+			stopReading = false;
 		}
 
 		public void run() {
@@ -376,18 +382,19 @@ public class BluetoothChatService {
             int bytes;
 
             // Keep listening to the InputStream while connected
-            while (true) {
+            while (!stopReading) {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
-                    cancel();
-                    if(mState != STATE_NONE)
-                    	connectionLost();                    	
-                    break;
+                    Log.e(TAG, "disconnected", e);                    
+                    if(!stopReading) {
+                    	cancel();
+                    	connectionLost();     
+                    }
+                    return;
                 }
             }
         }
