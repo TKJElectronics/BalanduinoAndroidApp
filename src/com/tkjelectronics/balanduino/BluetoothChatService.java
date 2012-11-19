@@ -17,6 +17,7 @@
 package com.tkjelectronics.balanduino;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.UUID;
 
@@ -56,6 +57,8 @@ public class BluetoothChatService {
 													// connection
 	public static final int STATE_CONNECTED = 2; // now connected to a remote
 													// device
+	
+	boolean stopReading; // This is used to stop it from reading on the inpuStream
 
 	/**
 	 * Constructor. Prepares a new BluetoothChat session.
@@ -92,6 +95,24 @@ public class BluetoothChatService {
 	public synchronized int getState() {
 		return mState;
 	}
+	
+	/**
+     * Start the chat service. Specifically start AcceptThread to begin a
+     * session in listening (server) mode. Called by the Activity onResume() */
+    public synchronized void start() {
+        if (D) 
+        	Log.d(TAG, "start");
+        
+        stopReading = true;
+
+        // Cancel any thread attempting to make a connection
+        if (mConnectThread != null) {mConnectThread.cancel(); mConnectThread = null;}
+
+        // Cancel any thread currently running a connection
+        if (mConnectedThread != null) {mConnectedThread.cancel(); mConnectedThread = null;}
+
+        //setState(STATE_NONE);
+    }
 
 	/**
 	 * Start the ConnectThread to initiate a connection to a remote device.
@@ -104,13 +125,13 @@ public class BluetoothChatService {
 	public synchronized void connect(BluetoothDevice device, boolean secure) {
 		if (D)
 			Log.d(TAG, "connect to: " + device);
+		
+		stopReading = true;
 
 		// Cancel any thread attempting to make a connection
-		if (mState == STATE_CONNECTING) {
-			if (mConnectThread != null) {
-				mConnectThread.cancel();
-				mConnectThread = null;
-			}
+		if (mConnectThread != null) {
+			mConnectThread.cancel();
+			mConnectThread = null;
 		}
 
 		// Cancel any thread currently running a connection
@@ -171,6 +192,7 @@ public class BluetoothChatService {
 	public synchronized void stop() {
 		if (D)
 			Log.d(TAG, "stop");
+		stopReading = true;
 		if (mConnectThread != null) {
 			mConnectThread.cancel();
 			mConnectThread = null;
@@ -209,29 +231,30 @@ public class BluetoothChatService {
 	 */
 	private void connectionFailed() {
 		// Send a failure message back to the Activity
-		setState(STATE_NONE);
 		Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
 		bundle.putString(BalanduinoActivity.TOAST,
 				"Unable to connect to device");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
+		
+		// Start the service over to restart listening mode
+		BluetoothChatService.this.start();
 	}
 
 	/**
 	 * Indicate that the connection was lost and notify the UI Activity.
 	 */
-/*
-	private void connectionLost() { // Send a failure message back to the
-									// Activity
-		setState(STATE_NONE);
+	private void connectionLost() { // Send a failure message back to the Activity
 		Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
 		Bundle bundle = new Bundle();
 		bundle.putString(BalanduinoActivity.TOAST, "Device connection was lost");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
+		
+		// Start the service over to restart listening mode
+		BluetoothChatService.this.start();
 	}
-*/
 	private void disconnectSuccess() {
 		// Send a success message back to the Activity
 		Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
@@ -239,6 +262,9 @@ public class BluetoothChatService {
 		bundle.putString(BalanduinoActivity.TOAST, "Disconnected successfully");
 		msg.setData(bundle);
 		mHandler.sendMessage(msg);
+		
+		// Start the service over to restart listening mode
+		BluetoothChatService.this.start();
 	}
 
 	/**
@@ -276,7 +302,7 @@ public class BluetoothChatService {
 		public void run() {
 			if (D)
 				Log.i(TAG, "BEGIN mConnectThread SocketType: " + mSocketType);
-			setName("ConnectThread" + mSocketType);
+			//setName("ConnectThread" + mSocketType);
 
 			// Always cancel discovery because it will slow down a connection
 			mAdapter.cancelDiscovery();
@@ -325,51 +351,54 @@ public class BluetoothChatService {
 	 */
 	private class ConnectedThread extends Thread {
 		private final BluetoothSocket mmSocket;
-		//private final InputStream mmInStream;
+		private final InputStream mmInStream;
 		private final OutputStream mmOutStream;
 
 		public ConnectedThread(BluetoothSocket socket, String socketType) {
 			if(D)
 				Log.d(TAG, "create ConnectedThread: " + socketType);
 			mmSocket = socket;
-			//InputStream tmpIn = null;
+			InputStream tmpIn = null;
 			OutputStream tmpOut = null;
 
 			// Get the BluetoothSocket input and output streams
 			try {
-				//tmpIn = socket.getInputStream();
+				tmpIn = socket.getInputStream();
 				tmpOut = socket.getOutputStream();
 			} catch (IOException e) {
 				if(D)
 					Log.e(TAG, "temp sockets not created", e);
 			}
 
-			//mmInStream = tmpIn;
+			mmInStream = tmpIn;
 			mmOutStream = tmpOut;
+			stopReading = false;
 		}
-/*
+
 		public void run() {
-            Log.i(TAG, "BEGIN mConnectedThread");
+			if(D)
+				Log.i(TAG, "BEGIN mConnectedThread");
             byte[] buffer = new byte[1024];
             int bytes;
 
             // Keep listening to the InputStream while connected
-            while (mState == STATE_CONNECTED) {
+            while (!stopReading) {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);
-                    cancel();
-                    if(mState != STATE_NONE)
-                    	connectionLost();                    	
-                    break;
+                    Log.e(TAG, "disconnected", e);                    
+                    if(!stopReading) {
+                    	cancel();
+                    	connectionLost();     
+                    }
+                    return;
                 }
             }
         }
-*/
+
 		/**
 		 * Write to the connected OutStream.
 		 * 
@@ -392,14 +421,12 @@ public class BluetoothChatService {
 		}
 
 		public void cancel() {
-			/*
 			if (mmInStream != null) {
 				try {
 					mmInStream.close();					
 				} catch (Exception e) {
 				}
 			}
-			*/
 			if (mmOutStream != null) {
 				try {
 					mmOutStream.close();

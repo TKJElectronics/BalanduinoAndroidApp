@@ -36,9 +36,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Window;
-import com.tkjelectronics.balanduino.R;
 
 /**
  * This Activity appears as a dialog. It lists any paired devices and devices
@@ -46,7 +45,7 @@ import com.tkjelectronics.balanduino.R;
  * the MAC address of the device is sent back to the parent Activity in the
  * result Intent.
  */
-public class DeviceListActivity extends SherlockActivity {
+public class DeviceListActivity extends SherlockFragmentActivity {
 	// Debugging
 	private static final String TAG = "DeviceListActivity";
 	private static final boolean D = BalanduinoActivity.D;
