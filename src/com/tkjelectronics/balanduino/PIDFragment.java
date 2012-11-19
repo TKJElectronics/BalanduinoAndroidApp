@@ -196,5 +196,14 @@ public class PIDFragment extends SherlockFragment {
 			else
 				mButton.setText(R.string.button);
 		}
-	};		
+	};
+	@Override
+	public void onResume() {
+		super.onResume();
+		// When the user reopens the app, then reset the values
+		mEditKp.setText(BalanduinoActivity.pValue);
+		mEditKi.setText(BalanduinoActivity.iValue);
+		mEditKd.setText(BalanduinoActivity.dValue);
+		mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
+	}
 }
