@@ -20,8 +20,8 @@
     <string name="Ki">I:</string>
     <string name="Kd">D:</string>
     <string name="targetAngle">Target Angle:</string>
-    <string name="currentValues">Current Values</string>
-    <string name="adjustValues">Adjust Values</string>
+    <string name="currentValues">Current Values:</string>
+    <string name="adjustValues">Adjust Values:</string>
     <string name="updateValues">Press to update PID values</string>
     
     <!-- <string name="not_connected">You are not connected to a device</string> -->
