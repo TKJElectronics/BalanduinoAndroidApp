@@ -84,7 +84,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static SensorFusion mSensorFusion = null;
 	private SensorManager mSensorManager = null;
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
+	ViewPagerAdapter mViewPagerAdapter;
 	ViewPager mViewPager;
 	
 	public static int currentTabSelected;
@@ -124,12 +124,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
+		mViewPagerAdapter = new ViewPagerAdapter(
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mViewPager.setAdapter(mViewPagerAdapter);
 
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
@@ -142,13 +142,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					}
 				});
 		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
+		for (int i = 0; i < mViewPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
-					.setText(mSectionsPagerAdapter.getPageTitle(i))
+					.setText(mViewPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
 	}

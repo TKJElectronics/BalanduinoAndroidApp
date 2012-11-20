@@ -8,9 +8,9 @@ import android.support.v4.app.FragmentPagerAdapter;
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of the sections/tabs/pages.
  */
-public class SectionsPagerAdapter extends FragmentPagerAdapter {
+public class ViewPagerAdapter extends FragmentPagerAdapter {
 
-	public SectionsPagerAdapter(FragmentManager fm) {
+	public ViewPagerAdapter(FragmentManager fm) {
 		super(fm);
 	}
 
