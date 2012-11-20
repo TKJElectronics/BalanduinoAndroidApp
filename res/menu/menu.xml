@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_insecure_connect"
+    <item android:id="@+id/menu_connect"
         android:icon="@drawable/device_access_bluetooth"       
-        android:title="@string/insecure_connect"                 
+        android:title="@string/connect"                 
         android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/settings"
         android:icon="@android:drawable/ic_menu_preferences"

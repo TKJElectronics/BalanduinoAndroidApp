@@ -4,11 +4,7 @@
     
     <!-- Layout -->
     <string name="zero">0</string>
-    <string name="accMacOrientation">Accelerometer/Magnetometer Orientation</string>
-    <string name="gyroOrientation">Gyroscope Orientation (drift eliminated)</string>
-    <string name="fusionOrientation">Orientation from Sensor Fusion</string>
     
-    <string name="azimuth">Azimuth (z-axis rotation): </string>
     <string name="pitch">Pitch (x-axis rotation): </string>
     <string name="roll">Roll (y-axis ritation): </string>
     <string name="coefficient">Filter Coefficient: </string>
@@ -23,13 +19,11 @@
     <string name="currentValues">Current Values:</string>
     <string name="adjustValues">Adjust Values:</string>
     <string name="updateValues">Press to update PID values</string>
-    
-    <!-- <string name="not_connected">You are not connected to a device</string> -->
+        
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>
     
     <string name="connecting">connecting&#8230;</string>
-    <string name="connected_to">Connected:</string>
-    <!-- <string name="title_not_connected">not connected</string> -->
+    <string name="connected_to">Connected to:</string>
 
     <!--  DeviceListActivity -->
     <string name="scanning">Scanning for devices&#8230;</string>
@@ -41,8 +35,7 @@
     <string name="button_scan">Scan for devices</string>
 
     <!-- Options Menu -->
-    <!-- <string name="secure_connect">Connect &amp; pair</string> -->
-    <string name="insecure_connect">Connect</string>    
+    <string name="connect">Connect</string>
     <string name="settings">Settings</string>    
     
     <!-- Dialog -->

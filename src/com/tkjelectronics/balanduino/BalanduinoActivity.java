@@ -271,7 +271,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if(D)
 			Log.e(TAG,"onPrepareOptionsMenu");
-		MenuItem menuItemMapView = menu.findItem(R.id.menu_insecure_connect);
+		super.onPrepareOptionsMenu(menu);
+		MenuItem menuItemMapView = menu.findItem(R.id.menu_connect);
 		if (mChatService == null)
 			menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
 		else {
@@ -281,24 +282,25 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			else
 				menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
 		}
-		return super.onPrepareOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if(D)
 			Log.e(TAG,"onCreateOptionsMenu");
+		super.onCreateOptionsMenu(menu);
 		// Inflate the menu; this adds items to the action bar if it is present.
 		MenuInflater inflater = getSupportMenuInflater();	  	
 		inflater.inflate(R.menu.menu, menu);
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		Intent serverIntent = null;
 		switch (item.getItemId()) {
-		case R.id.menu_insecure_connect:
+		case R.id.menu_connect:
 			// Launch the DeviceListActivity to see devices and do scan
 			serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent,
@@ -382,14 +384,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	@SuppressLint("HandlerLeak")
 	private final Handler mHandlerBluetooth = new Handler() {
 		@Override
-		public void handleMessage(Message msg) {			
-			supportInvalidateOptionsMenu();
+		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
+					supportInvalidateOptionsMenu();
 					Toast.makeText(
 							getApplicationContext(),
 							getString(R.string.connected_to) + " "
