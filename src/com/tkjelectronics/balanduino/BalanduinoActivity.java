@@ -113,7 +113,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			return;
 		}
 
-		// get sensorManager and initialise sensor listeners
+		// get sensorManager and initialize sensor listeners
 		mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
 		mSensorFusion = new SensorFusion(mSensorManager);
 
@@ -443,20 +443,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 						targetAngleValue = splitMessage[1].trim();
 						newTargetAngleValue = true;
 					}					
-				}				
-				//Toast.makeText(getApplicationContext(),readMessage,Toast.LENGTH_SHORT).show(); 
+				}
 				break;				
 			case MESSAGE_DEVICE_NAME:
 				// save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
-				// Toast.makeText(getApplicationContext(),"Connected to: " +
-				// mConnectedDeviceName,Toast.LENGTH_SHORT).show();
 				break;
 			case MESSAGE_TOAST:
+				supportInvalidateOptionsMenu();
 				Toast.makeText(getApplicationContext(),
 						msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
 						.show();
-				mSensorFusion.unregisterListeners();
 				break;
 			}
 		}
