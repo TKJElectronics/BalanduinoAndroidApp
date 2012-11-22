@@ -37,9 +37,6 @@ public class RemoteControlFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// Create a new TextView and set its text to the fragment's section
-		// number argument value.
-
 		View v = inflater.inflate(R.layout.remotecontrol, container, false);
 
 		//mAzimuthView = (TextView) v.findViewById(R.id.textView1);
@@ -84,24 +81,23 @@ public class RemoteControlFragment extends SherlockFragment {
 				mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 				return;
 			}
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == 0) {
 				buttonState = mButton.isPressed();
 				CustomViewPager.setPagingEnabled(!buttonState);
-				if(BalanduinoActivity.currentTabSelected == 0) {
-					if (buttonState) {
-						String message = mSensorFusion.pitch + ',' + mSensorFusion.roll + ";";
-						byte[] send = message.getBytes();
-						mChatService.write(send, false);
-						mButton.setText("Now sending data");
-					} else {
-						byte[] send = "S;".getBytes();
-						mChatService.write(send, false);
-						mButton.setText("Sending stop command");
-					}					
-				}				
+				if (buttonState) {
+					String message = mSensorFusion.pitch + ',' + mSensorFusion.roll + ";";
+					byte[] send = message.getBytes();
+					mChatService.write(send, false);
+					mButton.setText("Now sending data");
+				} else {
+					byte[] send = "S;".getBytes();
+					mChatService.write(send, false);
+					mButton.setText("Sending stop command");
+				}
 			} else {
 				mButton.setText(R.string.button);
-				CustomViewPager.setPagingEnabled(true);
+				if(BalanduinoActivity.currentTabSelected == 0)
+					CustomViewPager.setPagingEnabled(true);
 			}
 		}
 	}

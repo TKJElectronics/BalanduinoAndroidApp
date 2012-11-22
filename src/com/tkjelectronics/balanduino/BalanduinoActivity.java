@@ -326,7 +326,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				mChatService.write(send, false);				
 			}
 		}
-		if(currentTabSelected == 2)
+		if(currentTabSelected == 3)
 			restartSpeechRecognizer(); // Restart service
 	}
 
@@ -380,6 +380,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					REQUEST_CONNECT_DEVICE_INSECURE);
 			return true;
 		case R.id.settings:
+			mViewPager.setCurrentItem(0); // Change to the IMU tab
 			// This is used to add a custom layout to an AlertDialog
 			final View setCoefficient = LayoutInflater.from(this).inflate(
 					R.layout.dialog,
