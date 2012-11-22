@@ -491,6 +491,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				 * break;
 				 */
 				}
+				PIDFragment.updateButton();
 				break;
 			case MESSAGE_READ: 
 				byte[] readBuf = (byte[]) msg.obj; 
@@ -515,7 +516,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					}else if(splitMessage[0].equals("T")) {
 						targetAngleValue = splitMessage[1].trim();
 						newTargetAngleValue = true;
-					}					
+					}
+					PIDFragment.updateView();
 				}
 				break;				
 			case MESSAGE_DEVICE_NAME:

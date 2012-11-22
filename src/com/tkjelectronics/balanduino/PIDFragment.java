@@ -1,8 +1,5 @@
 package com.tkjelectronics.balanduino;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -20,21 +17,18 @@ public class PIDFragment extends SherlockFragment {
 	private static final String TAG = "PIDFragment";
 	private static final boolean D = BalanduinoActivity.D;
 
-	Button mButton;
-	TextView mKpView;
-	TextView mKiView;
-	TextView mKdView;
-	TextView mTargetAngleView;
+	static Button mButton;
+	static TextView mKpView;
+	static TextView mKiView;
+	static TextView mKdView;
+	static TextView mTargetAngleView;
 
-	EditText mEditKp;
-	EditText mEditKi;
-	EditText mEditKd;
-	EditText mEditTargetAngle;
+	static EditText mEditKp;
+	static EditText mEditKi;
+	static EditText mEditKd;
+	static EditText mEditTargetAngle;
 
-	private BluetoothChatService mChatService = null;
-
-	private Handler mHandler;
-	private Timer updateViewTimer = new Timer();
+	private static BluetoothChatService mChatService = null;
 
 	String newKpValue;
 	String newKiValue;
@@ -45,6 +39,7 @@ public class PIDFragment extends SherlockFragment {
 	String oldKdValue;
 	String oldTargetAngleValue;
 
+	Handler mHandler = new Handler();
 	int counter = 0;
 
 	public PIDFragment() {
@@ -81,13 +76,11 @@ public class PIDFragment extends SherlockFragment {
 					newKiValue = mEditKi.getText().toString();
 					newKdValue = mEditKd.getText().toString();
 					newTargetAngleValue = mEditTargetAngle.getText().toString();
-					
-					Handler myHandler = new Handler();
 										
 					if(newKpValue != null) {
 						if (!newKpValue.equals(oldKpValue)) {		
 							oldKpValue = newKpValue;						
-							myHandler.post(new Runnable() {
+							mHandler.post(new Runnable() {
 								public void run() {
 									byte[] send = ("P," + newKpValue + ";").getBytes();
 									mChatService.write(send, false);
@@ -95,11 +88,11 @@ public class PIDFragment extends SherlockFragment {
 							});
 							counter = 25;
 						}						
-					}					
+					}
 					if(newKiValue != null) {
 						if (!newKiValue.equals(oldKiValue)) {
 							oldKiValue = newKiValue;
-							myHandler.postDelayed(new Runnable() {
+							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									byte[] send = ("I," + newKiValue + ";").getBytes();
 									mChatService.write(send, false);
@@ -107,11 +100,11 @@ public class PIDFragment extends SherlockFragment {
 							}, counter); // Wait before sending the message						
 							counter += 25;
 						}
-					}					
+					}
 					if(newKdValue != null) {
 						if (!newKdValue.equals(oldKdValue)) {
 							oldKdValue = newKdValue;
-							myHandler.postDelayed(new Runnable() {
+							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									byte[] send = ("D," + newKdValue + ";").getBytes();
 									mChatService.write(send, false);
@@ -123,7 +116,7 @@ public class PIDFragment extends SherlockFragment {
 					if(newTargetAngleValue != null) {
 						if (!newTargetAngleValue.equals(oldTargetAngleValue)) {
 							oldTargetAngleValue = newTargetAngleValue;
-							myHandler.postDelayed(new Runnable() {
+							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									byte[] send = ("T," + newTargetAngleValue + ";").getBytes();
 									mChatService.write(send, false);
@@ -132,9 +125,8 @@ public class PIDFragment extends SherlockFragment {
 							counter += 25;
 						}
 					}
-								
 					if(counter != 0) {
-						myHandler.postDelayed(new Runnable() {
+						mHandler.postDelayed(new Runnable() {
 							public void run() {
 								byte[] send = "G;".getBytes();
 								mChatService.write(send, false);
@@ -143,60 +135,49 @@ public class PIDFragment extends SherlockFragment {
 						if (D) 
 							Log.i(TAG, "Kp Value: " + newKpValue + "," + newKiValue + "," + newKdValue + "," + newTargetAngleValue);
 					}
-
 					counter = 0; // Reset counter															
 				}
 			}
 		});
-		mHandler = new Handler();
-		updateViewTimer.schedule(new updateViewTimerTask(), 0, 50); // Update view every 50ms
 		return v;
 	}
-
-	class updateViewTimerTask extends TimerTask {
-		public void run() {
-			// Send data to the connected device
-			mHandler.post(updateView);
+	
+	public static void updateView() {
+		if (BalanduinoActivity.newPValue) {
+			BalanduinoActivity.newPValue = false;
+			mKpView.setText(BalanduinoActivity.pValue);
+			mEditKp.setText(BalanduinoActivity.pValue);
+		}
+		if (BalanduinoActivity.newIValue) {
+			BalanduinoActivity.newIValue = false;
+			mKiView.setText(BalanduinoActivity.iValue);
+			mEditKi.setText(BalanduinoActivity.iValue);
+		}
+		if (BalanduinoActivity.newDValue) {
+			BalanduinoActivity.newDValue = false;
+			mKdView.setText(BalanduinoActivity.dValue);
+			mEditKd.setText(BalanduinoActivity.dValue);
+		}
+		if (BalanduinoActivity.newTargetAngleValue) {
+			BalanduinoActivity.newTargetAngleValue = false;
+			mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
+			mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
 		}
 	}
-
-	private Runnable updateView = new Runnable() {
-		@Override
-		public void run() {
-			mKpView.setText(BalanduinoActivity.pValue);
-			mKiView.setText(BalanduinoActivity.iValue);
-			mKdView.setText(BalanduinoActivity.dValue);
-			mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
-
-			if (BalanduinoActivity.newPValue) {
-				BalanduinoActivity.newPValue = false;
-				mEditKp.setText(BalanduinoActivity.pValue);
-			}
-			if (BalanduinoActivity.newIValue) {
-				BalanduinoActivity.newIValue = false;
-				mEditKi.setText(BalanduinoActivity.iValue);
-			}
-			if (BalanduinoActivity.newDValue) {
-				BalanduinoActivity.newDValue = false;
-				mEditKd.setText(BalanduinoActivity.dValue);
-			}
-			if (BalanduinoActivity.newTargetAngleValue) {
-				BalanduinoActivity.newTargetAngleValue = false;
-				mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
-			}
-
-			if (mChatService == null) {
-				if (D)
-					Log.e(TAG, "mChatService == null");
-				mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
-				return;
-			}
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				mButton.setText(R.string.updateValues);
-			else
-				mButton.setText(R.string.button);
+	
+	public static void updateButton() {
+		if (mChatService == null) {
+			if (D)
+				Log.e(TAG, "mChatService == null");
+			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
+			return;
 		}
-	};
+		if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+			mButton.setText(R.string.updateValues);
+		else
+			mButton.setText(R.string.button);
+	}
+	
 	@Override
 	public void onResume() {
 		super.onResume();
