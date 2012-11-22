@@ -19,6 +19,9 @@
     <string name="currentValues">Current Values:</string>
     <string name="adjustValues">Adjust Values:</string>
     <string name="updateValues">Press to update PID values</string>
+    
+    <!-- Voice Recognition -->
+    <string name="voicecommand">Command:</string>
         
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>
     

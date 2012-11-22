@@ -28,6 +28,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
@@ -37,6 +38,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -54,7 +57,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements
-		ActionBar.TabListener {
+		ActionBar.TabListener, VoiceRecognitionFragment.signalListener {
 
 	private static final String TAG = "Balanduino";
 	public static final boolean D = true;
@@ -97,10 +100,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static boolean newIValue;
 	public static boolean newDValue;
 	public static boolean newTargetAngleValue;
+	
+	private static SpeechRecognizer mSpeechRecognizer;
+	public static boolean toggleButtonState;
+	
+	private static Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		context = getApplicationContext();
+		
 		setContentView(R.layout.activity_main);
 
 		// Get local Bluetooth adapter
@@ -112,6 +122,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			finish();
 			return;
 		}
+		initSpeechRecognizer();
 
 		// get sensorManager and initialize sensor listeners
 		mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
@@ -152,6 +163,60 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					.setTabListener(this));
 		}
 	}
+	
+	private void initSpeechRecognizer() {
+    	if(mSpeechRecognizer == null) {
+    		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+    		if (!SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
+    			Toast.makeText(getApplicationContext(),"Speech Recognition is not available",Toast.LENGTH_LONG).show();
+    			finish();
+    		}
+    		mSpeechRecognizer.setRecognitionListener(new VoiceRecognitionListener());
+    	}
+    }
+	
+	static void startSpeechRecognizer() {
+		if(D)
+			Log.d(TAG, "startSpeechRecognizer");
+		if(mSpeechRecognizer == null) {
+			if(D)
+				Log.d(TAG, "mSpeechRecognizer == null");
+			return;
+		}
+		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+		// Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
+		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+		//intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"com.tkjelectronics.balanduino");
+		//intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
+		mSpeechRecognizer.startListening(intent);	
+	}	
+	
+	static void restartSpeechRecognizer() {
+		if(D)
+			Log.d(TAG, "restartSpeechRecognizer");
+		if(mSpeechRecognizer != null) {
+			mSpeechRecognizer.stopListening();
+			mSpeechRecognizer.cancel();
+			mSpeechRecognizer.destroy();
+		}
+		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(getAppContext());
+		mSpeechRecognizer.setRecognitionListener(new VoiceRecognitionListener());
+		
+		if(toggleButtonState) // Start it again if the button is on
+			startSpeechRecognizer();
+	}
+	
+	public static Context getAppContext() {
+        return context;
+    }
+	
+	public void toggleButtonChanged(boolean toggleButton) {
+		toggleButtonState = toggleButton;
+		if(D)
+			Log.d(TAG, "Toggle Button Pressed: " + toggleButtonState);		
+		if(toggleButtonState)
+			startSpeechRecognizer();		
+	};
 
 	@Override
 	public void onStart() {
@@ -208,6 +273,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if (mChatService != null)
 			mChatService.stop();
 		mSensorFusion.unregisterListeners();
+		if (mSpeechRecognizer != null) {
+			mSpeechRecognizer.stopListening();
+			mSpeechRecognizer.cancel();
+			mSpeechRecognizer.destroy();
+        }
 	}
 
 	@Override
@@ -233,6 +303,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			Log.e(TAG, "+ ON RESUME +");
 		// restore the sensor listeners when user resumes the application.
 		mSensorFusion.initListeners();
+		initSpeechRecognizer();
 	}
 
 	private void setupBTService() {
@@ -255,6 +326,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				mChatService.write(send, false);				
 			}
 		}
+		if(currentTabSelected == 2)
+			restartSpeechRecognizer(); // Restart service
 	}
 
 	@Override

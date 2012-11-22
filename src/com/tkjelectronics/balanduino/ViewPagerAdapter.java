@@ -23,6 +23,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 		case 1:
 			Fragment fragment1 = new PIDFragment();
 			return fragment1;
+		case 2:
+			Fragment fragment2 = new VoiceRecognitionFragment();
+			return fragment2;
 		default:
 			return null;
 		}
@@ -30,8 +33,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// Show 2 pages.
-		return 2;
+		// Show 3 pages.
+		return 3;
 	}
 
 	@Override
@@ -41,6 +44,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 			return "Remote Control";
 		case 1:
 			return "PID Adjustment";
+		case 2:
+			return "Voice control";
 		}
 		return null;
 	}
