@@ -55,6 +55,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.viewpagerindicator.TitlePageIndicator;
+import com.viewpagerindicator.UnderlinePageIndicator;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener, VoiceRecognitionFragment.signalListener {
@@ -138,14 +140,19 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		mViewPagerAdapter = new ViewPagerAdapter(
 				getSupportFragmentManager());
 
-		// Set up the ViewPager with the sections adapter.
+		// Set up the ViewPager with the adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mViewPagerAdapter);
+		
+		// Bind the underline indicator to the adapter
+		UnderlinePageIndicator mUnderlinePageIndicator = (UnderlinePageIndicator)findViewById(R.id.indicator);
+		mUnderlinePageIndicator.setViewPager(mViewPager);
+		mUnderlinePageIndicator.setFades(false);
 
 		// When swiping between different sections, select the corresponding
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
-		mViewPager
+		mUnderlinePageIndicator
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
