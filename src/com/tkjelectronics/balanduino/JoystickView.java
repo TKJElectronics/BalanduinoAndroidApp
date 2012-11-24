@@ -20,7 +20,6 @@ package com.tkjelectronics.balanduino;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -28,9 +27,12 @@ import android.view.View;
 
 public class JoystickView extends View {
     private OnJoystickChangeListener listener;
+    
+    final int holo_blue_dark = 0xff0099cc;
+    final int buttonGray = 0xFF5C5C5C;
     	
-    private int circleColor = Color.GRAY;
-    private int buttonColor = Color.GRAY;
+    private int circleColor = buttonGray;
+    private int buttonColor = buttonGray;
     
     private float x;
     private float y;
@@ -81,7 +83,7 @@ public class JoystickView extends View {
         
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(3);
-        p.setColor(circleColor);
+        p.setColor(circleColor); 
         canvas.drawCircle(centerX, centerY, joystickRadius, p);
         canvas.drawCircle(centerX, centerY, joystickRadius/2, p);
 
@@ -101,14 +103,19 @@ public class JoystickView extends View {
         }
     	invalidate();
     	if (listener != null && event.getAction() == MotionEvent.ACTION_UP) {
+    		buttonColor = buttonGray;
     		x = centerX;
     		y = centerY;
     		listener.setOnReleaseListener(0,0);
     	}
-    	if (listener != null && event.getAction() == MotionEvent.ACTION_DOWN)
+    	if (listener != null && event.getAction() == MotionEvent.ACTION_DOWN) {
+    		buttonColor = holo_blue_dark; 
     		listener.setOnTouchListener(getXValue(), getYValue());
-    	if (listener != null && event.getAction() == MotionEvent.ACTION_MOVE)
+    	}
+    	if (listener != null && event.getAction() == MotionEvent.ACTION_MOVE) {
+    		buttonColor = holo_blue_dark;
     		listener.setOnMovedListener(getXValue(), getYValue());    	
+    	}
     	return true;
     }
     
