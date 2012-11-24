@@ -139,37 +139,39 @@ public class PIDFragment extends SherlockFragment {
 				}
 			}
 		});
+		updateView();
+		updateButton();
 		return v;
 	}
 	
 	public static void updateView() {
 		if (BalanduinoActivity.newPValue) {
-			if(mKpView == null || mEditKp == null)
-				return;
-			BalanduinoActivity.newPValue = false;
-			mKpView.setText(BalanduinoActivity.pValue);
-			mEditKp.setText(BalanduinoActivity.pValue);
+			if(mKpView != null && mEditKp != null) {
+				BalanduinoActivity.newPValue = false;
+				mKpView.setText(BalanduinoActivity.pValue);
+				mEditKp.setText(BalanduinoActivity.pValue);
+			}
 		}
 		if (BalanduinoActivity.newIValue) {
-			if(mKiView == null || mEditKi == null)
-				return;
-			BalanduinoActivity.newIValue = false;
-			mKiView.setText(BalanduinoActivity.iValue);
-			mEditKi.setText(BalanduinoActivity.iValue);
+			if(mKiView != null && mEditKi != null) {
+				BalanduinoActivity.newIValue = false;
+				mKiView.setText(BalanduinoActivity.iValue);
+				mEditKi.setText(BalanduinoActivity.iValue);
+			}
 		}
 		if (BalanduinoActivity.newDValue) {
-			if(mKdView == null || mEditKd == null)
-				return;
-			BalanduinoActivity.newDValue = false;
-			mKdView.setText(BalanduinoActivity.dValue);
-			mEditKd.setText(BalanduinoActivity.dValue);
+			if(mKdView != null && mEditKd != null) {
+				BalanduinoActivity.newDValue = false;
+				mKdView.setText(BalanduinoActivity.dValue);
+				mEditKd.setText(BalanduinoActivity.dValue);
+			}
 		}
 		if (BalanduinoActivity.newTargetAngleValue) {
-			if(mTargetAngleView == null || mEditTargetAngle == null)
-				return;
-			BalanduinoActivity.newTargetAngleValue = false;
-			mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
-			mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
+			if(mTargetAngleView != null && mEditTargetAngle != null) {
+				BalanduinoActivity.newTargetAngleValue = false;
+				mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
+				mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
+			}
 		}
 	}
 	
@@ -191,10 +193,19 @@ public class PIDFragment extends SherlockFragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		// When the user reopens the app, then reset the values
-		mEditKp.setText(BalanduinoActivity.pValue);
-		mEditKi.setText(BalanduinoActivity.iValue);
-		mEditKd.setText(BalanduinoActivity.dValue);
-		mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
+		// When the user resumes the view, then set the values again
+		if(mChatService != null) {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				mKpView.setText(BalanduinoActivity.pValue);
+				mKiView.setText(BalanduinoActivity.iValue);
+				mKdView.setText(BalanduinoActivity.dValue);
+				mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
+				mEditKp.setText(BalanduinoActivity.pValue);
+				mEditKi.setText(BalanduinoActivity.iValue);
+				mEditKd.setText(BalanduinoActivity.dValue);
+				mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
+			}
+		}
+		updateButton();
 	}
 }
