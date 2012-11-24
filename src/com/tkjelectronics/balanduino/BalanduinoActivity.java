@@ -501,32 +501,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				PIDFragment.updateButton();
 				break;
 			case MESSAGE_READ: 
-				byte[] readBuf = (byte[]) msg.obj; 
-				// construct a string from the valid bytes in the buffer
-				String readMessage = new String(readBuf, 0, msg.arg1); 
-				String[] splitMessage = readMessage.split(",");
-				if(D) {
-					Log.i(TAG,"Received string: " + readMessage);
-					for(int i=0;i<splitMessage.length;i++)
-						Log.i(TAG,"splitMessage["+i+"]: " + splitMessage[i]);
-				}				
-				if(splitMessage.length == 2) {
-					if(splitMessage[0].equals("P")) {
-						pValue = splitMessage[1].trim();
-						newPValue = true;
-					} else if(splitMessage[0].equals("I")) {
-						iValue = splitMessage[1].trim();
-						newIValue = true;
-					} else if(splitMessage[0].equals("D")) {
-						dValue = splitMessage[1].trim();
-						newDValue = true;
-					}else if(splitMessage[0].equals("T")) {
-						targetAngleValue = splitMessage[1].trim();
-						newTargetAngleValue = true;
-					}
-					PIDFragment.updateView();
-				}
-				break;				
+				PIDFragment.updateView();
+				break;		
 			case MESSAGE_DEVICE_NAME:
 				// save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);

@@ -85,7 +85,7 @@ public class RemoteControlFragment extends SherlockFragment {
 				buttonState = mButton.isPressed();
 				CustomViewPager.setPagingEnabled(!buttonState);
 				if (buttonState) {
-					String message = mSensorFusion.pitch + ',' + mSensorFusion.roll + ";";
+					String message = "M," + mSensorFusion.pitch + ',' + mSensorFusion.roll + ";";
 					byte[] send = message.getBytes();
 					mChatService.write(send, false);
 					mButton.setText("Now sending data");

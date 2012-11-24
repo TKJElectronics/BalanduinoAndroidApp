@@ -144,21 +144,29 @@ public class PIDFragment extends SherlockFragment {
 	
 	public static void updateView() {
 		if (BalanduinoActivity.newPValue) {
+			if(mKpView == null || mEditKp == null)
+				return;
 			BalanduinoActivity.newPValue = false;
 			mKpView.setText(BalanduinoActivity.pValue);
 			mEditKp.setText(BalanduinoActivity.pValue);
 		}
 		if (BalanduinoActivity.newIValue) {
+			if(mKiView == null || mEditKi == null)
+				return;
 			BalanduinoActivity.newIValue = false;
 			mKiView.setText(BalanduinoActivity.iValue);
 			mEditKi.setText(BalanduinoActivity.iValue);
 		}
 		if (BalanduinoActivity.newDValue) {
+			if(mKdView == null || mEditKd == null)
+				return;
 			BalanduinoActivity.newDValue = false;
 			mKdView.setText(BalanduinoActivity.dValue);
 			mEditKd.setText(BalanduinoActivity.dValue);
 		}
 		if (BalanduinoActivity.newTargetAngleValue) {
+			if(mTargetAngleView == null || mEditTargetAngle == null)
+				return;
 			BalanduinoActivity.newTargetAngleValue = false;
 			mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
 			mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
@@ -172,6 +180,8 @@ public class PIDFragment extends SherlockFragment {
 			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 			return;
 		}
+		if(mButton == null)
+			return;
 		if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 			mButton.setText(R.string.updateValues);
 		else

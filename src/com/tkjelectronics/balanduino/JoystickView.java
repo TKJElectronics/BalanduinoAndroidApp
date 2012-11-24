@@ -120,11 +120,11 @@ public class JoystickView extends View {
     }
     
     public double getXValue() {
-    	return (x-centerX)/joystickRadius;
+    	return (x-centerX)/joystickRadius; // X-axis is positive at the right side
     }
     
     public double getYValue() {
-    	return (y-centerY)/joystickRadius;
+    	return ((y-centerY)/joystickRadius)*-1; // Y-axis should be positive upwards
     }   
 
     public void setOnJoystickChangeListener(OnJoystickChangeListener listener) {

@@ -387,8 +387,32 @@ public class BluetoothChatService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
+                    
+                    String readMessage = new String(buffer, 0, bytes);
+                    String[] splitMessage = readMessage.split(",");
+                    if(D) {
+                    	Log.i(TAG,"Received string: " + readMessage);
+                    	for(int i=0;i<splitMessage.length;i++)
+                    		Log.i(TAG,"splitMessage["+i+"]: " + splitMessage[i]);
+                    }				
+                    if(splitMessage.length == 2) {
+                    	if(splitMessage[0].equals("P")) {
+                    		BalanduinoActivity.pValue = splitMessage[1].trim();
+                    		BalanduinoActivity.newPValue = true;
+                    	} else if(splitMessage[0].equals("I")) {
+                    		BalanduinoActivity.iValue = splitMessage[1].trim();
+                    		BalanduinoActivity.newIValue = true;
+                    	} else if(splitMessage[0].equals("D")) {
+                    		BalanduinoActivity.dValue = splitMessage[1].trim();
+                    		BalanduinoActivity.newDValue = true;
+                    	} else if(splitMessage[0].equals("T")) {
+                    		BalanduinoActivity.targetAngleValue = splitMessage[1].trim();
+                    		BalanduinoActivity.newTargetAngleValue = true;
+                    	}
+                    }
                     // Send the obtained bytes to the UI Activity
-                    mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    //mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
+                    mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                 } catch (IOException e) {
                     Log.e(TAG, "disconnected", e);                    
                     if(!stopReading) {
