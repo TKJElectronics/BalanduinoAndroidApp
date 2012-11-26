@@ -326,6 +326,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// the ViewPager.
 		currentTabSelected = tab.getPosition();
 		mViewPager.setCurrentItem(currentTabSelected);
+		CustomViewPager.setPagingEnabled(true);
 		if(currentTabSelected != 0 && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				byte[] send = "S;".getBytes();
