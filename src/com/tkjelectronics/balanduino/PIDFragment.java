@@ -149,28 +149,32 @@ public class PIDFragment extends SherlockFragment {
 			if(mKpView != null && mEditKp != null) {
 				BalanduinoActivity.newPValue = false;
 				mKpView.setText(BalanduinoActivity.pValue);
-				mEditKp.setText(BalanduinoActivity.pValue);
+				if(!(mEditKp.getText().toString().equals(BalanduinoActivity.pValue)))
+					mEditKp.setText(BalanduinoActivity.pValue);
 			}
 		}
 		if (BalanduinoActivity.newIValue) {
 			if(mKiView != null && mEditKi != null) {
 				BalanduinoActivity.newIValue = false;
 				mKiView.setText(BalanduinoActivity.iValue);
-				mEditKi.setText(BalanduinoActivity.iValue);
+				if(!(mEditKi.getText().toString().equals(BalanduinoActivity.iValue)))
+					mEditKi.setText(BalanduinoActivity.iValue);
 			}
 		}
 		if (BalanduinoActivity.newDValue) {
 			if(mKdView != null && mEditKd != null) {
 				BalanduinoActivity.newDValue = false;
 				mKdView.setText(BalanduinoActivity.dValue);
-				mEditKd.setText(BalanduinoActivity.dValue);
+				if(!(mEditKd.getText().toString().equals(BalanduinoActivity.dValue)))
+					mEditKd.setText(BalanduinoActivity.dValue);
 			}
 		}
 		if (BalanduinoActivity.newTargetAngleValue) {
 			if(mTargetAngleView != null && mEditTargetAngle != null) {
 				BalanduinoActivity.newTargetAngleValue = false;
 				mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
-				mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
+				if(!(mEditTargetAngle.getText().toString().equals(BalanduinoActivity.targetAngleValue)))
+					mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
 			}
 		}
 	}
