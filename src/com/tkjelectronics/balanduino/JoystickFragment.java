@@ -100,7 +100,8 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	@Override
 	public void onPause() {
 		super.onPause();
-		mJoystick.invalidateView();		
+		mJoystick.invalidateView();
+		CustomViewPager.setPagingEnabled(true);
 		//Log.e("Fragment: ","onPause");
 		update = false;		
 	}
@@ -123,6 +124,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	public void onStop() {
 		super.onStop();
 		mJoystick.invalidateView();
+		CustomViewPager.setPagingEnabled(true);
 		//Log.e("Fragment: ","onStop");
 		update = false;		
 	}
