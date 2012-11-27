@@ -327,17 +327,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onTabSelected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		if(D)
+			Log.d(TAG,"onTabSelected: " + tab.getPosition());
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		currentTabSelected = tab.getPosition();
 		mViewPager.setCurrentItem(currentTabSelected);
 		CustomViewPager.setPagingEnabled(true);
-		if((currentTabSelected != IMU_TAB || currentTabSelected != JOYSTICK_TAB) && mChatService != null) { // Send stop command if the user selects another tab
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				byte[] send = "S;".getBytes();
-				mChatService.write(send, false);				
-			}
-		}
 		if(currentTabSelected == VOICERECOGNITION_TAB)
 			restartSpeechRecognizer(); // Restart service
 	}
@@ -345,6 +341,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
+		if(D)
+			Log.d(TAG,"onTabUnselected: " + tab.getPosition());
+		if((tab.getPosition() == IMU_TAB || tab.getPosition() == JOYSTICK_TAB) && mChatService != null) { // Send stop command if the user selects another tab
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				byte[] send = "S;".getBytes();
+				mChatService.write(send, false);				
+			}
+		}
 	}
 
 	@Override
@@ -473,11 +477,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
+				supportInvalidateOptionsMenu();
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					supportInvalidateOptionsMenu();
 					Toast.makeText(
 							getApplicationContext(),
 							getString(R.string.connected_to) + " "
