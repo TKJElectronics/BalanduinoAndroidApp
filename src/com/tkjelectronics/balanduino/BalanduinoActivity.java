@@ -91,6 +91,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	ViewPagerAdapter mViewPagerAdapter;
 	ViewPager mViewPager;
 	
+	public static final int IMU_TAB = 0;
+	public static final int JOYSTICK_TAB = 1;
+	public static final int PID_TAB = 2;
+	public static final int VOICERECOGNITION_TAB = 3;
+	
 	public static int currentTabSelected;
 	
 	public static String pValue = "";
@@ -327,13 +332,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		currentTabSelected = tab.getPosition();
 		mViewPager.setCurrentItem(currentTabSelected);
 		CustomViewPager.setPagingEnabled(true);
-		if(currentTabSelected != 0 && mChatService != null) { // Send stop command if the user selects another tab
+		if((currentTabSelected != IMU_TAB || currentTabSelected != JOYSTICK_TAB) && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				byte[] send = "S;".getBytes();
 				mChatService.write(send, false);				
 			}
 		}
-		if(currentTabSelected == 3)
+		if(currentTabSelected == VOICERECOGNITION_TAB)
 			restartSpeechRecognizer(); // Restart service
 	}
 
@@ -387,7 +392,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					REQUEST_CONNECT_DEVICE_INSECURE);
 			return true;
 		case R.id.settings:
-			mViewPager.setCurrentItem(0); // Change to the IMU tab
+			mViewPager.setCurrentItem(IMU_TAB); // Change to the IMU tab
 			// This is used to add a custom layout to an AlertDialog
 			final View setCoefficient = LayoutInflater.from(this).inflate(
 					R.layout.dialog,

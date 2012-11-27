@@ -81,7 +81,7 @@ public class RemoteControlFragment extends SherlockFragment {
 				mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 				return;
 			}
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == 0) {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == BalanduinoActivity.IMU_TAB) {
 				buttonState = mButton.isPressed();
 				CustomViewPager.setPagingEnabled(!buttonState);
 				if (buttonState) {
@@ -96,7 +96,7 @@ public class RemoteControlFragment extends SherlockFragment {
 				}
 			} else {
 				mButton.setText(R.string.button);
-				if(BalanduinoActivity.currentTabSelected == 0)
+				if(BalanduinoActivity.currentTabSelected == BalanduinoActivity.IMU_TAB)
 					CustomViewPager.setPagingEnabled(true);
 			}
 		}

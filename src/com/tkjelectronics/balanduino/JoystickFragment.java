@@ -71,7 +71,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 			return;
 		}
-		if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == 1) {
+		if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == BalanduinoActivity.JOYSTICK_TAB) {
 			if(joystickReleased) {
 				byte[] send = "S;".getBytes();
 				mChatService.write(send, false);
