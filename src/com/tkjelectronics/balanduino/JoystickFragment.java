@@ -84,13 +84,15 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	}
 	@Override
 	public void onStart() {
-		super.onResume();			
+		super.onResume();
+		mJoystick.invalidateView();
 		//Log.e("Fragment: ","onStart");
 		update = true;
 	}
 	@Override
 	public void onResume() {
-		super.onResume();			
+		super.onResume();
+		mJoystick.invalidateView();
 		//Log.e("Fragment: ","onResume");
 		update = true;
 	}
@@ -98,12 +100,14 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	@Override
 	public void onPause() {
 		super.onPause();
+		mJoystick.invalidateView();		
 		//Log.e("Fragment: ","onPause");
 		update = false;		
 	}
 	@Override
 	public void onDestroyView() {
 		super.onDestroyView();
+		mJoystick.invalidateView();
 		//Log.e("Fragment: ","onDestroyView");
 		update = false;		
 	}
@@ -118,6 +122,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	@Override
 	public void onStop() {
 		super.onStop();
+		mJoystick.invalidateView();
 		//Log.e("Fragment: ","onStop");
 		update = false;		
 	}

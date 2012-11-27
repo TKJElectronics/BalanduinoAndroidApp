@@ -119,6 +119,10 @@ public class JoystickView extends View {
     	return true;
     }
     
+    public void invalidateView() {
+    	invalidate();
+    }
+    
     public double getXValue() {
     	return (x-centerX)/joystickRadius; // X-axis is positive at the right side
     }
