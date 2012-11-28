@@ -5,7 +5,7 @@
 	<name>Balanduino Android App</name>
 	<description>Android app for the Balanduino robot</description>
 	<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
-	<version>0.4-SNAPSHOT</version>
+	<version>0.4</version>
 
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
@@ -28,6 +28,7 @@
 		<url>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</url>
 		<connection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</connection>
 		<developerConnection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</developerConnection>
+    <tag>0.4</tag>
   </scm>
 
 	<developers>
