@@ -5,7 +5,7 @@
 	<name>Balanduino Android App</name>
 	<description>Android app for the Balanduino robot</description>
 	<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
-	<version>0.5-SNAPSHOT</version>
+	<version>0.1-SNAPSHOT</version>
 
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
@@ -20,16 +20,16 @@
 		<vpi.version>2.4.1</vpi.version>
 
 		<apache.maven.version>3.0</apache.maven.version>
+        <maven.release.version>2.3.2</maven.release.version>
 		<java.version>1.6</java.version>
 		<jayway.maven.version>3.4.1</jayway.maven.version>
 	</properties>
 
 	<scm>
-		<url>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</url>
-		<connection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</connection>
+		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
+		<connection>scm:git:git://github.com/TKJElectronics/BalanduinoAndroidApp.git</connection>
 		<developerConnection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</developerConnection>
-    <tag>HEAD</tag>
-  </scm>
+	</scm>
 
 	<developers>
 		<developer>
@@ -74,41 +74,37 @@
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<sourceDirectory>src</sourceDirectory>
-            <pluginManagement>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>${apache.maven.version}</version>
-                        <configuration>
-                            <source>${java.version}</source>
-                            <target>${java.version}</target>
-                        </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.3.2</version>
-                        <configuration>
-                            <autoVersionSubmodules>true</autoVersionSubmodules>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </pluginManagement>
-        <plugins>
-            <plugin>
-                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                <artifactId>android-maven-plugin</artifactId>
-                <version>${jayway.maven.version}</version>
-                <configuration>
-                    <sdk>
-                        <path>${env.ANDROID_HOME}</path>
-                        <platform>${android.platform}</platform>
-                    </sdk>
-                </configuration>
-                <extensions>true</extensions>
-            </plugin>
-        </plugins>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${apache.maven.version}</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven.release.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                    <artifactId>android-maven-plugin</artifactId>
+                    <version>${jayway.maven.version}</version>
+                    <configuration>
+                        <sdk>
+                            <path>${env.ANDROID_HOME}</path>
+                            <platform>${android.platform}</platform>
+                        </sdk>
+                    </configuration>
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
 	</build>
 
 	<profiles>
