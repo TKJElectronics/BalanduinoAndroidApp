@@ -85,18 +85,6 @@
                         </configuration>
                     </plugin>
                     <plugin>
-                        <groupId>com.jayway.maven.plugins.android.generation2</groupId>
-                        <artifactId>android-maven-plugin</artifactId>
-                        <version>${jayway.maven.version}</version>
-                        <configuration>
-                            <sdk>
-                                <path>${env.ANDROID_HOME}</path>
-                                <platform>${android.platform}</platform>
-                            </sdk>
-                        </configuration>
-                        <extensions>true</extensions>
-                    </plugin>
-                    <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-release-plugin</artifactId>
                         <version>2.2.2</version>
@@ -106,6 +94,20 @@
                     </plugin>
                 </plugins>
             </pluginManagement>
+        <plugins>
+            <plugin>
+                <groupId>com.jayway.maven.plugins.android.generation2</groupId>
+                <artifactId>android-maven-plugin</artifactId>
+                <version>${jayway.maven.version}</version>
+                <configuration>
+                    <sdk>
+                        <path>${env.ANDROID_HOME}</path>
+                        <platform>${android.platform}</platform>
+                    </sdk>
+                </configuration>
+                <extensions>true</extensions>
+            </plugin>
+        </plugins>
 	</build>
 
 	<profiles>
