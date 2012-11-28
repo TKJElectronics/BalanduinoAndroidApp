@@ -5,7 +5,7 @@
 	<name>Balanduino Android App</name>
 	<description>Android app for the Balanduino robot</description>
 	<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
