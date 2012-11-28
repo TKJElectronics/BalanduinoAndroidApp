@@ -25,10 +25,9 @@
 	</properties>
 
 	<scm>
-		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
-		<connection>scm:git:git://github.com/TKJElectronics/BalanduinoAndroidApp.git</connection>
+		<url>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</url>
+		<connection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</connection>
 		<developerConnection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</developerConnection>
-	  <tag>HEAD</tag>
   </scm>
 
 	<developers>
