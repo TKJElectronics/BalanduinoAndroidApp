@@ -7,9 +7,9 @@
     <url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
     <version>0.1</version>
     
-    <groupId>com.tkjelectronics.balanduino</groupId>
+    <groupId>com.tkjelectronics</groupId>
+    <artifactId>balanduino</artifactId>
     <packaging>apk</packaging>
-    <artifactId>tkjelectronics-android</artifactId>
     
     <properties>
         <android.version>4.1.1.4</android.version>
@@ -104,15 +104,10 @@
                 <artifactId>android-maven-plugin</artifactId>
                 <version>${jayway.maven.version}</version>
                 <configuration>
-                    <androidManifestFile>${project.basedir}/AndroidManifest.xml</androidManifestFile>
-                    <assetsDirectory>${project.basedir}/assets</assetsDirectory>
-                    <resourceDirectory>${project.basedir}/res</resourceDirectory>
-                    <nativeLibrariesDirectory>${project.basedir}/src/main/native</nativeLibrariesDirectory>
                     <sdk>
                         <path>${env.ANDROID_HOME}</path>
                         <platform>${android.platform}</platform>
                     </sdk>
-                    <undeployBeforeDeploy>true</undeployBeforeDeploy>
                 </configuration>
                 <extensions>true</extensions>
             </plugin>
