@@ -5,7 +5,7 @@ _________
 
 This is the code for the Android app to control the Balancing robot.
 
-The source code for the robot can be found here: [https://github.com/TKJElectronics/BalancingRobotArduino/tree/SPP](https://github.com/TKJElectronics/BalancingRobotArduino/tree/SPP).
+The source code for the robot can be found here: [https://github.com/TKJElectronics/BalancingRobotArduino](https://github.com/TKJElectronics/BalancingRobotArduino).
 
 Also check out the video: [http://www.youtube.com/watch?v=N28C_JqVhGU](http://www.youtube.com/watch?v=N28C_JqVhGU).
 
