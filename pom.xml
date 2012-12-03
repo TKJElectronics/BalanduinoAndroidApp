@@ -2,40 +2,43 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
+    
 	<name>Balanduino Android App</name>
 	<description>Android app for the Balanduino robot</description>
 	<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
 	<version>0.2-SNAPSHOT</version>
-
+    
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
 	<packaging>apk</packaging>
-
+    
 	<properties>
 		<android.version>4.1.1.4</android.version>
 		<android.platform>16</android.platform>
 		<android-support.version>r7</android-support.version>
-
+        
 		<abs.version>4.2.0</abs.version>
 		<vpi.version>2.4.1</vpi.version>
-
+        
 		<apache.maven.version>3.0</apache.maven.version>
 		<maven.release.version>2.3.2</maven.release.version>
 		<java.version>1.6</java.version>
 		<jayway.maven.version>3.4.1</jayway.maven.version>
-
+        
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        
+		<github.global.server>github</github.global.server>
+		<github.downloads.version>0.6</github.downloads.version>
 	</properties>
-
+    
 	<scm>
 		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
 		<connection>scm:git:git://github.com/TKJElectronics/BalanduinoAndroidApp.git</connection>
 		<developerConnection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-
+    
 	<developers>
 		<developer>
 			<name>Kristian Lauszus</name>
@@ -48,7 +51,7 @@
 			</roles>
 		</developer>
 	</developers>
-
+    
 	<licenses>
 		<license>
 			<name>GNU General Public License Version 2</name>
@@ -56,17 +59,17 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-
+    
 	<organization>
 		<name>TKJ Electronics</name>
 		<url>http://tkjelectronics.com/</url>
 	</organization>
-
+    
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp/issues</url>
 	</issueManagement>
-
+    
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -75,9 +78,9 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-
+    
 	<build>
-		<finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}-${project.version}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
@@ -111,9 +114,11 @@
 			</plugin>
 		</plugins>
 	</build>
-
+    
 	<profiles>
 		<profile>
+			<!-- These two profiles make sure the project can both be compiled using
+             Maven and Eclipse -->
 			<id>maven</id>
 			<activation>
 				<property>
@@ -152,25 +157,51 @@
 					<groupId>com.google.android</groupId>
 					<artifactId>support-v4</artifactId>
 					<version>${android-support.version}</version>
-					<!-- It is coming from ActionBarSherlock dependency -->
+					<!-- It is coming from ActionBarSherlock or ViewPagerIndicator dependency -->
 					<scope>provided</scope>
 				</dependency>
 			</dependencies>
 		</profile>
 		<profile>
-			<!-- To build run "mvn clean install -P release" -->
+			<!-- To build run "mvn clean install -Prelease" this will build the apk
+             and upload the file - you will have to create the profile in settings.xml
+             too -->
+			<!-- By running "mvn release:prepare" and then
+             mvn release:perform -Darguments="-Dsign.keystore=path/to/key \
+             -Dsign.alias=youalist \
+             -Dsign.storepass=password \
+             -Dsign.keypass=password"
+             it will also create a new tag to the git repository -->
 			<id>release</id>
-			<!-- via this activation the profile is automatically used when the release 
-				is done with the maven release plugin -->
 			<activation>
+				<!-- via this activation the profile is automatically used when the release
+                 is done with the maven release plugin -->
 				<property>
 					<name>performRelease</name>
 					<value>true</value>
 				</property>
 			</activation>
-
+            
 			<build>
 				<plugins>
+					<plugin>
+						<!-- This will upload the signed and aligned apk after compiling -->
+						<groupId>com.github.github</groupId>
+						<artifactId>downloads-maven-plugin</artifactId>
+						<version>${github.downloads.version}</version>
+						<configuration>
+							<!--<description>${project.name} ${project.version}</description> -->
+							<override>true</override>
+						</configuration>
+						<executions>
+							<execution>
+								<goals>
+									<goal>upload</goal>
+								</goals>
+								<phase>install</phase>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<!-- Sign the apk -->
 						<groupId>org.apache.maven.plugins</groupId>
@@ -187,9 +218,6 @@
 								<configuration>
 									<removeExistingSignatures>true</removeExistingSignatures>
 									<archiveDirectory />
-									<includes>
-										<include>${project.build.directory}/${project.artifactId}.apk</include>
-									</includes>
 									<keystore>${sign.keystore}</keystore>
 									<alias>${sign.alias}</alias>
 									<storepass>${sign.storepass}</storepass>
@@ -199,9 +227,9 @@
 							</execution>
 						</executions>
 					</plugin>
-
-					<!-- the signed apk then needs to be zipaligned and we activate proguard 
-						and we run the manifest update -->
+                    
+					<!-- the signed apk then needs to be zipaligned and we activate proguard
+                     and we run the manifest update -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>maven-android-plugin</artifactId>
@@ -213,9 +241,6 @@
 							<zipalign>
 								<skip>false</skip>
 								<verbose>true</verbose>
-								<inputApk>${project.build.directory}/${project.artifactId}.apk</inputApk>
-								<outputApk>${project.build.directory}/${project.artifactId}-signed-aligned.apk
-								</outputApk>
 							</zipalign>
 							<manifest>
 								<debuggable>false</debuggable>
@@ -242,16 +267,41 @@
 							</execution>
 						</executions>
 					</plugin>
-
+                    
+					<plugin>
+						<!-- Since the aligned apk is the one we want to upload, we move things
+                         around -->
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>run-ant</id>
+								<phase>package</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<tasks>
+										<move file="target/${project.artifactId}-${project.version}.apk"
+                                        tofile="target/${project.artifactId}-${project.version}-signed.apk" />
+										<copy
+                                        file="target/${project.artifactId}-${project.version}-aligned.apk"
+                                        tofile="target/${project.artifactId}-${project.version}.apk" />
+									</tasks>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+                    
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
 						<configuration>
 							<artifacts>
 								<artifact>
-									<file>${project.build.directory}/${project.artifactId}-signed-aligned.apk</file>
+									<file>${project.build.directory}/${project.artifactId}-${project.version}.apk</file>
 									<type>apk</type>
-									<classifier>signed-aligned</classifier>
+									<classifier>aligned</classifier>
 								</artifact>
 								<artifact>
 									<file>${project.build.directory}/proguard/mapping.txt</file>
@@ -262,7 +312,7 @@
 						</configuration>
 						<executions>
 							<execution>
-								<id>attach-signed-aligned</id>
+								<id>attach-aligned</id>
 								<phase>package</phase>
 								<goals>
 									<goal>attach-artifact</goal>
@@ -274,5 +324,5 @@
 			</build>
 		</profile>
 	</profiles>
-
+    
 </project>
