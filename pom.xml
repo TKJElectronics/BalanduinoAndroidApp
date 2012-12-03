@@ -166,12 +166,13 @@
 			<!-- To build run "mvn clean install -Prelease" this will build the apk
              and upload the file - you will have to create the profile in settings.xml
              too -->
-			<!-- By running "mvn release:prepare" and then
-             mvn release:perform -Darguments="-Dsign.keystore=path/to/key \
-             -Dsign.alias=youalist \
+			<!-- By running 
+             mvn release:prepare -Darguments="-Dsign.keystore=/path/to/keystore \
+             -Dsign.alias=alias \
              -Dsign.storepass=password \
-             -Dsign.keypass=password"
-             it will also create a new tag to the git repository -->
+             -Dsign.keypass=password" \
+             -DpreparationGoals='clean install -Prelease'
+             will also create a new tag to the git repository -->
 			<id>release</id>
 			<activation>
 				<!-- via this activation the profile is automatically used when the release
