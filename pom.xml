@@ -233,7 +233,7 @@
                      and we run the manifest update -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
-						<artifactId>maven-android-plugin</artifactId>
+						<artifactId>android-maven-plugin</artifactId>
 						<inherited>true</inherited>
 						<configuration>
 							<sign>
