@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
     
 	<name>Balanduino Android App</name>
@@ -166,7 +165,7 @@
 			<!-- To build run "mvn clean install -Prelease" this will build the apk
              and upload the file - you will have to create the profile in settings.xml
              too -->
-			<!-- By running 
+			<!-- By running
              mvn release:prepare -Darguments="-Dsign.keystore=/path/to/keystore \
              -Dsign.alias=alias \
              -Dsign.storepass=password \
@@ -242,14 +241,18 @@
 							<zipalign>
 								<skip>false</skip>
 								<verbose>true</verbose>
+                                <outputApk>${project.build.directory}/${project.artifactId}-${project.version}-signed-aligned.apk
+                                </outputApk>
 							</zipalign>
 							<manifest>
 								<debuggable>false</debuggable>
 								<versionCodeAutoIncrement>true</versionCodeAutoIncrement>
 							</manifest>
-							<proguard>
-								<skip>false</skip>
-							</proguard>
+							<!--
+                             <proguard>
+                             <skip>false</skip>
+                             </proguard>
+                             -->
 						</configuration>
 						<executions>
 							<execution>
@@ -283,11 +286,8 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<move file="target/${project.artifactId}-${project.version}.apk"
-                                        tofile="target/${project.artifactId}-${project.version}-signed.apk" />
-										<copy
-                                        file="target/${project.artifactId}-${project.version}-aligned.apk"
-                                        tofile="target/${project.artifactId}-${project.version}.apk" />
+										<move file="target/${project.artifactId}-${project.version}.apk" tofile="target/${project.artifactId}-${project.version}-signed.apk" />
+										<copy file="target/${project.artifactId}-${project.version}-signed-aligned.apk" tofile="target/${project.artifactId}-${project.version}.apk" />
 									</tasks>
 								</configuration>
 							</execution>
@@ -302,7 +302,7 @@
 								<artifact>
 									<file>${project.build.directory}/${project.artifactId}-${project.version}.apk</file>
 									<type>apk</type>
-									<classifier>aligned</classifier>
+									<classifier>signed-aligned</classifier>
 								</artifact>
 								<artifact>
 									<file>${project.build.directory}/proguard/mapping.txt</file>
@@ -313,7 +313,7 @@
 						</configuration>
 						<executions>
 							<execution>
-								<id>attach-aligned</id>
+								<id>attach-signed-aligned</id>
 								<phase>package</phase>
 								<goals>
 									<goal>attach-artifact</goal>
