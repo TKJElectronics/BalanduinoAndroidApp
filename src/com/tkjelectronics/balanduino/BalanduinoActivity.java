@@ -111,6 +111,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static boolean toggleButtonState;
 	
 	private static Context context;
+	
+	public static MenuItem settings;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -180,7 +182,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
     		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
     		if (!SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
     			Toast.makeText(getApplicationContext(),"Speech Recognition is not available",Toast.LENGTH_LONG).show();
-    			finish();
+    			//finish();
     		}
     		mSpeechRecognizer.setRecognitionListener(new VoiceRecognitionListener());
     	}
@@ -361,15 +363,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if(D)
 			Log.e(TAG,"onPrepareOptionsMenu");
 		super.onPrepareOptionsMenu(menu);
-		MenuItem menuItemMapView = menu.findItem(R.id.menu_connect);
+		MenuItem menuItem = menu.findItem(R.id.menu_connect);
 		if (mChatService == null)
-			menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
+			menuItem.setIcon(R.drawable.device_access_bluetooth);
 		else {
 			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				menuItemMapView
-						.setIcon(R.drawable.device_access_bluetooth_connected);
+				menuItem.setIcon(R.drawable.device_access_bluetooth_connected);
 			else
-				menuItemMapView.setIcon(R.drawable.device_access_bluetooth);
+				menuItem.setIcon(R.drawable.device_access_bluetooth);
 		}
 		return true;
 	}
@@ -382,6 +383,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		MenuInflater inflater = getSupportMenuInflater();	  	
 		inflater.inflate(R.menu.menu, menu);
+		settings = menu.findItem(R.id.settings);
 		return true;
 	}
 

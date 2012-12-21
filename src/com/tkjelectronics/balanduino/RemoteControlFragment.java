@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 public class RemoteControlFragment extends SherlockFragment {
@@ -19,6 +20,7 @@ public class RemoteControlFragment extends SherlockFragment {
 	public TextView mPitchView;
 	public TextView mRollView;
 	public TextView mCoefficient;
+	private TableRow mTableRow;
 
 	private BluetoothChatService mChatService = null;
 	private SensorFusion mSensorFusion = null;
@@ -43,7 +45,8 @@ public class RemoteControlFragment extends SherlockFragment {
 		mPitchView = (TextView) v.findViewById(R.id.textView2);
 		mRollView = (TextView) v.findViewById(R.id.textView3);
 		mCoefficient = (TextView) v.findViewById(R.id.textView4);
-
+		mTableRow = (TableRow) v.findViewById(R.id.tableRowCoefficient);
+		
 		mButton = (Button) v.findViewById(R.id.button);
 
 		mHandler = new Handler();
@@ -66,6 +69,11 @@ public class RemoteControlFragment extends SherlockFragment {
 	};
 
 	public void processData() {
+		if(SensorFusion.IMUOutputSelection != 2) {
+			mTableRow.setVisibility(View.GONE);
+			if(BalanduinoActivity.settings != null)
+				BalanduinoActivity.settings.setVisible(false);
+		}
 		if(!update)
 			return;
 		//mAzimuthView.setText(mSensorFusion.azimut);

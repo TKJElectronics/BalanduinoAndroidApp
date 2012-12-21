@@ -63,6 +63,7 @@
         </TableRow>
         
         <TableRow
+            android:id="@+id/tableRowCoefficient"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" >
 

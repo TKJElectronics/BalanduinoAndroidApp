@@ -38,6 +38,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 
 public class SensorFusion implements SensorEventListener {
 	// For debugging
@@ -82,7 +83,7 @@ public class SensorFusion implements SensorEventListener {
 
 	public Handler mHandler;
 
-	private int IMUOutputSelection;
+	public static int IMUOutputSelection;
 	// DecimalFormat d = new DecimalFormat("#.##");
 	DecimalFormat d = (DecimalFormat) NumberFormat
 			.getNumberInstance(Locale.ENGLISH);
@@ -344,11 +345,11 @@ public class SensorFusion implements SensorEventListener {
 			float oneMinusCoeff = 1.0f - filter_coefficient;
 
 			/*
-			 * Fix for 179° <--> -179° transition problem: Check whether one of
+			 * Fix for 179 <--> -179 transition problem: Check whether one of
 			 * the two orientation angles (gyro or accMag) is negative while the
-			 * other one is positive. If so, add 360° (2 * math.PI) to the
-			 * negative value, perform the sensor fusion, and remove the 360°
-			 * from the result if it is greater than 180°. This stabilizes the
+			 * other one is positive. If so, add 360 (2 * math.PI) to the
+			 * negative value, perform the sensor fusion, and remove the 360
+			 * from the result if it is greater than 180. This stabilizes the
 			 * output in positive-to-negative-transition cases.
 			 */
 

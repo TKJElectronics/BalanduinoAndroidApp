@@ -1,43 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-    
+
 	<name>Balanduino Android App</name>
 	<description>Android app for the Balanduino robot</description>
 	<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
 	<version>0.2-SNAPSHOT</version>
-    
+
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
 	<packaging>apk</packaging>
-    
+
 	<properties>
 		<android.version>4.1.1.4</android.version>
 		<android.platform>16</android.platform>
 		<android-support.version>r7</android-support.version>
-        
+
 		<abs.version>4.2.0</abs.version>
 		<vpi.version>2.4.1</vpi.version>
-        
+
 		<apache.maven.version>3.0</apache.maven.version>
 		<maven.release.version>2.3.2</maven.release.version>
 		<java.version>1.6</java.version>
 		<jayway.maven.version>3.4.1</jayway.maven.version>
-        
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
 		<github.global.server>github</github.global.server>
 		<github.downloads.version>0.6</github.downloads.version>
 	</properties>
-    
+
 	<scm>
 		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
 		<connection>scm:git:git://github.com/TKJElectronics/BalanduinoAndroidApp.git</connection>
 		<developerConnection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</developerConnection>
 		<tag>HEAD</tag>
 	</scm>
-    
+
 	<developers>
 		<developer>
 			<name>Kristian Lauszus</name>
@@ -50,7 +51,7 @@
 			</roles>
 		</developer>
 	</developers>
-    
+
 	<licenses>
 		<license>
 			<name>GNU General Public License Version 2</name>
@@ -58,17 +59,17 @@
 			<distribution>repo</distribution>
 		</license>
 	</licenses>
-    
+
 	<organization>
 		<name>TKJ Electronics</name>
 		<url>http://tkjelectronics.com/</url>
 	</organization>
-    
+
 	<issueManagement>
 		<system>GitHub Issues</system>
 		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp/issues</url>
 	</issueManagement>
-    
+
 	<dependencies>
 		<dependency>
 			<groupId>com.google.android</groupId>
@@ -77,7 +78,7 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
-    
+
 	<build>
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<sourceDirectory>src</sourceDirectory>
@@ -113,11 +114,11 @@
 			</plugin>
 		</plugins>
 	</build>
-    
+
 	<profiles>
 		<profile>
-			<!-- These two profiles make sure the project can both be compiled using
-             Maven and Eclipse -->
+			<!-- These two profiles make sure the project can both be compiled using 
+				Maven and Eclipse -->
 			<id>maven</id>
 			<activation>
 				<property>
@@ -162,26 +163,23 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<!-- To build run "mvn clean install -Prelease" this will build the apk
-             and upload the file - you will have to create the profile in settings.xml
-             too -->
-			<!-- By running
-             mvn release:prepare -Darguments="-Dsign.keystore=/path/to/keystore \
-             -Dsign.alias=alias \
-             -Dsign.storepass=password \
-             -Dsign.keypass=password" \
-             -DpreparationGoals='clean install -Prelease'
-             will also create a new tag to the git repository -->
+			<!-- To build run "mvn clean install -Prelease" this will build the apk 
+				and upload the file - you will have to create the profile in settings.xml 
+				too -->
+			<!-- By running mvn release:prepare -Darguments="-Dsign.keystore=/path/to/keystore 
+				\ -Dsign.alias=alias \ -Dsign.storepass=password \ -Dsign.keypass=password" 
+				\ -DpreparationGoals='clean install -Prelease' will also create a new tag 
+				to the git repository -->
 			<id>release</id>
 			<activation>
-				<!-- via this activation the profile is automatically used when the release
-                 is done with the maven release plugin -->
+				<!-- via this activation the profile is automatically used when the release 
+					is done with the maven release plugin -->
 				<property>
 					<name>performRelease</name>
 					<value>true</value>
 				</property>
 			</activation>
-            
+
 			<build>
 				<plugins>
 					<plugin>
@@ -227,9 +225,9 @@
 							</execution>
 						</executions>
 					</plugin>
-                    
-					<!-- the signed apk then needs to be zipaligned and we activate proguard
-                     and we run the manifest update -->
+
+					<!-- the signed apk then needs to be zipaligned and we activate proguard 
+						and we run the manifest update -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
@@ -241,18 +239,14 @@
 							<zipalign>
 								<skip>false</skip>
 								<verbose>true</verbose>
-                                <outputApk>${project.build.directory}/${project.artifactId}-${project.version}-signed-aligned.apk
-                                </outputApk>
+								<outputApk>${project.build.directory}/${project.artifactId}-${project.version}-signed-aligned.apk
+								</outputApk>
 							</zipalign>
 							<manifest>
 								<debuggable>false</debuggable>
 								<versionCodeAutoIncrement>true</versionCodeAutoIncrement>
 							</manifest>
-							<!--
-                             <proguard>
-                             <skip>false</skip>
-                             </proguard>
-                             -->
+							<!-- <proguard> <skip>false</skip> </proguard> -->
 						</configuration>
 						<executions>
 							<execution>
@@ -271,10 +265,10 @@
 							</execution>
 						</executions>
 					</plugin>
-                    
+
 					<plugin>
-						<!-- Since the aligned apk is the one we want to upload, we move things
-                         around -->
+						<!-- Since the aligned apk is the one we want to upload, we move things 
+							around -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
 						<executions>
@@ -286,14 +280,17 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<move file="target/${project.artifactId}-${project.version}.apk" tofile="target/${project.artifactId}-${project.version}-signed.apk" />
-										<copy file="target/${project.artifactId}-${project.version}-signed-aligned.apk" tofile="target/${project.artifactId}-${project.version}.apk" />
+										<move file="target/${project.artifactId}-${project.version}.apk"
+											tofile="target/${project.artifactId}-${project.version}-signed.apk" />
+										<copy
+											file="target/${project.artifactId}-${project.version}-signed-aligned.apk"
+											tofile="target/${project.artifactId}-${project.version}.apk" />
 									</tasks>
 								</configuration>
 							</execution>
 						</executions>
 					</plugin>
-                    
+
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
@@ -325,5 +322,5 @@
 			</build>
 		</profile>
 	</profiles>
-    
+
 </project>
