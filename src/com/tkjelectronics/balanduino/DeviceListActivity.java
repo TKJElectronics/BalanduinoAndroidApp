@@ -31,6 +31,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AnalogClock;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -60,10 +61,9 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-
 		// Setup the window
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);		
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.device_list);
 
 		// Set result CANCELED incase the user backs out
@@ -141,9 +141,10 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 	private void doDiscovery() {
 		if (D)
 			Log.d(TAG, "doDiscovery()");
-
-		// Indicate scanning in the title
-		setSupportProgressBarIndeterminateVisibility(true);
+		
+		if(android.os.Build.VERSION.SDK_INT >= 11)
+			setSupportProgressBarIndeterminateVisibility(true);
+		// Indicate scanning in the title		
 		setTitle(R.string.scanning);
 
 		// Turn on sub-title for new devices
@@ -210,7 +211,8 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 				// When discovery is finished, change the Activity title
 			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
 					.equals(action)) {
-				setSupportProgressBarIndeterminateVisibility(false);
+				if(android.os.Build.VERSION.SDK_INT >= 11)
+					setSupportProgressBarIndeterminateVisibility(false);
 				setTitle(R.string.select_device);
 				if (mNewDevicesArrayAdapter.getCount() == 0) {
 					String noDevices = getResources().getText(
