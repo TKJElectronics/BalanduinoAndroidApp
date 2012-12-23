@@ -295,8 +295,8 @@
 								<!--<artifact>
 									<file>${project.build.directory}/proguard/mapping.txt</file>
 									<type>map</type>
-									<classifier>release</classifier>-->
-								</artifact>
+									<classifier>release</classifier>
+								</artifact>-->
 							</artifacts>
 						</configuration>
 						<executions>
