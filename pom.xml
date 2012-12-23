@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<name>Balanduino Android App</name>
 	<description>Android app for the Balanduino robot</description>
 	<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
-	<version>0.2-SNAPSHOT</version>
+	<version>0.2</version>
 
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
@@ -43,7 +42,7 @@
 		<url>https://github.com/TKJElectronics/BalanduinoAndroidApp</url>
 		<connection>scm:git:git://github.com/TKJElectronics/BalanduinoAndroidApp.git</connection>
 		<developerConnection>scm:git:git@github.com:TKJElectronics/BalanduinoAndroidApp.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>0.2</tag>
 	</scm>
 
 	<developers>
@@ -271,14 +270,9 @@
 								</goals>
 								<configuration>
 									<tasks>
-										<move file="target/${project.artifactId}-${project.version}.apk"
-											tofile="target/${project.artifactId}-${project.version}-signed.apk" />
-										<copy
-											file="target/${project.artifactId}-${project.version}-signed-aligned.apk"
-											tofile="target/${project.artifactId}-${project.version}.apk" />
-										<copy
-											file="target/${project.artifactId}-${project.version}-signed-aligned.apk"
-											tofile="releases/${project.artifactId}-${project.version}.apk" />
+										<move file="target/${project.artifactId}-${project.version}.apk" tofile="target/${project.artifactId}-${project.version}-signed.apk" />
+										<copy file="target/${project.artifactId}-${project.version}-signed-aligned.apk" tofile="target/${project.artifactId}-${project.version}.apk" />
+										<copy file="target/${project.artifactId}-${project.version}-signed-aligned.apk" tofile="releases/${project.artifactId}-${project.version}.apk" />
 									</tasks>
 								</configuration>
 							</execution>
