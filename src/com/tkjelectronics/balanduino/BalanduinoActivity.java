@@ -61,7 +61,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		ActionBar.TabListener, VoiceRecognitionFragment.signalListener {
 
 	private static final String TAG = "Balanduino";
-	public static final boolean D = true;
+	public static final boolean D = false;
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
