@@ -11,10 +11,10 @@
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
 	<packaging>apk</packaging>
-    
-    <prerequisites>
-        <maven>3.0.3</maven>
-    </prerequisites>
+
+	<prerequisites>
+		<maven>3.0.3</maven>
+	</prerequisites>
 
 	<properties>
 		<android.version>4.1.1.4</android.version>
@@ -29,13 +29,13 @@
 		<java.version>1.6</java.version>
 		<jayway.maven.version>3.5.0</jayway.maven.version>
 
-        <antrun.version>1.7</antrun.version>
-        <jarsigner.version>1.2</jarsigner.version>
-        <build.helper.version>1.7</build.helper.version>
-        
+		<antrun.version>1.7</antrun.version>
+		<jarsigner.version>1.2</jarsigner.version>
+		<build.helper.version>1.7</build.helper.version>
+
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        
+
 		<github.global.server>github</github.global.server>
 	</properties>
 
@@ -193,7 +193,7 @@
 						<!-- Sign the apk -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jarsigner-plugin</artifactId>
-                        <version>${jarsigner.version}</version>
+						<version>${jarsigner.version}</version>
 						<executions>
 							<execution>
 								<id>signing</id>
@@ -216,7 +216,8 @@
 						</executions>
 					</plugin>
 
-					<!-- the signed apk then needs to be zipaligned and we run the manifest update -->
+					<!-- the signed apk then needs to be zipaligned and we run the manifest 
+						update -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
@@ -260,7 +261,7 @@
 							around -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
-                        <version>${antrun.version}</version>
+						<version>${antrun.version}</version>
 						<executions>
 							<execution>
 								<id>run-ant</id>
@@ -274,6 +275,9 @@
 											tofile="target/${project.artifactId}-${project.version}-signed.apk" />
 										<copy
 											file="target/${project.artifactId}-${project.version}-signed-aligned.apk"
+											tofile="target/${project.artifactId}-${project.version}.apk" />
+										<copy
+											file="target/${project.artifactId}-${project.version}-signed-aligned.apk"
 											tofile="releases/${project.artifactId}-${project.version}.apk" />
 									</tasks>
 								</configuration>
@@ -284,7 +288,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
-                        <version>${build.helper.version}</version>
+						<version>${build.helper.version}</version>
 						<configuration>
 							<artifacts>
 								<artifact>
@@ -292,11 +296,8 @@
 									<type>apk</type>
 									<classifier>signed-aligned</classifier>
 								</artifact>
-								<!--<artifact>
-									<file>${project.build.directory}/proguard/mapping.txt</file>
-									<type>map</type>
-									<classifier>release</classifier>
-								</artifact>-->
+								<!--<artifact> <file>${project.build.directory}/proguard/mapping.txt</file> 
+									<type>map</type> <classifier>release</classifier> </artifact> -->
 							</artifacts>
 						</configuration>
 						<executions>
