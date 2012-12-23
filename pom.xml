@@ -29,15 +29,14 @@
 		<java.version>1.6</java.version>
 		<jayway.maven.version>3.5.0</jayway.maven.version>
 
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
-		<github.global.server>github</github.global.server>
-		<github.downloads.version>0.6</github.downloads.version>
-        
         <antrun.version>1.7</antrun.version>
         <jarsigner.version>1.2</jarsigner.version>
         <build.helper.version>1.7</build.helper.version>
+        
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        
+		<github.global.server>github</github.global.server>
 	</properties>
 
 	<scm>
@@ -191,24 +190,6 @@
 			<build>
 				<plugins>
 					<plugin>
-						<!-- This will upload the signed and aligned apk after compiling -->
-						<groupId>com.github.github</groupId>
-						<artifactId>downloads-maven-plugin</artifactId>
-						<version>${github.downloads.version}</version>
-						<configuration>
-							<!--<description>${project.name} ${project.version}</description> -->
-							<override>true</override>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>upload</goal>
-								</goals>
-								<phase>install</phase>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
 						<!-- Sign the apk -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jarsigner-plugin</artifactId>
@@ -235,8 +216,7 @@
 						</executions>
 					</plugin>
 
-					<!-- the signed apk then needs to be zipaligned and we activate proguard 
-						and we run the manifest update -->
+					<!-- the signed apk then needs to be zipaligned and we run the manifest update -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
@@ -294,7 +274,7 @@
 											tofile="target/${project.artifactId}-${project.version}-signed.apk" />
 										<copy
 											file="target/${project.artifactId}-${project.version}-signed-aligned.apk"
-											tofile="target/${project.artifactId}-${project.version}.apk" />
+											tofile="releases/${project.artifactId}-${project.version}.apk" />
 									</tasks>
 								</configuration>
 							</execution>
@@ -312,10 +292,10 @@
 									<type>apk</type>
 									<classifier>signed-aligned</classifier>
 								</artifact>
-								<artifact>
+								<!--<artifact>
 									<file>${project.build.directory}/proguard/mapping.txt</file>
 									<type>map</type>
-									<classifier>release</classifier>
+									<classifier>release</classifier>-->
 								</artifact>
 							</artifacts>
 						</configuration>
