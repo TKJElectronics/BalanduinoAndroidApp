@@ -11,6 +11,10 @@
 	<groupId>com.tkjelectronics</groupId>
 	<artifactId>BalanduinoAndroidApp</artifactId>
 	<packaging>apk</packaging>
+    
+    <prerequisites>
+        <maven>3.0.3</maven>
+    </prerequisites>
 
 	<properties>
 		<android.version>4.1.1.4</android.version>
@@ -21,15 +25,19 @@
 		<vpi.version>2.4.1</vpi.version>
 
 		<apache.maven.version>3.0</apache.maven.version>
-		<maven.release.version>2.3.2</maven.release.version>
+		<maven.release.version>2.4</maven.release.version>
 		<java.version>1.6</java.version>
-		<jayway.maven.version>3.4.1</jayway.maven.version>
+		<jayway.maven.version>3.5.0</jayway.maven.version>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
 		<github.global.server>github</github.global.server>
 		<github.downloads.version>0.6</github.downloads.version>
+        
+        <antrun.version>1.7</antrun.version>
+        <jarsigner.version>1.2</jarsigner.version>
+        <build.helper.version>1.7</build.helper.version>
 	</properties>
 
 	<scm>
@@ -204,6 +212,7 @@
 						<!-- Sign the apk -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jarsigner-plugin</artifactId>
+                        <version>${jarsigner.version}</version>
 						<executions>
 							<execution>
 								<id>signing</id>
@@ -271,6 +280,7 @@
 							around -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-antrun-plugin</artifactId>
+                        <version>${antrun.version}</version>
 						<executions>
 							<execution>
 								<id>run-ant</id>
@@ -294,6 +304,7 @@
 					<plugin>
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>build-helper-maven-plugin</artifactId>
+                        <version>${build.helper.version}</version>
 						<configuration>
 							<artifacts>
 								<artifact>
