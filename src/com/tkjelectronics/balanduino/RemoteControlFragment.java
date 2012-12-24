@@ -76,6 +76,10 @@ public class RemoteControlFragment extends SherlockFragment {
 		}
 		if(!update)
 			return;
+		if(mSensorFusion == null) {
+			mSensorFusion = BalanduinoActivity.mSensorFusion;
+			return;
+		}
 		//mAzimuthView.setText(mSensorFusion.azimut);
 		mPitchView.setText(mSensorFusion.pitch);
 		mRollView.setText(mSensorFusion.roll);
