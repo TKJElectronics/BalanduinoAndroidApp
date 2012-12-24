@@ -38,7 +38,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
-import android.view.View;
 
 public class SensorFusion implements SensorEventListener {
 	// For debugging
