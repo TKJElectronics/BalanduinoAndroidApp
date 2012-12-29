@@ -464,7 +464,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					.create().show();
 			return true;
 		case android.R.id.home:
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/TKJElectronics/BalanduinoAndroidApp"));
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://tkjelectronics.github.com/BalanduinoAndroidApp/"));
 			startActivity(browserIntent);
 			return true;
 		default:
