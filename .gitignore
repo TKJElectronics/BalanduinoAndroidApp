@@ -32,3 +32,6 @@ ant.properties
 local.properties
 proguard.cfg
 proguard-project.txt
+
+# Shell script to run Maven commands for release
+releases/release.sh
