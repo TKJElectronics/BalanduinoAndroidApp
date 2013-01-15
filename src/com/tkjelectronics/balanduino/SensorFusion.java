@@ -75,7 +75,7 @@ public class SensorFusion implements SensorEventListener {
 	private boolean initState = true;
 
 	public static final int TIME_CONSTANT = 30;
-	public float filter_coefficient = 0.98f;
+	public float filter_coefficient = 0.90f;
 	public float tempFilter_coefficient = filter_coefficient;
 	private Timer fuseTimer = new Timer();
 	//private Timer IMUTimer = new Timer();
