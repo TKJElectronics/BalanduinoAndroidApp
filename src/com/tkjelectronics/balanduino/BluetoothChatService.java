@@ -414,7 +414,8 @@ public class BluetoothChatService {
                     //mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
                     mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                 } catch (IOException e) {
-                    Log.e(TAG, "disconnected", e);                    
+                	if(D)
+                		Log.e(TAG, "disconnected", e);                    
                     if(!stopReading) {
                     	cancel();
                     	connectionLost();     
