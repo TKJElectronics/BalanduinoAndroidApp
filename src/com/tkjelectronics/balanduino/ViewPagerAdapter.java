@@ -24,11 +24,14 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 			Fragment fragment1 = new JoystickFragment();
 			return fragment1;
 		case 2:
-			Fragment fragment2 = new PIDFragment();
+			Fragment fragment2 = new RealTimeGraph();
 			return fragment2;
 		case 3:
-			Fragment fragment3 = new VoiceRecognitionFragment();
+			Fragment fragment3 = new PIDFragment();
 			return fragment3;
+		case 4:
+			Fragment fragment4 = new VoiceRecognitionFragment();
+			return fragment4;
 		default:
 			return null;
 		}
@@ -36,8 +39,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// Show 4 pages.
-		return 4;
+		// Show 5 pages.
+		return 5;
 	}
 
 	@Override
@@ -48,8 +51,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 		case 1:
 			return "Joystick";
 		case 2:
-			return "PID Adjustment";
+			return "Graph";
 		case 3:
+			return "PID Adjustment";
+		case 4:
 			return "Voice control";
 		}
 		return null;

@@ -11,6 +11,11 @@
     
     <string name="button">Connect to a device first</string>      
     
+    <!-- Graph Fragment -->
+    <string name="acc">Show Accelerometer data</string>
+    <string name="gyro">Show Gyro data</string>
+    <string name="kalman">Show Kalman data</string>
+    
     <!-- PID Fragment -->
     <string name="Kp">P:</string>
     <string name="Ki">I:</string>
