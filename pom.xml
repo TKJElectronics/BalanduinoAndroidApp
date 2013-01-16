@@ -149,6 +149,12 @@
 					<version>${vpi.version}</version>
 					<type>apklib</type>
 				</dependency>
+				<!-- Run "mvn install:install-file -Dfile=libs/GraphView-3.0-SNAPSHOT.jar -DgroupId=com.jjoe64 -DartifactId=graphview -Dversion=3.0-SNAPSHOT -Dpackaging=jar" first to install the library -->
+				<dependency>
+					<groupId>com.jjoe64</groupId>
+					<artifactId>graphview</artifactId>
+					<version>3.0-SNAPSHOT</version>
+				</dependency>
 			</dependencies>
 		</profile>
 		<profile>

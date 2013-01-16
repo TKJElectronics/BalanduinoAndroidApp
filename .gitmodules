@@ -1,0 +1,3 @@
+[submodule "libs/GraphView"]
+	path = libs/GraphView
+	url = https://Lauszus@github.com/Lauszus/GraphView.git
