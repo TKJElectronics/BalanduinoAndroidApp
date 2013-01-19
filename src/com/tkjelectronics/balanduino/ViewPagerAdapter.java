@@ -1,36 +1,42 @@
 package com.tkjelectronics.balanduino;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+
+import com.actionbarsherlock.app.SherlockFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
  * of the sections/tabs/pages.
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
+	public static final int IMU_FRAGMENT = 0;
+	public static final int JOYSTICK_FRAGMENT = 1;
+	public static final int GRAPH_FRAGMENT = 2;
+	public static final int PID_FRAGMENT = 3;
+	public static final int VOICERECOGNITION_FRAGMENT = 4;
 
 	public ViewPagerAdapter(FragmentManager fm) {
 		super(fm);
 	}
 
 	@Override
-	public Fragment getItem(int position) {
+	public SherlockFragment getItem(int position) {
 		switch (position) {
 		case 0:
-			Fragment fragment0 = new RemoteControlFragment();
+			SherlockFragment fragment0 = new RemoteControlFragment();
 			return fragment0;
 		case 1:
-			Fragment fragment1 = new JoystickFragment();
+			SherlockFragment fragment1 = new JoystickFragment();
 			return fragment1;
 		case 2:
-			Fragment fragment2 = new RealTimeGraph();
+			SherlockFragment fragment2 = new RealTimeGraph();
 			return fragment2;
 		case 3:
-			Fragment fragment3 = new PIDFragment();
+			SherlockFragment fragment3 = new PIDFragment();
 			return fragment3;
 		case 4:
-			Fragment fragment4 = new VoiceRecognitionFragment();
+			SherlockFragment fragment4 = new VoiceRecognitionFragment();
 			return fragment4;
 		default:
 			return null;
