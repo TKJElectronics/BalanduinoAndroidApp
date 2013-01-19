@@ -331,6 +331,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		CustomViewPager.setPagingEnabled(true);
 		if(currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT)
 			restartSpeechRecognizer(); // Restart service
+		if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && RealTimeGraph.mToggleButton != null) {
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				if(RealTimeGraph.mToggleButton.isChecked()) {
+					byte[] send = "GB;".getBytes(); // Request data
+					mChatService.write(send, false);
+				} else {					
+					byte[] send = "GS;".getBytes(); // Stop sending data
+					mChatService.write(send, false);
+				}
+			}
+		}
 	}
 
 	@Override
@@ -342,6 +353,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				byte[] send = "S;".getBytes();
 				mChatService.write(send, false);				
+			}
+		} else if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				byte[] send = "GS;".getBytes();
+				mChatService.write(send, false);	
 			}
 		} else if(tab.getPosition() == ViewPagerAdapter.PID_FRAGMENT) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
@@ -490,9 +506,27 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					Handler myHandler = new Handler();
 					myHandler.postDelayed(new Runnable(){
 				        public void run() {
-				        	byte[] send = "G;".getBytes();
+				        	byte[] send = "GP;".getBytes();
 							mChatService.write(send, false);
-				        }}, 1000); // Wait 1 second before sending the message
+				        }
+				    }, 1000); // Wait 1 second before sending the message
+					if(RealTimeGraph.mToggleButton != null) {
+						if(RealTimeGraph.mToggleButton.isChecked()) {
+							myHandler.postDelayed(new Runnable(){
+						        public void run() {
+						        	byte[] send = "GB;".getBytes(); // Request data
+									mChatService.write(send, false);
+						        }
+						    }, 1000); // Wait 1 second before sending the message
+						} else {
+							myHandler.postDelayed(new Runnable(){
+								public void run() {
+									byte[] send = "GS;".getBytes(); // Stop sending data
+									mChatService.write(send, false);
+								}
+							}, 1000); // Wait 1 second before sending the message
+						}
+					}					
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					Toast.makeText(getApplicationContext(),

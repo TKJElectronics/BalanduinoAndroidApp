@@ -128,7 +128,7 @@ public class PIDFragment extends SherlockFragment {
 					if(counter != 0) {
 						mHandler.postDelayed(new Runnable() {
 							public void run() {
-								byte[] send = "G;".getBytes();
+								byte[] send = "GP;".getBytes();
 								mChatService.write(send, false);
 							}
 						}, counter); // Wait before sending the message
