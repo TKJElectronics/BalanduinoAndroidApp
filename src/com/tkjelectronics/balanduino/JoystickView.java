@@ -21,7 +21,6 @@ package com.tkjelectronics.balanduino;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -49,34 +48,19 @@ public class JoystickView extends View {
         super(context);
     }
     
-    public JoystickView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-    
-    public void setRadius(double joystickRadius, double buttonRadius) {
-    	this.joystickRadius = (float) joystickRadius;    	
-        this.buttonRadius = (float) buttonRadius;
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square        
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measureWidth(widthMeasureSpec),measureHeight(heightMeasureSpec));
-    }
-
-    private int measureWidth(int measureSpec) {
-    	return (int) (2*buttonRadius + 2*joystickRadius);
-    }
-
-    private int measureHeight(int measureSpec) {
-    	return (int) (2*buttonRadius + 2*joystickRadius);
-    }
-
-    @Override
-    protected void onDraw(Canvas canvas) {
-        centerX = (getWidth())/2;
-        centerY = (getHeight())/2;
+    protected void onDraw(Canvas canvas) {        
         if(firstDraw) {
         	firstDraw = false;
+        	joystickRadius = (float)(getWidth()/3);
+        	buttonRadius = joystickRadius/2;
+        	centerX = (getWidth())/2;
+        	centerY = (getHeight())/2;
         	x = centerX;
         	y = centerY;
         }
@@ -117,10 +101,6 @@ public class JoystickView extends View {
     		listener.setOnMovedListener(getXValue(), getYValue());    	
     	}
     	return true;
-    }
-    
-    public void invalidateView() {
-    	invalidate();
     }
     
     public double getXValue() {
