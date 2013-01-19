@@ -52,6 +52,8 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 
 	// Return Intent extra
 	public static String EXTRA_DEVICE_ADDRESS = "device_address";
+	public static String EXTRA_NEW_DEVICE;
+	public static boolean new_device;
 
 	// Member fields
 	private BluetoothAdapter mBtAdapter;
@@ -166,8 +168,7 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 			String info = ((TextView) v).getText().toString();
 			if (D)
 				Log.d(TAG, "Info: " + info);
-			if (info.equals(getString(R.string.none_paired))
-					|| info.equals(getString(R.string.none_found))) {
+			if (info.equals(getString(R.string.none_paired)) || info.equals(getString(R.string.none_found))) {
 				if (D)
 					Log.d(TAG, "Returning");
 				return;
@@ -177,9 +178,15 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 
 			String address = info.substring(info.length() - 17);
 
+			if(av.getId() == R.id.new_devices)
+				new_device = true;
+			else
+				new_device  = false;
+			
 			// Create the result Intent and include the MAC address
 			Intent intent = new Intent();
 			intent.putExtra(EXTRA_DEVICE_ADDRESS, address);
+			intent.putExtra(EXTRA_NEW_DEVICE, new_device);
 
 			// Set result and finish this Activity
 			setResult(Activity.RESULT_OK, intent);

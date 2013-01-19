@@ -46,6 +46,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -75,9 +76,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static final String TOAST = "toast";
 
 	// Intent request codes
-	// private static final int REQUEST_CONNECT_DEVICE_SECURE = 1;
-	private static final int REQUEST_CONNECT_DEVICE_INSECURE = 2;
-	private static final int REQUEST_ENABLE_BT = 3;
+	private static final int REQUEST_CONNECT_DEVICE = 1;
+	private static final int REQUEST_ENABLE_BT = 2;
 
 	// Name of the connected device
 	private String mConnectedDeviceName = null;
@@ -87,25 +87,21 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static BluetoothChatService mChatService = null;
 	public static SensorFusion mSensorFusion = null;
 	private SensorManager mSensorManager = null;
-
-	ViewPagerAdapter mViewPagerAdapter;
-	ViewPager mViewPager;
 	
-	public static final int IMU_TAB = 0;
-	public static final int JOYSTICK_TAB = 1;
-	public static final int PID_TAB = 2;
-	public static final int VOICERECOGNITION_TAB = 3;
+	private UnderlinePageIndicator mUnderlinePageIndicator;
 	
 	public static int currentTabSelected;
+	
+	public static String accValue = "";
+	public static String gyroValue = "";
+	public static String kalmanValue = "";
+	public static boolean newIMUValues;
 	
 	public static String pValue = "";
 	public static String iValue = "";
 	public static String dValue = "";
 	public static String targetAngleValue = "";
-	public static boolean newPValue;
-	public static boolean newIValue;
-	public static boolean newDValue;
-	public static boolean newTargetAngleValue;
+	public static boolean newPIDValues;
 	
 	private static SpeechRecognizer mSpeechRecognizer;
 	public static boolean toggleButtonState;
@@ -143,15 +139,15 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mViewPagerAdapter = new ViewPagerAdapter(
+		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(
 				getSupportFragmentManager());
 
 		// Set up the ViewPager with the adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
+		ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mViewPagerAdapter);
 		
 		// Bind the underline indicator to the adapter
-		UnderlinePageIndicator mUnderlinePageIndicator = (UnderlinePageIndicator)findViewById(R.id.indicator);
+		mUnderlinePageIndicator = (UnderlinePageIndicator)findViewById(R.id.indicator);
 		mUnderlinePageIndicator.setViewPager(mViewPager);
 		mUnderlinePageIndicator.setFades(false);
 
@@ -197,10 +193,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			return;
 		}
 		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		// Intent intent = new Intent(RecognizerIntent.ACTION_WEB_SEARCH);
 		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		//intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,"com.tkjelectronics.balanduino");
-		//intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS,5);
 		mSpeechRecognizer.startListening(intent);	
 	}	
 	
@@ -334,9 +327,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// When the given tab is selected, switch to the corresponding page in
 		// the ViewPager.
 		currentTabSelected = tab.getPosition();
-		mViewPager.setCurrentItem(currentTabSelected);
+		mUnderlinePageIndicator.setCurrentItem(currentTabSelected);
 		CustomViewPager.setPagingEnabled(true);
-		if(currentTabSelected == VOICERECOGNITION_TAB)
+		if(currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT)
 			restartSpeechRecognizer(); // Restart service
 	}
 
@@ -345,11 +338,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 		if(D)
 			Log.d(TAG,"onTabUnselected: " + tab.getPosition());
-		if((tab.getPosition() == IMU_TAB || tab.getPosition() == JOYSTICK_TAB) && mChatService != null) { // Send stop command if the user selects another tab
+		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT || tab.getPosition() == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT) && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				byte[] send = "S;".getBytes();
 				mChatService.write(send, false);				
 			}
+		} else if(tab.getPosition() == ViewPagerAdapter.PID_FRAGMENT) {
+			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
+		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
 		}
 	}
 
@@ -394,11 +390,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		case R.id.menu_connect:
 			// Launch the DeviceListActivity to see devices and do scan
 			serverIntent = new Intent(this, DeviceListActivity.class);
-			startActivityForResult(serverIntent,
-					REQUEST_CONNECT_DEVICE_INSECURE);
+			startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
 			return true;
 		case R.id.settings:
-			mViewPager.setCurrentItem(IMU_TAB); // Change to the IMU tab
+			mUnderlinePageIndicator.setCurrentItem(ViewPagerAdapter.IMU_FRAGMENT); // Change to the IMU tab
 			// This is used to add a custom layout to an AlertDialog
 			final View setCoefficient = LayoutInflater.from(this).inflate(
 					R.layout.dialog,
@@ -512,15 +507,23 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				}
 				PIDFragment.updateButton();
 				break;
-			case MESSAGE_READ: 
-				PIDFragment.updateView();
-				break;		
+			case MESSAGE_READ:
+				if(newIMUValues) {
+					newIMUValues = false;
+					RealTimeGraph.updateValues();					
+				}
+				else if(newPIDValues) {
+					newPIDValues = false;
+					PIDFragment.updateView();
+				}
+				break;
 			case MESSAGE_DEVICE_NAME:
 				// save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
 				break;
-			case MESSAGE_TOAST:
+			case MESSAGE_TOAST:				
 				supportInvalidateOptionsMenu();
+				PIDFragment.updateButton();
 				Toast.makeText(getApplicationContext(),
 						msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
 						.show();
@@ -533,16 +536,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if (D)
 			Log.d(TAG, "onActivityResult " + resultCode);
 		switch (requestCode) {
-		/*
-		 * case REQUEST_CONNECT_DEVICE_SECURE: // When DeviceListActivity
-		 * returns with a device to connect if (resultCode ==
-		 * Activity.RESULT_OK) { connectDevice(data, true); } break;
-		 */
-		case REQUEST_CONNECT_DEVICE_INSECURE:
-			// When DeviceListActivity returns with a device to connect
-			if (resultCode == Activity.RESULT_OK) {
-				connectDevice(data, false);
-			}
+		case REQUEST_CONNECT_DEVICE:
+			// When DeviceListActivity returns with a device to connect to
+			if (resultCode == Activity.RESULT_OK)
+				connectDevice(data);
 			break;
 		case REQUEST_ENABLE_BT:
 			// When the request to enable Bluetooth returns
@@ -561,10 +558,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void connectDevice(Intent data, boolean secure) {
+	private void connectDevice(Intent data) {
 		// Get the device MAC address
-		String address = data.getExtras().getString(
-				DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+		String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+		boolean secure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
 		// Get the BLuetoothDevice object
 		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
 		// Attempt to connect to the device
