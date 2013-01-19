@@ -14,8 +14,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class VoiceRecognitionFragment extends SherlockFragment {
 	public static TextView mText;
 	ToggleButton mButton;
-	
-	signalListener mCallback;		
+	signalListener mCallback;	
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,

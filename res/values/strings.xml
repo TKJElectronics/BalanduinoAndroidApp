@@ -2,9 +2,7 @@
 <resources>    
     <string name="app_name">Balanduino</string>
     
-    <!-- Layout -->
-    <string name="zero">0</string>
-    
+    <!-- Remote Control Fragment -->    
     <string name="pitch">Pitch (x-axis rotation): </string>
     <string name="roll">Roll (y-axis ritation): </string>
     <string name="coefficient">Filter Coefficient: </string>
@@ -27,6 +25,7 @@
     
     <!-- Voice Recognition -->
     <string name="voicecommand">Command:</string>
+    <string name="commands">Supported commands are:\nForward, backward, left, right, and stop</string>
         
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>
     
