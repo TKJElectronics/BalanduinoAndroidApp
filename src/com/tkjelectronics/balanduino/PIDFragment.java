@@ -145,37 +145,25 @@ public class PIDFragment extends SherlockFragment {
 	}
 	
 	public static void updateView() {
-		if (BalanduinoActivity.newPValue) {
-			if(mKpView != null && mEditKp != null) {
-				BalanduinoActivity.newPValue = false;
-				mKpView.setText(BalanduinoActivity.pValue);
-				if(!(mEditKp.getText().toString().equals(BalanduinoActivity.pValue)))
-					mEditKp.setText(BalanduinoActivity.pValue);
-			}
+		if(mKpView != null && mEditKp != null) {
+			mKpView.setText(BalanduinoActivity.pValue);
+			if(!(mEditKp.getText().toString().equals(BalanduinoActivity.pValue)))
+				mEditKp.setText(BalanduinoActivity.pValue);
 		}
-		if (BalanduinoActivity.newIValue) {
-			if(mKiView != null && mEditKi != null) {
-				BalanduinoActivity.newIValue = false;
-				mKiView.setText(BalanduinoActivity.iValue);
-				if(!(mEditKi.getText().toString().equals(BalanduinoActivity.iValue)))
-					mEditKi.setText(BalanduinoActivity.iValue);
-			}
+		if(mKiView != null && mEditKi != null) {
+			mKiView.setText(BalanduinoActivity.iValue);
+			if(!(mEditKi.getText().toString().equals(BalanduinoActivity.iValue)))
+				mEditKi.setText(BalanduinoActivity.iValue);
 		}
-		if (BalanduinoActivity.newDValue) {
-			if(mKdView != null && mEditKd != null) {
-				BalanduinoActivity.newDValue = false;
-				mKdView.setText(BalanduinoActivity.dValue);
-				if(!(mEditKd.getText().toString().equals(BalanduinoActivity.dValue)))
-					mEditKd.setText(BalanduinoActivity.dValue);
-			}
-		}
-		if (BalanduinoActivity.newTargetAngleValue) {
-			if(mTargetAngleView != null && mEditTargetAngle != null) {
-				BalanduinoActivity.newTargetAngleValue = false;
-				mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
-				if(!(mEditTargetAngle.getText().toString().equals(BalanduinoActivity.targetAngleValue)))
-					mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
-			}
+		if(mKdView != null && mEditKd != null) {
+			mKdView.setText(BalanduinoActivity.dValue);
+			if(!(mEditKd.getText().toString().equals(BalanduinoActivity.dValue)))
+				mEditKd.setText(BalanduinoActivity.dValue);
+		}		
+		if(mTargetAngleView != null && mEditTargetAngle != null) {
+			mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
+			if(!(mEditTargetAngle.getText().toString().equals(BalanduinoActivity.targetAngleValue)))
+				mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
 		}
 	}
 	
