@@ -2,7 +2,7 @@ package com.tkjelectronics.balanduino;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,18 +20,18 @@ import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
 
 public class RealTimeGraph extends SherlockFragment {
-	private final Handler mHandler = new Handler();
-	private Runnable mRunnable;
-	private GraphView graphView;
-	private GraphViewSeries accSeries;
-	private GraphViewSeries gyroSeries;
-	private GraphViewSeries kalmanSeries;
-	private double counter = 100d;
-	private ToggleButton mToggleButton;
-	private CheckBox mCheckBox1;
-	private CheckBox mCheckBox2;
-	private CheckBox mCheckBox3;
-	private double[][] buffer = new double[3][100]; // Used to store the 100 last readings
+	private static final boolean D = BalanduinoActivity.D;
+	
+	private static GraphView graphView;
+	private static GraphViewSeries accSeries;
+	private static GraphViewSeries gyroSeries;
+	private static GraphViewSeries kalmanSeries;
+	private static double counter = 100d;
+	private static ToggleButton mToggleButton;
+	private static CheckBox mCheckBox1;
+	private static CheckBox mCheckBox2;
+	private static CheckBox mCheckBox3;
+	private static double[][] buffer = new double[3][100]; // Used to store the 100 last readings
 	
 	public RealTimeGraph() {
 		for (int i = 0; i < 3; i++)
@@ -41,7 +41,7 @@ public class RealTimeGraph extends SherlockFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.graphs, container, false);
+		View v = inflater.inflate(R.layout.graph, container, false);
 		
 		GraphViewData[] data0 = new GraphViewData[100];
 		GraphViewData[] data1 = new GraphViewData[100];
@@ -123,10 +123,8 @@ public class RealTimeGraph extends SherlockFragment {
 		mToggleButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (((ToggleButton) v).isChecked()) {
-					mHandler.postDelayed(mRunnable, 100); // Start printing the values again
+				if (((ToggleButton) v).isChecked())
 					mToggleButton.setText("Stop");
-				}
 				else
 					mToggleButton.setText("Start");
 			}
@@ -134,11 +132,40 @@ public class RealTimeGraph extends SherlockFragment {
 		
 		return v;
 	}
-
-	@Override
-	public void onPause() {
-		mHandler.removeCallbacks(mRunnable);
-		super.onPause();
+	
+	public static void updateValues() {
+		if(mToggleButton == null)
+			return;
+		if (!(mToggleButton.isChecked()))
+			return;
+		
+		for (int i = 0; i < 3; i++) { // We will save the 100 last values
+			for (int i2 = 0; i2 < 99; i2++)
+				buffer[i][i2] = buffer[i][i2+1];	
+		}
+		try { // In some rare occasions the values can be corrupted
+			buffer[0][99] = Double.parseDouble(BalanduinoActivity.accValue);
+			buffer[1][99] = Double.parseDouble(BalanduinoActivity.gyroValue);
+			buffer[2][99] = Double.parseDouble(BalanduinoActivity.kalmanValue);
+		} catch (NumberFormatException e) {
+			if(D)
+				Log.e("RealTimeGraph", "error in input", e);
+			return;
+		}			
+		
+		boolean scroll;
+		if(!mCheckBox1.isChecked() && !mCheckBox2.isChecked() && !mCheckBox3.isChecked())
+			scroll = false;
+		else
+			scroll = true;
+			
+		counter++;
+		accSeries.appendData(new GraphViewData(counter,buffer[0][99]), scroll);
+		gyroSeries.appendData(new GraphViewData(counter,buffer[1][99]), scroll);
+		kalmanSeries.appendData(new GraphViewData(counter,buffer[2][99]), scroll);
+		
+		if(!scroll)
+			graphView.redrawAll();
 	}
 
 	@Override
@@ -148,39 +175,5 @@ public class RealTimeGraph extends SherlockFragment {
 			mToggleButton.setText("Stop");
 		else
 			mToggleButton.setText("Start");
-		mRunnable = new Runnable() {
-			@Override
-			public void run() {
-				if (mToggleButton.isChecked()) {
-					counter++;
-					
-					for (int i = 0; i < 3; i++) { // We will save the 100 last values
-						for (int i2 = 0; i2 < 99; i2++)
-							buffer[i][i2] = buffer[i][i2+1];
-						buffer[i][99] = getRandom();
-					}
-					boolean scroll;
-					if(!mCheckBox1.isChecked() && !mCheckBox2.isChecked() && !mCheckBox3.isChecked())
-						scroll = false;
-					else
-						scroll = true;
-						
-					accSeries.appendData(new GraphViewData(counter,buffer[0][99]), scroll);
-					gyroSeries.appendData(new GraphViewData(counter,buffer[1][99]), scroll);
-					kalmanSeries.appendData(new GraphViewData(counter,buffer[2][99]), scroll);
-					
-					if(!scroll)
-						graphView.redrawAll();
-					
-					mHandler.postDelayed(this, 100);
-				}
-			}
-		};
-		mHandler.postDelayed(mRunnable, 100);
-	}
-	private double getRandom() {
-		double high = 360;
-		double low = 0;
-		return Math.random() * (high - low) + low;
 	}
 }

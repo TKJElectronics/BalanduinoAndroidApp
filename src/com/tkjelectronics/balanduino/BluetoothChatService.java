@@ -41,8 +41,7 @@ public class BluetoothChatService {
 	private static final boolean D = BalanduinoActivity.D;
 
 	// RFCOMM/SPP UUID
-	private static final UUID UUID_RFCOMM_GENERIC = UUID
-			.fromString("00001101-0000-1000-8000-00805F9B34FB");
+	private static final UUID UUID_RFCOMM_GENERIC = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB");
 	
 	// Member fields
 	private final BluetoothAdapter mAdapter;
@@ -53,10 +52,8 @@ public class BluetoothChatService {
 
 	// Constants that indicate the current connection state
 	public static final int STATE_NONE = 0; // we're doing nothing
-	public static final int STATE_CONNECTING = 1; // now initiating an outgoing
-													// connection
-	public static final int STATE_CONNECTED = 2; // now connected to a remote
-													// device
+	public static final int STATE_CONNECTING = 1; // now initiating an outgoing connection
+	public static final int STATE_CONNECTED = 2; // now connected to a remote device
 	
 	boolean stopReading; // This is used to stop it from reading on the inpuStream
 
@@ -395,24 +392,29 @@ public class BluetoothChatService {
                     	for(int i=0;i<splitMessage.length;i++)
                     		Log.i(TAG,"splitMessage["+i+"]: " + splitMessage[i]);
                     }				
-                    if(splitMessage.length == 2) {
-                    	if(splitMessage[0].equals("P")) {
-                    		BalanduinoActivity.pValue = splitMessage[1].trim();
-                    		BalanduinoActivity.newPValue = true;
-                    	} else if(splitMessage[0].equals("I")) {
-                    		BalanduinoActivity.iValue = splitMessage[1].trim();
-                    		BalanduinoActivity.newIValue = true;
-                    	} else if(splitMessage[0].equals("D")) {
-                    		BalanduinoActivity.dValue = splitMessage[1].trim();
-                    		BalanduinoActivity.newDValue = true;
-                    	} else if(splitMessage[0].equals("T")) {
-                    		BalanduinoActivity.targetAngleValue = splitMessage[1].trim();
-                    		BalanduinoActivity.newTargetAngleValue = true;
+                    if(splitMessage.length == 4) {
+                    	if(splitMessage[0].equals("V")) {
+                    		BalanduinoActivity.accValue = splitMessage[1].trim();
+                    		BalanduinoActivity.gyroValue = splitMessage[2].trim();
+                    		BalanduinoActivity.kalmanValue = splitMessage[3].trim();
+                    		BalanduinoActivity.newIMUValues = true;
+                    		
+                    		// Send message back to the UI Activity
+                            mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                     	}
                     }
-                    // Send the obtained bytes to the UI Activity
-                    //mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ, bytes, -1, buffer).sendToTarget();
-                    mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
+                    else if(splitMessage.length == 5) {
+                    	if(splitMessage[0].equals("P")) {
+                    		BalanduinoActivity.pValue = splitMessage[1].trim();
+                    		BalanduinoActivity.iValue = splitMessage[2].trim();
+                    		BalanduinoActivity.dValue = splitMessage[3].trim();
+                    		BalanduinoActivity.targetAngleValue = splitMessage[4].trim();
+                    		BalanduinoActivity.newPIDValues = true;
+                    		
+                        	// Send message back to the UI Activity
+                            mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
+                    	}
+                    }                    
                 } catch (IOException e) {
                 	if(D)
                 		Log.e(TAG, "disconnected", e);                    
@@ -434,12 +436,6 @@ public class BluetoothChatService {
 		public void write(byte[] buffer, boolean showOuput) {
 			try {
 				mmOutStream.write(buffer);
-				/*
-				 * if(showOuput) { // Share the sent message back to the UI
-				 * Activity
-				 * mHandler.obtainMessage(SensorFusionActivity.MESSAGE_WRITE,
-				 * -1, -1, buffer).sendToTarget(); }
-				 */
 			} catch (IOException e) {
 				if(D)
 					Log.e(TAG, "Exception during write", e);
