@@ -78,25 +78,21 @@ public class SensorFusion implements SensorEventListener {
 	public float filter_coefficient = 0.90f;
 	public float tempFilter_coefficient = filter_coefficient;
 	private Timer fuseTimer = new Timer();
-	//private Timer IMUTimer = new Timer();
 
-	public Handler mHandler;
+	public Handler mHandler = new Handler();
 
-	public static int IMUOutputSelection;
-	// DecimalFormat d = new DecimalFormat("#.##");
-	DecimalFormat d = (DecimalFormat) NumberFormat
-			.getNumberInstance(Locale.ENGLISH);
+	public static int IMUOutputSelection = -1;
+	DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 
 	public SensorFusion(SensorManager manager) {
 		mSensorManager = manager;
-		mHandler = new Handler();
 
 		/* Init gyro values */
 		gyroOrientation[0] = 0.0f;
 		gyroOrientation[1] = 0.0f;
 		gyroOrientation[2] = 0.0f;
 
-		// initialise gyroMatrix with identity matrix
+		// Initialize gyroMatrix with identity matrix
 		gyroMatrix[0] = 1.0f;
 		gyroMatrix[1] = 0.0f;
 		gyroMatrix[2] = 0.0f;
@@ -109,13 +105,9 @@ public class SensorFusion implements SensorEventListener {
 
 		initListeners();
 
-		// wait for one second until gyroscope and magnetometer/accelerometer
-		// data is initialised then scedule the complementary filter task
-		fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),
-				1000, TIME_CONSTANT);
-
-		//IMUTimer.schedule(new sendIMUDataTimer(), 0, 100); // Send IMU data
-															// every 100ms
+		// Wait for one second until gyroscope and magnetometer/accelerometer
+		// Data is initialized then schedule the complementary filter task
+		fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),1000, TIME_CONSTANT);
 
 		// GUI stuff
 		d.setRoundingMode(RoundingMode.HALF_UP);
@@ -123,22 +115,16 @@ public class SensorFusion implements SensorEventListener {
 		d.setMinimumFractionDigits(3);
 	}
 
-	// This function registers sensor listeners for the accelerometer,
-	// magnetometer and gyroscope.
+	// This function registers sensor listeners for the accelerometer, magnetometer and gyroscope.
 	public void initListeners() {
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null)
-			mSensorManager.registerListener(this,
-					mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-					SensorManager.SENSOR_DELAY_FASTEST);
+			mSensorManager.registerListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_FASTEST);
 		else {
 			if (D)
 				Log.i(TAG, "Accelerometer not supported");
-			//finish();
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-			mSensorManager.registerListener(this,
-					mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-					SensorManager.SENSOR_DELAY_FASTEST);
+			mSensorManager.registerListener(this,mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),SensorManager.SENSOR_DELAY_FASTEST);
 			IMUOutputSelection = 2;
 		} else {
 			if (D)
@@ -146,14 +132,10 @@ public class SensorFusion implements SensorEventListener {
 			IMUOutputSelection = 0;
 		}
 		if (mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null)
-			mSensorManager
-					.registerListener(this, mSensorManager
-							.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-							SensorManager.SENSOR_DELAY_FASTEST);
+			mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),SensorManager.SENSOR_DELAY_FASTEST);
 		else {
 			if (D)
 				Log.i(TAG, "Magnetic Field sensor not supported");
-			//finish();
 		}
 	}
 
@@ -169,44 +151,38 @@ public class SensorFusion implements SensorEventListener {
 	public void onSensorChanged(SensorEvent event) {
 		switch (event.sensor.getType()) {
 		case Sensor.TYPE_ACCELEROMETER:
-			// copy new accelerometer data into accel array and calculate
-			// orientation
+			// Copy new accelerometer data into accel array and calculate orientation
 			System.arraycopy(event.values, 0, accel, 0, 3);
 			calculateAccMagOrientation();
 			break;
 
 		case Sensor.TYPE_GYROSCOPE:
-			// process gyro data
+			// Process gyro data
 			gyroFunction(event);
 			break;
 
 		case Sensor.TYPE_MAGNETIC_FIELD:
-			// copy new magnetometer data into magnet array
+			// Copy new magnetometer data into magnet array
 			System.arraycopy(event.values, 0, magnet, 0, 3);
 			break;
 		}
 	}
 
-	// calculates orientation angles from accelerometer and magnetometer output
+	// Calculates orientation angles from accelerometer and magnetometer output
 	public void calculateAccMagOrientation() {
-		if (SensorManager
-				.getRotationMatrix(rotationMatrix, null, accel, magnet)) {
+		if (SensorManager.getRotationMatrix(rotationMatrix, null, accel, magnet)) {
 			SensorManager.getOrientation(rotationMatrix, accMagOrientation);
 		}
 	}
 
-	// This function is borrowed from the Android reference
-	// at
+	// This function is borrowed from the Android reference at
 	// http://developer.android.com/reference/android/hardware/SensorEvent.html#values
 	// It calculates a rotation vector from the gyroscope angular speed values.
-	private void getRotationVectorFromGyro(float[] gyroValues,
-			float[] deltaRotationVector, float timeFactor) {
+	private void getRotationVectorFromGyro(float[] gyroValues, float[] deltaRotationVector, float timeFactor) {
 		float[] normValues = new float[3];
 
 		// Calculate the angular speed of the sample
-		float omegaMagnitude = (float)Math
-				.sqrt(gyroValues[0] * gyroValues[0] + gyroValues[1]
-						* gyroValues[1] + gyroValues[2] * gyroValues[2]);
+		float omegaMagnitude = (float)Math.sqrt(gyroValues[0] * gyroValues[0] + gyroValues[1] * gyroValues[1] + gyroValues[2] * gyroValues[2]);
 
 		// Normalize the rotation vector if it's big enough to get the axis
 		if (omegaMagnitude > EPSILON) {
@@ -231,12 +207,11 @@ public class SensorFusion implements SensorEventListener {
 	// This function performs the integration of the gyroscope data.
 	// It writes the gyroscope based orientation into gyroOrientation.
 	public void gyroFunction(SensorEvent event) {
-		// don't start until first accelerometer/magnetometer orientation has
-		// been acquired
+		// Don't start until first accelerometer/magnetometer orientation has been acquired
 		if (accMagOrientation == null)
 			return;
 
-		// initialisation of the gyroscope based rotation matrix
+		// Initialization of the gyroscope based rotation matrix
 		if (initState) {
 			float[] initMatrix = new float[9];
 			initMatrix = getRotationMatrixFromOrientation(accMagOrientation);
@@ -246,8 +221,8 @@ public class SensorFusion implements SensorEventListener {
 			initState = false;
 		}
 
-		// copy the new gyro values into the gyro array
-		// convert the raw gyro data into a rotation vector
+		// Copy the new gyro values into the gyro array
+		// Convert the raw gyro data into a rotation vector
 		float[] deltaVector = new float[4];
 		if (timestamp != 0) {
 			final float dT = (event.timestamp - timestamp) * NS2S;
@@ -255,18 +230,17 @@ public class SensorFusion implements SensorEventListener {
 			getRotationVectorFromGyro(gyro, deltaVector, dT / 2.0f);
 		}
 
-		// measurement done, save current time for next interval
+		// Measurement done, save current time for next interval
 		timestamp = event.timestamp;
 
-		// convert rotation vector into rotation matrix
+		// Convert rotation vector into rotation matrix
 		float[] deltaMatrix = new float[9];
 		SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
 
-		// apply the new rotation interval on the gyroscope based rotation
-		// matrix
+		// Apply the new rotation interval on the gyroscope based rotation matrix
 		gyroMatrix = matrixMultiplication(gyroMatrix, deltaMatrix);
 
-		// get the gyroscope based orientation from the rotation matrix
+		// Get the gyroscope based orientation from the rotation matrix
 		SensorManager.getOrientation(gyroMatrix, gyroOrientation);
 	}
 
@@ -282,7 +256,7 @@ public class SensorFusion implements SensorEventListener {
 		float sinZ = (float)Math.sin(o[0]);
 		float cosZ = (float)Math.cos(o[0]);
 
-		// rotation about x-axis (pitch)
+		// Rotation about x-axis (pitch)
 		xM[0] = 1.0f;
 		xM[1] = 0.0f;
 		xM[2] = 0.0f;
@@ -293,7 +267,7 @@ public class SensorFusion implements SensorEventListener {
 		xM[7] = -sinX;
 		xM[8] = cosX;
 
-		// rotation about y-axis (roll)
+		// Rotation about y-axis (roll)
 		yM[0] = cosY;
 		yM[1] = 0.0f;
 		yM[2] = sinY;
@@ -304,7 +278,7 @@ public class SensorFusion implements SensorEventListener {
 		yM[7] = 0.0f;
 		yM[8] = cosY;
 
-		// rotation about z-axis (azimuth)
+		// Rotation about z-axis (azimuth)
 		zM[0] = cosZ;
 		zM[1] = sinZ;
 		zM[2] = 0.0f;
@@ -315,7 +289,7 @@ public class SensorFusion implements SensorEventListener {
 		zM[7] = 0.0f;
 		zM[8] = 1.0f;
 
-		// rotation order is y, x, z (roll, pitch, azimuth)
+		// Rotation order is y, x, z (roll, pitch, azimuth)
 		float[] resultMatrix = matrixMultiplication(xM, yM);
 		resultMatrix = matrixMultiplication(zM, resultMatrix);
 		return resultMatrix;
@@ -352,72 +326,41 @@ public class SensorFusion implements SensorEventListener {
 			 * output in positive-to-negative-transition cases.
 			 */
 
-			// azimuth
-			if (gyroOrientation[0] < -0.5 * Math.PI
-					&& accMagOrientation[0] > 0.0) {
-				fusedOrientation[0] = (float) (filter_coefficient
-						* (gyroOrientation[0] + 2.0 * Math.PI) + oneMinusCoeff
-						* accMagOrientation[0]);
-				fusedOrientation[0] -= (fusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
-						: 0;
-			} else if (accMagOrientation[0] < -0.5 * Math.PI
-					&& gyroOrientation[0] > 0.0) {
-				fusedOrientation[0] = (float) (filter_coefficient
-						* gyroOrientation[0] + oneMinusCoeff
-						* (accMagOrientation[0] + 2.0 * Math.PI));
-				fusedOrientation[0] -= (fusedOrientation[0] > Math.PI) ? 2.0 * Math.PI
-						: 0;
-			} else {
-				fusedOrientation[0] = filter_coefficient * gyroOrientation[0]
-						+ oneMinusCoeff * accMagOrientation[0];
-			}
+			// Azimuth
+			if (gyroOrientation[0] < -0.5 * Math.PI && accMagOrientation[0] > 0.0) {
+				fusedOrientation[0] = (float) (filter_coefficient * (gyroOrientation[0] + 2.0 * Math.PI) + oneMinusCoeff * accMagOrientation[0]);
+				fusedOrientation[0] -= (fusedOrientation[0] > Math.PI) ? 2.0 * Math.PI : 0;
+			} else if (accMagOrientation[0] < -0.5 * Math.PI && gyroOrientation[0] > 0.0) {
+				fusedOrientation[0] = (float) (filter_coefficient * gyroOrientation[0] + oneMinusCoeff * (accMagOrientation[0] + 2.0 * Math.PI));
+				fusedOrientation[0] -= (fusedOrientation[0] > Math.PI) ? 2.0 * Math.PI : 0;
+			} else
+				fusedOrientation[0] = filter_coefficient * gyroOrientation[0] + oneMinusCoeff * accMagOrientation[0];
 
-			// pitch
-			if (gyroOrientation[1] < -0.5 * Math.PI
-					&& accMagOrientation[1] > 0.0) {
-				fusedOrientation[1] = (float) (filter_coefficient
-						* (gyroOrientation[1] + 2.0 * Math.PI) + oneMinusCoeff
-						* accMagOrientation[1]);
-				fusedOrientation[1] -= (fusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-						: 0;
-			} else if (accMagOrientation[1] < -0.5 * Math.PI
-					&& gyroOrientation[1] > 0.0) {
-				fusedOrientation[1] = (float) (filter_coefficient
-						* gyroOrientation[1] + oneMinusCoeff
-						* (accMagOrientation[1] + 2.0 * Math.PI));
-				fusedOrientation[1] -= (fusedOrientation[1] > Math.PI) ? 2.0 * Math.PI
-						: 0;
-			} else {
-				fusedOrientation[1] = filter_coefficient * gyroOrientation[1]
-						+ oneMinusCoeff * accMagOrientation[1];
-			}
+			// Pitch
+			if (gyroOrientation[1] < -0.5 * Math.PI && accMagOrientation[1] > 0.0) {
+				fusedOrientation[1] = (float) (filter_coefficient * (gyroOrientation[1] + 2.0 * Math.PI) + oneMinusCoeff * accMagOrientation[1]);
+				fusedOrientation[1] -= (fusedOrientation[1] > Math.PI) ? 2.0 * Math.PI : 0;
+			} else if (accMagOrientation[1] < -0.5 * Math.PI && gyroOrientation[1] > 0.0) {
+				fusedOrientation[1] = (float) (filter_coefficient * gyroOrientation[1] + oneMinusCoeff * (accMagOrientation[1] + 2.0 * Math.PI));
+				fusedOrientation[1] -= (fusedOrientation[1] > Math.PI) ? 2.0 * Math.PI : 0;
+			} else
+				fusedOrientation[1] = filter_coefficient * gyroOrientation[1] + oneMinusCoeff * accMagOrientation[1];
 
-			// roll
-			if (gyroOrientation[2] < -0.5 * Math.PI
-					&& accMagOrientation[2] > 0.0) {
-				fusedOrientation[2] = (float) (filter_coefficient
-						* (gyroOrientation[2] + 2.0 * Math.PI) + oneMinusCoeff
-						* accMagOrientation[2]);
-				fusedOrientation[2] -= (fusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-						: 0;
-			} else if (accMagOrientation[2] < -0.5 * Math.PI
-					&& gyroOrientation[2] > 0.0) {
-				fusedOrientation[2] = (float) (filter_coefficient
-						* gyroOrientation[2] + oneMinusCoeff
-						* (accMagOrientation[2] + 2.0 * Math.PI));
-				fusedOrientation[2] -= (fusedOrientation[2] > Math.PI) ? 2.0 * Math.PI
-						: 0;
-			} else {
-				fusedOrientation[2] = filter_coefficient * gyroOrientation[2]
-						+ oneMinusCoeff * accMagOrientation[2];
-			}
+			// Roll
+			if (gyroOrientation[2] < -0.5 * Math.PI && accMagOrientation[2] > 0.0) {
+				fusedOrientation[2] = (float) (filter_coefficient * (gyroOrientation[2] + 2.0 * Math.PI) + oneMinusCoeff * accMagOrientation[2]);
+				fusedOrientation[2] -= (fusedOrientation[2] > Math.PI) ? 2.0 * Math.PI : 0;
+			} else if (accMagOrientation[2] < -0.5 * Math.PI && gyroOrientation[2] > 0.0) {
+				fusedOrientation[2] = (float) (filter_coefficient * gyroOrientation[2] + oneMinusCoeff * (accMagOrientation[2] + 2.0 * Math.PI));
+				fusedOrientation[2] -= (fusedOrientation[2] > Math.PI) ? 2.0 * Math.PI : 0;
+			} else
+				fusedOrientation[2] = filter_coefficient * gyroOrientation[2] + oneMinusCoeff * accMagOrientation[2];
 
-			// overwrite gyro matrix and orientation with fused orientation
-			// to comensate gyro drift
+			// Overwrite gyro matrix and orientation with fused orientation to comensate gyro drift
 			gyroMatrix = getRotationMatrixFromOrientation(fusedOrientation);
 			System.arraycopy(fusedOrientation, 0, gyroOrientation, 0, 3);
 
-			// update sensor output in GUI
+			// Update sensor output in GUI
 			mHandler.post(updateOreintationDisplayTask);
 		}
 	}
@@ -425,14 +368,8 @@ public class SensorFusion implements SensorEventListener {
 	public void updateOreintationDisplay() {
 		switch (IMUOutputSelection) {
 		case 0:
-			//azimut = d.format(accMagOrientation[0] * 180 / Math.PI);
 			pitch = d.format(accMagOrientation[1] * 180 / Math.PI);
 			roll = d.format(accMagOrientation[2] * 180 / Math.PI);
-			/*
-			mAzimuthView.setText(d.format(accMagOrientation[0] * 180 / Math.PI));
-			mPitchView.setText(d.format(accMagOrientation[1] * 180 / Math.PI));
-			mRollView.setText(d.format(accMagOrientation[2] * 180 / Math.PI));
-			*/
 			break;
 		/*case 1:
 			mAzimuthView.setText(d.format(gyroOrientation[0] * 180 / Math.PI));
@@ -440,18 +377,11 @@ public class SensorFusion implements SensorEventListener {
 			mRollView.setText(d.format(gyroOrientation[2] * 180 / Math.PI));
 			break;*/
 		case 2:
-			//azimut = d.format(fusedOrientation[0] * 180 / Math.PI);
 			pitch = d.format(fusedOrientation[1] * 180 / Math.PI);
 			roll = d.format(fusedOrientation[2] * 180 / Math.PI);
-			/*
-			mAzimuthView.setText(d.format(fusedOrientation[0] * 180 / Math.PI));
-			mPitchView.setText(d.format(fusedOrientation[1] * 180 / Math.PI));
-			mRollView.setText(d.format(fusedOrientation[2] * 180 / Math.PI));
-			*/
 			break;
 		}
 		coefficient = d.format(tempFilter_coefficient);
-		//mCoefficient.setText(d.format(tempFilter_coefficient));
 	}
 
 	private Runnable updateOreintationDisplayTask = new Runnable() {
