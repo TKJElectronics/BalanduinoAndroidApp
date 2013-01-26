@@ -45,13 +45,17 @@ public class RemoteControlFragment extends SherlockFragment {
 		mHandler.postDelayed(new Runnable() { // Hide the menu icon and tablerow if there is no build in gyroscope in the device
 			@Override
 			public void run() {
-				if(SensorFusion.IMUOutputSelection != 2) {
-					mTableRow.setVisibility(View.GONE);
+				if(SensorFusion.IMUOutputSelection == -1)
+					mHandler.postDelayed(this, 100); // Run this again if it hasn't initialized the sensors yet
+				if(SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported
+					mTableRow.setVisibility(View.GONE); // If not then hide the tablerow
 					if(BalanduinoActivity.settings != null)
-						BalanduinoActivity.settings.setVisible(false);
+						BalanduinoActivity.settings.setVisible(false); // Hide the settings icon too
+					else
+						mHandler.postDelayed(this, 100);  // Wait 100ms before running the code again
 				}				
 			}
-		}, 250);
+		}, 100); // Wait 100ms before running the code
 		return v;
 	}
 	
