@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -35,9 +34,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.joystick, container, false);
 		
-		mJoystick = new JoystickView(getActivity());
-		LinearLayout layout = (LinearLayout)v.findViewById(R.id.joystick);
-		layout.addView(mJoystick);
+		mJoystick = (JoystickView)v.findViewById(R.id.joystick);
 		mJoystick.setOnJoystickChangeListener(this);
 		
 		mText1 = (TextView)v.findViewById(R.id.textView1);
