@@ -38,8 +38,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.speech.RecognizerIntent;
-import android.speech.SpeechRecognizer;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -59,7 +57,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements
-		ActionBar.TabListener, VoiceRecognitionFragment.signalListener {
+		ActionBar.TabListener/*, VoiceRecognitionFragment.signalListener*/ {
 
 	private static final String TAG = "Balanduino";
 	public static final boolean D = false;
@@ -103,17 +101,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static String targetAngleValue = "";
 	public static boolean newPIDValues;
 	
-	private static SpeechRecognizer mSpeechRecognizer;
-	public static boolean toggleButtonState;
-	
-	private static Context context;
+	//private static SpeechRecognizer mSpeechRecognizer;
+	//public static boolean toggleButtonState;
+	//private static Context context;
 	
 	public static MenuItem settings;
+	private static Toast mToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		context = getApplicationContext();
+		//context = getApplicationContext();
 		
 		setContentView(R.layout.activity_main);
 
@@ -121,12 +119,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		// If the adapter is null, then Bluetooth is not supported
 		if (mBluetoothAdapter == null) {
-			Toast.makeText(getApplicationContext(),
-					"Bluetooth is not available", Toast.LENGTH_LONG).show();
+			if(mToast != null)
+				mToast.cancel(); // Close the toast if it's already open
+			mToast = Toast.makeText(getApplicationContext(),"Bluetooth is not available", Toast.LENGTH_LONG);
+			mToast.show();
 			finish();
 			return;
 		}
-		initSpeechRecognizer();
+		//initSpeechRecognizer();
 
 		// get sensorManager and initialize sensor listeners
 		mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
@@ -172,13 +172,15 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					.setTabListener(this));
 		}
 	}
-	
+	/*
 	private void initSpeechRecognizer() {
     	if(mSpeechRecognizer == null) {
     		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
     		if (!SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
-    			Toast.makeText(getApplicationContext(),"Speech Recognition is not available",Toast.LENGTH_LONG).show();
-    			//finish();
+    			if(mToast != null)
+						mToast.cancel(); // Close the toast if it's already open
+    			mToast = Toast.makeText(getApplicationContext(),"Speech Recognition is not available",Toast.LENGTH_LONG);
+    			mToast.show();
     		}
     		mSpeechRecognizer.setRecognitionListener(new VoiceRecognitionListener());
     	}
@@ -222,7 +224,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			Log.d(TAG, "Toggle Button Pressed: " + toggleButtonState);		
 		if(toggleButtonState)
 			startSpeechRecognizer();		
-	};
+	};*/
 
 	@Override
 	public void onStart() {
@@ -279,11 +281,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if (mChatService != null)
 			mChatService.stop();
 		mSensorFusion.unregisterListeners();
+		/*
 		if (mSpeechRecognizer != null) {
 			mSpeechRecognizer.stopListening();
 			mSpeechRecognizer.cancel();
 			mSpeechRecognizer.destroy();
-        }
+        }*/
 	}
 
 	@Override
@@ -309,7 +312,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			Log.e(TAG, "+ ON RESUME +");
 		// restore the sensor listeners when user resumes the application.
 		mSensorFusion.initListeners();
-		initSpeechRecognizer();
+		//initSpeechRecognizer();
 	}
 
 	private void setupBTService() {
@@ -329,8 +332,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		currentTabSelected = tab.getPosition();
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected);
 		CustomViewPager.setPagingEnabled(true);
-		if(currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT)
-			restartSpeechRecognizer(); // Restart service
+		//if(currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT)
+			//restartSpeechRecognizer(); // Restart service
 		if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && GraphFragment.mToggleButton != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				if(GraphFragment.mToggleButton.isChecked()) {
@@ -349,7 +352,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			FragmentTransaction fragmentTransaction) {
 		if(D)
 			Log.d(TAG,"onTabUnselected: " + tab.getPosition());
-		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT || tab.getPosition() == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT) && mChatService != null) { // Send stop command if the user selects another tab
+		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT/* || tab.getPosition() == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT*/) && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				byte[] send = "S;".getBytes();
 				mChatService.write(send, false);				
@@ -495,11 +498,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					Toast.makeText(
-							getApplicationContext(),
-							getString(R.string.connected_to) + " "
-									+ mConnectedDeviceName, Toast.LENGTH_SHORT)
-							.show();
+					if(mToast != null)
+						mToast.cancel(); // Close the toast if it's already open
+					mToast = Toast.makeText(getApplicationContext(),getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
+					mToast.show();
 					if (mChatService == null) {
 						return;
 					}		
@@ -529,15 +531,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					}					
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
-					Toast.makeText(getApplicationContext(),
-							R.string.connecting, Toast.LENGTH_SHORT).show();
+					if(mToast != null)
+						mToast.cancel(); // Close the toast if it's already open
+					mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
+					mToast.show();
 					break;
-				/*
-				 * case BluetoothChatService.STATE_NONE:
-				 * Toast.makeText(getApplicationContext
-				 * (),R.string.title_not_connected,Toast.LENGTH_LONG).show();
-				 * break;
-				 */
 				}
 				PIDFragment.updateButton();
 				break;
@@ -558,9 +556,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			case MESSAGE_TOAST:				
 				supportInvalidateOptionsMenu();
 				PIDFragment.updateButton();
-				Toast.makeText(getApplicationContext(),
-						msg.getData().getString(TOAST), Toast.LENGTH_SHORT)
-						.show();
+				if(mToast != null)
+					mToast.cancel(); // Close the toast if it's already open
+				mToast = Toast.makeText(getApplicationContext(),msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
+				mToast.show();
 				break;
 			}
 		}
@@ -584,9 +583,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				// User did not enable Bluetooth or an error occured
 				if (D)
 					Log.d(TAG, "BT not enabled");
-				Toast.makeText(getApplicationContext(),
-						R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT)
-						.show();
+				if(mToast != null)
+					mToast.cancel(); // Close the toast if it's already open
+				mToast = Toast.makeText(getApplicationContext(),R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT);
+				mToast.show();				
 				finish();
 			}
 		}

@@ -14,7 +14,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 	public static final int JOYSTICK_FRAGMENT = 1;
 	public static final int GRAPH_FRAGMENT = 2;
 	public static final int PID_FRAGMENT = 3;
-	public static final int VOICERECOGNITION_FRAGMENT = 4;
+	//public static final int VOICERECOGNITION_FRAGMENT = 4;
 
 	public ViewPagerAdapter(FragmentManager fm) {
 		super(fm);
@@ -35,9 +35,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 		case 3:
 			SherlockFragment fragment3 = new PIDFragment();
 			return fragment3;
-		case 4:
+		/*case 4:
 			SherlockFragment fragment4 = new VoiceRecognitionFragment();
-			return fragment4;
+			return fragment4;*/
 		default:
 			return null;
 		}
@@ -60,8 +60,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 			return "Graph";
 		case 3:
 			return "PID Adjustment";
-		case 4:
-			return "Voice control";
+		/*case 4:
+			return "Voice control";*/
 		}
 		return null;
 	}
