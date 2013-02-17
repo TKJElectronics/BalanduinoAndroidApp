@@ -65,9 +65,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
 	public static final int MESSAGE_READ = 2;
-	// public static final int MESSAGE_WRITE = 3;
-	public static final int MESSAGE_DEVICE_NAME = 4;
-	public static final int MESSAGE_TOAST = 5;
+	public static final int MESSAGE_DEVICE_NAME = 3;
+	public static final int MESSAGE_TOAST = 4;
+	public static final int MESSAGE_RETRY = 5;
 
 	// Key names received from the BluetoothChatService Handler
 	public static final String DEVICE_NAME = "device_name";
@@ -85,6 +85,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static BluetoothChatService mChatService = null;
 	public static SensorFusion mSensorFusion = null;
 	private SensorManager mSensorManager = null;
+	
+	boolean btSecure; // If it's a new device we will pair with the device	
+	BluetoothDevice btDevice; // The BLuetoothDevice object
 	
 	private UnderlinePageIndicator mUnderlinePageIndicator;
 	
@@ -530,11 +533,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 						}
 					}					
 					break;
-				case BluetoothChatService.STATE_CONNECTING:
-					if(mToast != null)
-						mToast.cancel(); // Close the toast if it's already open
-					mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
-					mToast.show();
+				case BluetoothChatService.STATE_CONNECTING:					
 					break;
 				}
 				PIDFragment.updateButton();
@@ -560,6 +559,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					mToast.cancel(); // Close the toast if it's already open
 				mToast = Toast.makeText(getApplicationContext(),msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				mToast.show();
+				break;
+			case MESSAGE_RETRY:
+				if(btDevice != null) {
+					if(D)
+						Log.e(TAG, "MESSAGE_RETRY");
+					mChatService.connect(btDevice, btSecure);
+				}
 				break;
 			}
 		}
@@ -595,10 +601,15 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	private void connectDevice(Intent data) {
 		// Get the device MAC address
 		String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-		boolean secure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
+		btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
 		// Get the BLuetoothDevice object
-		BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(address);
+		btDevice = mBluetoothAdapter.getRemoteDevice(address);
+		BluetoothChatService.nRetries = 0; // Reset retry counter
 		// Attempt to connect to the device
-		mChatService.connect(device, secure);
+		mChatService.connect(btDevice, btSecure);
+		if(mToast != null)
+			mToast.cancel(); // Close the toast if it's already open
+		mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
+		mToast.show();
 	}
 }

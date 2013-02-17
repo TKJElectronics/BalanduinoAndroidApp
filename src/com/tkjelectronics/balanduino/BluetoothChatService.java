@@ -56,6 +56,9 @@ public class BluetoothChatService {
 	public static final int STATE_CONNECTED = 2; // now connected to a remote device
 	
 	boolean stopReading; // This is used to stop it from reading on the inpuStream
+	
+	private static final int MAXRETRIES = 100; // I know this might seem way too high! But it seems to work pretty well
+	public static int nRetries = 0;
 
 	/**
 	 * Constructor. Prepares a new BluetoothChat session.
@@ -227,14 +230,20 @@ public class BluetoothChatService {
 	 * Indicate that the connection attempt failed and notify the UI Activity.
 	 */
 	private void connectionFailed() {
-		// Send a failure message back to the Activity
-		Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
-		Bundle bundle = new Bundle();
-		bundle.putString(BalanduinoActivity.TOAST,
-				"Unable to connect to device");
-		msg.setData(bundle);
-		mHandler.sendMessage(msg);
-		
+		Message msg;
+		if(nRetries < MAXRETRIES) { // There is a bug in the Android core, so we need to connect twice for it to work all everytime
+			nRetries++;
+			// Send a retry message back to the Activity
+			msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_RETRY);
+		} else {
+			// Send a failure message back to the Activity
+			msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
+			Bundle bundle = new Bundle();
+			bundle.putString(BalanduinoActivity.TOAST,"Unable to connect to device");
+			msg.setData(bundle);			
+		}
+		// Send message
+		mHandler.sendMessage(msg);		
 		// Start the service over to restart listening mode
 		BluetoothChatService.this.start();
 	}
