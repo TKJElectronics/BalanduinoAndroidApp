@@ -80,6 +80,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 		mRunnable = new Runnable() {
 			@Override
 			public void run() {
+				mHandler.postDelayed(this, 150); // Send data every 150ms
 				if (mChatService == null) {
 					//Log.e("Fragment: ","mChatService == null");
 					mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
@@ -94,9 +95,8 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 						byte[] send = message.getBytes();
 						mChatService.write(send, false);
 					}
-				}
-				mHandler.postDelayed(this, 150); // Send data every 150ms
-			}			
+				}				
+			}		
 		};
 		mHandler.postDelayed(mRunnable, 150); // Send data every 150ms
 	}

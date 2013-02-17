@@ -66,6 +66,7 @@ public class RemoteControlFragment extends SherlockFragment {
 		mRunnable = new Runnable() {
 			@Override
 			public void run() {
+				mHandler.postDelayed(this, 50); // Update IMU data every 50ms
 				if(mSensorFusion == null) {
 					mSensorFusion = BalanduinoActivity.mSensorFusion;
 					return;
@@ -100,8 +101,7 @@ public class RemoteControlFragment extends SherlockFragment {
 						if(BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT)
 							CustomViewPager.setPagingEnabled(true);
 					}
-				}
-				mHandler.postDelayed(this, 50); // Update IMU data every 50ms
+				}				
 			}
 		};
 		mHandler.postDelayed(mRunnable, 50); // Update IMU data every 50ms

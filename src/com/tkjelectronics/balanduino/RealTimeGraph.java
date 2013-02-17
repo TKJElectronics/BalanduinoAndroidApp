@@ -33,7 +33,7 @@ public class RealTimeGraph extends SherlockFragment {
 	private static CheckBox mCheckBox1;
 	private static CheckBox mCheckBox2;
 	private static CheckBox mCheckBox3;
-	private static double[][] buffer = new double[3][100]; // Used to store the 100 last readings
+	private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
 	
 	public RealTimeGraph() {
 		for (int i = 0; i < 3; i++)
@@ -46,14 +46,14 @@ public class RealTimeGraph extends SherlockFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.graph, container, false);
 		
-		GraphViewData[] data0 = new GraphViewData[100];
-		GraphViewData[] data1 = new GraphViewData[100];
-		GraphViewData[] data2 = new GraphViewData[100];
+		GraphViewData[] data0 = new GraphViewData[101];
+		GraphViewData[] data1 = new GraphViewData[101];
+		GraphViewData[] data2 = new GraphViewData[101];
 		
-		for (int i = 0; i < 100; i++) { // Restore last data
-			data0[i] = new GraphViewData(counter-99+i, buffer[0][i]);
-			data1[i] = new GraphViewData(counter-99+i, buffer[1][i]);
-			data2[i] = new GraphViewData(counter-99+i, buffer[2][i]);
+		for (int i = 0; i < 101; i++) { // Restore last data
+			data0[i] = new GraphViewData(counter-100+i, buffer[0][i]);
+			data1[i] = new GraphViewData(counter-100+i, buffer[1][i]);
+			data2[i] = new GraphViewData(counter-100+i, buffer[2][i]);
 		}
 		accSeries = new GraphViewSeries("Accelerometer",new GraphViewSeriesStyle(Color.RED, 2), data0);
 		gyroSeries = new GraphViewSeries("Gyro", new GraphViewSeriesStyle(Color.GREEN, 2), data1);
@@ -131,19 +131,18 @@ public class RealTimeGraph extends SherlockFragment {
 				else
 					mToggleButton.setText("Start");
 				
-				if (mChatService == null) {
-					mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
-					return;
-				}
-				if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-					if(((ToggleButton) v).isChecked()) {
-						byte[] send = "GB;".getBytes(); // Request data
-						mChatService.write(send, false);
-					} else {						
-						byte[] send = "GS;".getBytes(); // Stop sending data
-						mChatService.write(send, false);
+				if (mChatService != null) {
+					if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+						if(((ToggleButton) v).isChecked()) {
+							byte[] send = "GB;".getBytes(); // Request data
+							mChatService.write(send, false);
+						} else {						
+							byte[] send = "GS;".getBytes(); // Stop sending data
+							mChatService.write(send, false);
+						}
 					}
-				}
+				} else
+					mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 			}
 		});
 		if (mChatService != null) {
@@ -169,13 +168,13 @@ public class RealTimeGraph extends SherlockFragment {
 			return;
 		
 		for (int i = 0; i < 3; i++) { // We will save the 100 last values
-			for (int i2 = 0; i2 < 99; i2++)
-				buffer[i][i2] = buffer[i][i2+1];	
+			for (int i2 = 0; i2 < 100; i2++)
+				buffer[i][i2] = buffer[i][i2+1];
 		}
 		try { // In some rare occasions the values can be corrupted
-			buffer[0][99] = Double.parseDouble(BalanduinoActivity.accValue);
-			buffer[1][99] = Double.parseDouble(BalanduinoActivity.gyroValue);
-			buffer[2][99] = Double.parseDouble(BalanduinoActivity.kalmanValue);
+			buffer[0][100] = Double.parseDouble(BalanduinoActivity.accValue);
+			buffer[1][100] = Double.parseDouble(BalanduinoActivity.gyroValue);
+			buffer[2][100] = Double.parseDouble(BalanduinoActivity.kalmanValue);
 		} catch (NumberFormatException e) {
 			if(D)
 				Log.e("RealTimeGraph", "error in input", e);
@@ -189,9 +188,10 @@ public class RealTimeGraph extends SherlockFragment {
 			scroll = true;
 			
 		counter++;
-		accSeries.appendData(new GraphViewData(counter,buffer[0][99]), scroll);
-		gyroSeries.appendData(new GraphViewData(counter,buffer[1][99]), scroll);
-		kalmanSeries.appendData(new GraphViewData(counter,buffer[2][99]), scroll);
+		accSeries.appendData(new GraphViewData(counter,buffer[0][100]), scroll);
+		if(buffer[1][100] <= 360 && buffer[1][100] >= 0) // Don't draw it if it would be larger than y-axis boundaries
+			gyroSeries.appendData(new GraphViewData(counter,buffer[1][100]), scroll);
+		kalmanSeries.appendData(new GraphViewData(counter,buffer[2][100]), scroll);
 		
 		if(!scroll)
 			graphView.redrawAll();

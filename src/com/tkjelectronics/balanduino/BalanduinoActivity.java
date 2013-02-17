@@ -546,7 +546,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					newIMUValues = false;
 					RealTimeGraph.updateValues();					
 				}
-				else if(newPIDValues) {
+				if(newPIDValues) {
 					newPIDValues = false;
 					PIDFragment.updateView();
 				}
