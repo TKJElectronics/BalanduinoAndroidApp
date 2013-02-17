@@ -24,13 +24,13 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 	public SherlockFragment getItem(int position) {
 		switch (position) {
 		case 0:
-			SherlockFragment fragment0 = new RemoteControlFragment();
+			SherlockFragment fragment0 = new ImuFragment();
 			return fragment0;
 		case 1:
 			SherlockFragment fragment1 = new JoystickFragment();
 			return fragment1;
 		case 2:
-			SherlockFragment fragment2 = new RealTimeGraph();
+			SherlockFragment fragment2 = new GraphFragment();
 			return fragment2;
 		case 3:
 			SherlockFragment fragment3 = new PIDFragment();

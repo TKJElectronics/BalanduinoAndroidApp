@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
-public class RemoteControlFragment extends SherlockFragment {
+public class ImuFragment extends SherlockFragment {
 	private Button mButton;
 	public TextView mPitchView;
 	public TextView mRollView;

@@ -19,7 +19,7 @@ import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
 
-public class RealTimeGraph extends SherlockFragment {
+public class GraphFragment extends SherlockFragment {
 	private static final boolean D = BalanduinoActivity.D;
 	
 	private static GraphView graphView;
@@ -33,7 +33,7 @@ public class RealTimeGraph extends SherlockFragment {
 	private static CheckBox mCheckBox3;
 	private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
 	
-	public RealTimeGraph() {
+	public GraphFragment() {
 		for (int i = 0; i < 3; i++)
 			for (int i2 = 0; i2 < buffer[i].length; i2++)
 				buffer[i][i2] = 180d;
