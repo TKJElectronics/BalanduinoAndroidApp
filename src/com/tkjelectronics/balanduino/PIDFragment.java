@@ -28,8 +28,6 @@ public class PIDFragment extends SherlockFragment {
 	static EditText mEditKd;
 	static EditText mEditTargetAngle;
 
-	private static BluetoothChatService mChatService = null;
-
 	String newKpValue;
 	String newKiValue;
 	String newKdValue;
@@ -41,10 +39,6 @@ public class PIDFragment extends SherlockFragment {
 
 	Handler mHandler = new Handler();
 	int counter = 0;
-
-	public PIDFragment() {
-		mChatService = BalanduinoActivity.mChatService;
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -65,13 +59,12 @@ public class PIDFragment extends SherlockFragment {
 		mButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if (mChatService == null) {
+				if (BalanduinoActivity.mChatService == null) {
 					if (D)
 						Log.e(TAG, "mChatService == null");
-					mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 					return;
 				}
-				if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {					
+				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {					
 					newKpValue = mEditKp.getText().toString();
 					newKiValue = mEditKi.getText().toString();
 					newKdValue = mEditKd.getText().toString();
@@ -83,7 +76,7 @@ public class PIDFragment extends SherlockFragment {
 							mHandler.post(new Runnable() {
 								public void run() {
 									byte[] send = ("P," + newKpValue + ";").getBytes();
-									mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(send, false);
 								}
 							});
 							counter = 25;
@@ -95,7 +88,7 @@ public class PIDFragment extends SherlockFragment {
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									byte[] send = ("I," + newKiValue + ";").getBytes();
-									mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(send, false);
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -107,7 +100,7 @@ public class PIDFragment extends SherlockFragment {
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									byte[] send = ("D," + newKdValue + ";").getBytes();
-									mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(send, false);
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -119,7 +112,7 @@ public class PIDFragment extends SherlockFragment {
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									byte[] send = ("T," + newTargetAngleValue + ";").getBytes();
-									mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(send, false);
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -129,7 +122,7 @@ public class PIDFragment extends SherlockFragment {
 						mHandler.postDelayed(new Runnable() {
 							public void run() {
 								byte[] send = "GP;".getBytes();
-								mChatService.write(send, false);
+								BalanduinoActivity.mChatService.write(send, false);
 							}
 						}, counter); // Wait before sending the message
 						if (D) 
@@ -168,15 +161,14 @@ public class PIDFragment extends SherlockFragment {
 	}
 	
 	public static void updateButton() {
-		if (mChatService == null) {
+		if (BalanduinoActivity.mChatService == null) {
 			if (D)
 				Log.e(TAG, "mChatService == null");
-			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
 			return;
 		}
 		if(mButton == null)
 			return;
-		if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 			mButton.setText(R.string.updateValues);
 		else
 			mButton.setText(R.string.button);
@@ -186,8 +178,8 @@ public class PIDFragment extends SherlockFragment {
 	public void onResume() {
 		super.onResume();
 		// When the user resumes the view, then set the values again
-		if(mChatService != null) {
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+		if(BalanduinoActivity.mChatService != null) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				mKpView.setText(BalanduinoActivity.pValue);
 				mKiView.setText(BalanduinoActivity.iValue);
 				mKdView.setText(BalanduinoActivity.dValue);

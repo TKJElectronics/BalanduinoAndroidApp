@@ -22,8 +22,6 @@ import com.jjoe64.graphview.LineGraphView;
 public class RealTimeGraph extends SherlockFragment {
 	private static final boolean D = BalanduinoActivity.D;
 	
-	private static BluetoothChatService mChatService;
-	
 	private static GraphView graphView;
 	private static GraphViewSeries accSeries;
 	private static GraphViewSeries gyroSeries;
@@ -39,7 +37,6 @@ public class RealTimeGraph extends SherlockFragment {
 		for (int i = 0; i < 3; i++)
 			for (int i2 = 0; i2 < buffer[i].length; i2++)
 				buffer[i][i2] = 180d;
-		mChatService = BalanduinoActivity.mChatService;
 	}
 
 	@Override
@@ -131,32 +128,30 @@ public class RealTimeGraph extends SherlockFragment {
 				else
 					mToggleButton.setText("Start");
 				
-				if (mChatService != null) {
-					if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+				if (BalanduinoActivity.mChatService != null) {
+					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
 						if(((ToggleButton) v).isChecked()) {
 							byte[] send = "GB;".getBytes(); // Request data
-							mChatService.write(send, false);
+							BalanduinoActivity.mChatService.write(send, false);
 						} else {						
 							byte[] send = "GS;".getBytes(); // Stop sending data
-							mChatService.write(send, false);
+							BalanduinoActivity.mChatService.write(send, false);
 						}
 					}
-				} else
-					mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
-			}
-		});
-		if (mChatService != null) {
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-				if(mToggleButton.isChecked()) {
-					byte[] send = "GB;".getBytes(); // Request data
-					mChatService.write(send, false);
-				} else {						
-					byte[] send = "GS;".getBytes(); // Stop sending data
-					mChatService.write(send, false);
 				}
 			}
-		} else
-			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
+		});
+		if (BalanduinoActivity.mChatService != null) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+				if(mToggleButton.isChecked()) {
+					byte[] send = "GB;".getBytes(); // Request data
+					BalanduinoActivity.mChatService.write(send, false);
+				} else {						
+					byte[] send = "GS;".getBytes(); // Stop sending data
+					BalanduinoActivity.mChatService.write(send, false);
+				}
+			}
+		}
 		
 		return v;
 	}
@@ -205,17 +200,16 @@ public class RealTimeGraph extends SherlockFragment {
 		else
 			mToggleButton.setText("Start");
 		
-		if (mChatService != null) {
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+		if (BalanduinoActivity.mChatService != null) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
 				if(mToggleButton.isChecked()) {
 					byte[] send = "GB;".getBytes(); // Request data
-					mChatService.write(send, false);
+					BalanduinoActivity.mChatService.write(send, false);
 				} else {						
 					byte[] send = "GS;".getBytes(); // Stop sending data
-					mChatService.write(send, false);
+					BalanduinoActivity.mChatService.write(send, false);
 				}
 			}
-		} else
-			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
+		}
 	}
 }

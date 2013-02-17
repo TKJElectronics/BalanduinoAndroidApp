@@ -12,11 +12,6 @@ class VoiceRecognitionListener implements RecognitionListener {
 	private boolean D = BalanduinoActivity.D;
 	
 	private String waiting = "Waiting for result...";
-	private BluetoothChatService mChatService;
-	
-	public VoiceRecognitionListener() {
-		mChatService = BalanduinoActivity.mChatService;
-	}
 	
 	public void onResults(Bundle data) {
 		if(D)
@@ -59,13 +54,11 @@ class VoiceRecognitionListener implements RecognitionListener {
 			BalanduinoActivity.startSpeechRecognizer();
 	}
 	private void sendCommand(String message) {
-		if (mChatService == null) {
-			mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
+		if (BalanduinoActivity.mChatService == null)
 			return;
-		}
-		if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT) {
+		if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT) {
 			byte[] send = message.getBytes();
-			mChatService.write(send, false);
+			BalanduinoActivity.mChatService.write(send, false);
 		}
 	}
 	public void onReadyForSpeech(Bundle params) {

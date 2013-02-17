@@ -23,12 +23,6 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	double xValue;
 	double yValue;
 	boolean joystickReleased;
-	
-	private BluetoothChatService mChatService;
-	
-	public JoystickFragment() {
-		mChatService = BalanduinoActivity.mChatService;
-	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -81,22 +75,19 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 			@Override
 			public void run() {
 				mHandler.postDelayed(this, 150); // Send data every 150ms
-				if (mChatService == null) {
-					//Log.e("Fragment: ","mChatService == null");
-					mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
+				if (BalanduinoActivity.mChatService == null)
 					return;
-				}
-				if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.JOYSTICK_FRAGMENT) {
+				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.JOYSTICK_FRAGMENT) {
 					if(joystickReleased) {
 						byte[] send = "S;".getBytes();
-						mChatService.write(send, false);
+						BalanduinoActivity.mChatService.write(send, false);
 					} else {
 						String message = "J," + d.format(xValue) + ',' + d.format(yValue) + ";";
 						byte[] send = message.getBytes();
-						mChatService.write(send, false);
+						BalanduinoActivity.mChatService.write(send, false);
 					}
-				}				
-			}		
+				}
+			}
 		};
 		mHandler.postDelayed(mRunnable, 150); // Send data every 150ms
 	}

@@ -18,22 +18,13 @@ public class RemoteControlFragment extends SherlockFragment {
 	public TextView mCoefficient;
 	private TableRow mTableRow;
 
-	private BluetoothChatService mChatService;
-	private SensorFusion mSensorFusion;
-
 	private Handler mHandler = new Handler();
 	private Runnable mRunnable;
 	private int counter = 0;
 	boolean buttonState;
 
-	public RemoteControlFragment() {
-		mChatService = BalanduinoActivity.mChatService;
-		mSensorFusion = BalanduinoActivity.mSensorFusion;
-	}
-
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.remotecontrol, container, false);
 		
 		mPitchView = (TextView) v.findViewById(R.id.textView1);
@@ -67,33 +58,28 @@ public class RemoteControlFragment extends SherlockFragment {
 			@Override
 			public void run() {
 				mHandler.postDelayed(this, 50); // Update IMU data every 50ms
-				if(mSensorFusion == null) {
-					mSensorFusion = BalanduinoActivity.mSensorFusion;
+				if(BalanduinoActivity.mSensorFusion == null)
 					return;
-				}
-				mPitchView.setText(mSensorFusion.pitch);
-				mRollView.setText(mSensorFusion.roll);
-				mCoefficient.setText(mSensorFusion.coefficient);				
+				mPitchView.setText(BalanduinoActivity.mSensorFusion.pitch);
+				mRollView.setText(BalanduinoActivity.mSensorFusion.roll);
+				mCoefficient.setText(BalanduinoActivity.mSensorFusion.coefficient);				
 
 				counter++;
 				if (counter > 2) { // Only send data every 150ms time
 					counter = 0;						
-					if (mChatService == null) {
-						//Log.e("Fragment: ","mChatService == null");
-						mChatService = BalanduinoActivity.mChatService; // Update the instance, as it's likely because Bluetooth wasn't enabled at startup
+					if (BalanduinoActivity.mChatService == null)
 						return;
-					}
-					if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT) {
+					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT) {
 						buttonState = mButton.isPressed();
 						CustomViewPager.setPagingEnabled(!buttonState);
 						if (buttonState) {
-							String message = "M," + mSensorFusion.pitch + ',' + mSensorFusion.roll + ";";
+							String message = "M," + BalanduinoActivity.mSensorFusion.pitch + ',' + BalanduinoActivity.mSensorFusion.roll + ";";
 							byte[] send = message.getBytes();
-							mChatService.write(send, false);
+							BalanduinoActivity.mChatService.write(send, false);
 							mButton.setText("Now sending data");
 						} else {
 							byte[] send = "S;".getBytes();
-							mChatService.write(send, false);
+							BalanduinoActivity.mChatService.write(send, false);
 							mButton.setText("Sending stop command");
 						}
 					} else {
