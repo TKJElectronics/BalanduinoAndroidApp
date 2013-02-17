@@ -45,8 +45,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// Show 5 pages.
-		return 5;
+		// We will just disable voice control, as it's too slow! Set this to five in order to activate it		
+		return 4;
 	}
 
 	@Override
