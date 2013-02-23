@@ -25,7 +25,7 @@ public class ImuFragment extends SherlockFragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.remotecontrol, container, false);
+		View v = inflater.inflate(R.layout.imu, container, false);
 		
 		mPitchView = (TextView) v.findViewById(R.id.textView1);
 		mRollView = (TextView) v.findViewById(R.id.textView2);
@@ -38,13 +38,8 @@ public class ImuFragment extends SherlockFragment {
 			public void run() {
 				if(SensorFusion.IMUOutputSelection == -1)
 					mHandler.postDelayed(this, 100); // Run this again if it hasn't initialized the sensors yet
-				if(SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported
+				else if(SensorFusion.IMUOutputSelection != 2) // Check if a gyro is supported
 					mTableRow.setVisibility(View.GONE); // If not then hide the tablerow
-					if(BalanduinoActivity.settings != null)
-						BalanduinoActivity.settings.setVisible(false); // Hide the settings icon too
-					else
-						mHandler.postDelayed(this, 100);  // Wait 100ms before running the code again
-				}				
 			}
 		}, 100); // Wait 100ms before running the code
 		return v;

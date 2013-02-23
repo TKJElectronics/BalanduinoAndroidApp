@@ -25,11 +25,9 @@ package com.tkjelectronics.balanduino;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.hardware.SensorManager;
@@ -41,12 +39,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.SeekBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -108,7 +101,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	//public static boolean toggleButtonState;
 	//private static Context context;
 	
-	public static MenuItem settings;
 	private static Toast mToast;
 
 	@Override
@@ -399,7 +391,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// Inflate the menu; this adds items to the action bar if it is present.
 		MenuInflater inflater = getSupportMenuInflater();	  	
 		inflater.inflate(R.menu.menu, menu);
-		settings = menu.findItem(R.id.settings);
 		return true;
 	}
 
@@ -413,70 +404,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
 			return true;
 		case R.id.settings:
-			mUnderlinePageIndicator.setCurrentItem(ViewPagerAdapter.IMU_FRAGMENT); // Change to the IMU tab
-			// This is used to add a custom layout to an AlertDialog
-			final View setCoefficient = LayoutInflater.from(this).inflate(
-					R.layout.dialog,
-					(ViewGroup) findViewById(R.id.layout_dialog));
-			final TextView value = (TextView) setCoefficient
-					.findViewById(R.id.alertText);
-			value.setText(mSensorFusion.d
-					.format(mSensorFusion.filter_coefficient));
-			final SeekBar mSeekbar = (SeekBar) setCoefficient
-					.findViewById(R.id.seek);
-			mSeekbar.setProgress((int) (mSensorFusion.filter_coefficient * 100));
-			mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-				public void onProgressChanged(SeekBar seekBar, int progress,
-						boolean fromTouch) {
-					if (D)
-						Log.d(TAG, Integer.toString(progress));
-					mSensorFusion.tempFilter_coefficient = ((float) progress) / 100;
-					value.setText(mSensorFusion.d
-							.format(mSensorFusion.tempFilter_coefficient));
-				}
-
-				public void onStartTrackingTouch(SeekBar seekBar) {
-				}
-
-				public void onStopTrackingTouch(SeekBar seekBar) {
-				}
-			});
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle(R.string.dialog_title)
-					// Set title
-					// Add the buttons
-					.setPositiveButton(R.string.ok,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									mSensorFusion.filter_coefficient = mSensorFusion.tempFilter_coefficient;
-									if (D)
-										Log.d(TAG,
-												"Filter Coefficient was set to: "
-														+ mSensorFusion.filter_coefficient);
-									// User clicked OK button
-								}
-							})
-					.setNegativeButton(R.string.cancel,
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,
-										int id) {
-									mSensorFusion.tempFilter_coefficient = mSensorFusion.filter_coefficient;
-									// User cancelled the dialog
-								}
-							})
-					.setOnCancelListener(
-							new DialogInterface.OnCancelListener() {
-								@Override
-								public void onCancel(DialogInterface dialog) {
-									mSensorFusion.tempFilter_coefficient = mSensorFusion.filter_coefficient;
-									// User pressed back, home etc.
-								}
-							})
-					// Set custom view with Seekbar
-					.setView(setCoefficient)
-					// Create and show the AlertDialog
-					.create().show();
+			// Open up the settings dialog
+			SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
+			dialogFragment.show(getSupportFragmentManager(), null);
 			return true;
 		case android.R.id.home:
 			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.tkjelectronics.com/"));

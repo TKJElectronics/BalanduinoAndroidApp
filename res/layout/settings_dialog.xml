@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_dialog"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <TextView
+        android:id="@+id/seekText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin"
+        android:layout_marginTop="7dp"
+        android:text="@string/coefficientText" />
+
+    <LinearLayout
+        android:id="@+id/coefficientLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/seekText"
+        android:layout_alignRight="@id/seekText"
+        android:layout_below="@id/seekText"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_weight="0"
+            android:text="@string/coefficient" />
+
+        <TextView
+            android:id="@+id/alertText"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seek"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/coefficientLayout"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:max="1000" />
+
+    <RelativeLayout
+        android:id="@+id/pairWithWii"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/seekText"
+        android:layout_alignRight="@id/seekText"
+        android:layout_below="@id/seek"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp" >
+
+        <TextView
+            android:id="@+id/wiiText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/wiiText" />
+
+        <Button
+            android:id="@+id/pairButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/wiiText"
+            android:layout_margin="@dimen/margin"
+            android:text="@string/button" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/seekText"
+        android:layout_alignRight="@id/seekText"
+        android:layout_below="@id/pairWithWii"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="7dp" >
+
+        <TextView
+            android:id="@+id/restoreText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/restoreText" />
+
+        <Button
+            android:id="@+id/restore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/restoreText"
+            android:layout_margin="@dimen/margin"
+            android:text="@string/button" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="7dp"
+            android:layout_below="@id/restore" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -46,7 +46,15 @@
     <string name="settings">Settings</string>    
     
     <!-- Dialog -->
-    <string name="dialog_title">Set Filter Coefficient</string>
+    <string name="dialog_title">Settings</string>
+    
+    <string name="coefficientText">Adjust the ratio of trust between the phone\'s accelerometer (left) and gyro (right) when using the tilt-control.</string>
     <string name="ok">OK</string>
-    <string name="cancel">Cancel</string>            
+    <string name="cancel">Cancel</string>
+    
+    <string name="wiiText">Press the button below to pair with a Wiimote or a Wii U Pro Controller.</string>
+    <string name="wiiButtonText">Pair with Wiimote</string>
+    
+    <string name="restoreText">Press the button below to restore the default PID and target angle values.</string>
+    <string name="restoreButtonText">Restore values</string>
 </resources>
