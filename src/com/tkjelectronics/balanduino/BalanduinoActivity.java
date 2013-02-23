@@ -297,13 +297,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		super.onPause();
 		if (D)
 			Log.e(TAG, "- ON PAUSE -");
-		// unregister sensor listeners to prevent the activity from draining the
-		// device's battery.
+		// Unregister sensor listeners to prevent the activity from draining the device's battery.
 		mSensorFusion.unregisterListeners();
-		if(mChatService != null) { // Send stop command
+		if(mChatService != null) { // Send stop command and stop sending graph data command
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				byte[] send = "S;".getBytes();
-				mChatService.write(send, false);
+				mChatService.write("S;GS;".getBytes(), false);
 			}
 		}
 	}
