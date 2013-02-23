@@ -74,12 +74,10 @@ public class ImuFragment extends SherlockFragment {
 						CustomViewPager.setPagingEnabled(!buttonState);
 						if (buttonState) {
 							String message = "M," + BalanduinoActivity.mSensorFusion.pitch + ',' + BalanduinoActivity.mSensorFusion.roll + ";";
-							byte[] send = message.getBytes();
-							BalanduinoActivity.mChatService.write(send, false);
+							BalanduinoActivity.mChatService.write(message.getBytes(), false);
 							mButton.setText("Now sending data");
 						} else {
-							byte[] send = "S;".getBytes();
-							BalanduinoActivity.mChatService.write(send, false);
+							BalanduinoActivity.mChatService.write("S;".getBytes(), false);
 							mButton.setText("Sending stop command");
 						}
 					} else {

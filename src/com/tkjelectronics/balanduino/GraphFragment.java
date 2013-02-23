@@ -130,26 +130,20 @@ public class GraphFragment extends SherlockFragment {
 				
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-						if(((ToggleButton) v).isChecked()) {
-							byte[] send = "GB;".getBytes(); // Request data
-							BalanduinoActivity.mChatService.write(send, false);
-						} else {						
-							byte[] send = "GS;".getBytes(); // Stop sending data
-							BalanduinoActivity.mChatService.write(send, false);
-						}
+						if(((ToggleButton) v).isChecked())
+							BalanduinoActivity.mChatService.write("GB;".getBytes(), false); // Request data
+						else
+							BalanduinoActivity.mChatService.write("GS;".getBytes(), false); // Stop sending data
 					}
 				}
 			}
 		});
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-				if(mToggleButton.isChecked()) {
-					byte[] send = "GB;".getBytes(); // Request data
-					BalanduinoActivity.mChatService.write(send, false);
-				} else {						
-					byte[] send = "GS;".getBytes(); // Stop sending data
-					BalanduinoActivity.mChatService.write(send, false);
-				}
+				if(mToggleButton.isChecked())
+					BalanduinoActivity.mChatService.write("GB;".getBytes(), false); // Request data
+				else
+					BalanduinoActivity.mChatService.write("GS;".getBytes(), false); // Stop sending data
 			}
 		}
 		
@@ -202,13 +196,10 @@ public class GraphFragment extends SherlockFragment {
 		
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-				if(mToggleButton.isChecked()) {
-					byte[] send = "GB;".getBytes(); // Request data
-					BalanduinoActivity.mChatService.write(send, false);
-				} else {						
-					byte[] send = "GS;".getBytes(); // Stop sending data
-					BalanduinoActivity.mChatService.write(send, false);
-				}
+				if(mToggleButton.isChecked()) 
+					BalanduinoActivity.mChatService.write("GB;".getBytes(), false); // Request data
+				else
+					BalanduinoActivity.mChatService.write("GS;".getBytes(), false); // Stop sending data
 			}
 		}
 	}

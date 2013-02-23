@@ -18,16 +18,17 @@ public class PIDFragment extends SherlockFragment {
 	private static final boolean D = BalanduinoActivity.D;
 
 	static Button mButton;
+	
 	static TextView mKpView;
 	static TextView mKiView;
 	static TextView mKdView;
 	static TextView mTargetAngleView;
-
+	
 	static EditText mEditKp;
 	static EditText mEditKi;
 	static EditText mEditKd;
 	static EditText mEditTargetAngle;
-
+	
 	String newKpValue;
 	String newKiValue;
 	String newKdValue;
@@ -36,10 +37,10 @@ public class PIDFragment extends SherlockFragment {
 	String oldKiValue;
 	String oldKdValue;
 	String oldTargetAngleValue;
-
+	
 	Handler mHandler = new Handler();
 	int counter = 0;
-
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -75,8 +76,7 @@ public class PIDFragment extends SherlockFragment {
 							oldKpValue = newKpValue;						
 							mHandler.post(new Runnable() {
 								public void run() {
-									byte[] send = ("P," + newKpValue + ";").getBytes();
-									BalanduinoActivity.mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(("P," + newKpValue + ";").getBytes(), false);
 								}
 							});
 							counter = 25;
@@ -87,8 +87,7 @@ public class PIDFragment extends SherlockFragment {
 							oldKiValue = newKiValue;
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
-									byte[] send = ("I," + newKiValue + ";").getBytes();
-									BalanduinoActivity.mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(("I," + newKiValue + ";").getBytes(), false);
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -99,8 +98,7 @@ public class PIDFragment extends SherlockFragment {
 							oldKdValue = newKdValue;
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
-									byte[] send = ("D," + newKdValue + ";").getBytes();
-									BalanduinoActivity.mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(("D," + newKdValue + ";").getBytes(), false);
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -111,8 +109,7 @@ public class PIDFragment extends SherlockFragment {
 							oldTargetAngleValue = newTargetAngleValue;
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
-									byte[] send = ("T," + newTargetAngleValue + ";").getBytes();
-									BalanduinoActivity.mChatService.write(send, false);
+									BalanduinoActivity.mChatService.write(("T," + newTargetAngleValue + ";").getBytes(), false);
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -121,8 +118,7 @@ public class PIDFragment extends SherlockFragment {
 					if(counter != 0) {
 						mHandler.postDelayed(new Runnable() {
 							public void run() {
-								byte[] send = "GP;".getBytes();
-								BalanduinoActivity.mChatService.write(send, false);
+								BalanduinoActivity.mChatService.write("GP;".getBytes(), false);
 							}
 						}, counter); // Wait before sending the message
 						if (D) 
@@ -166,12 +162,12 @@ public class PIDFragment extends SherlockFragment {
 				Log.e(TAG, "mChatService == null");
 			return;
 		}
-		if(mButton == null)
-			return;
-		if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-			mButton.setText(R.string.updateValues);
-		else
-			mButton.setText(R.string.button);
+		if(mButton != null) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+				mButton.setText(R.string.updateValues);
+			else
+				mButton.setText(R.string.button);
+		}
 	}
 	
 	@Override
@@ -189,7 +185,7 @@ public class PIDFragment extends SherlockFragment {
 				mEditKd.setText(BalanduinoActivity.dValue);
 				mEditTargetAngle.setText(BalanduinoActivity.targetAngleValue);
 			}
-		}
-		updateButton();
+			updateButton();
+		}		
 	}
 }

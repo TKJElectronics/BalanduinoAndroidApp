@@ -78,13 +78,11 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 				if (BalanduinoActivity.mChatService == null)
 					return;
 				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.JOYSTICK_FRAGMENT) {
-					if(joystickReleased) {
-						byte[] send = "S;".getBytes();
-						BalanduinoActivity.mChatService.write(send, false);
-					} else {
+					if(joystickReleased)
+						BalanduinoActivity.mChatService.write("S;".getBytes(), false);
+					else {
 						String message = "J," + d.format(xValue) + ',' + d.format(yValue) + ";";
-						byte[] send = message.getBytes();
-						BalanduinoActivity.mChatService.write(send, false);
+						BalanduinoActivity.mChatService.write(message.getBytes(), false);
 					}
 				}
 			}
