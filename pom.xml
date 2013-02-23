@@ -96,6 +96,9 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
+					<excludes>
+						<exclude>**/*VoiceRecognition*.java</exclude>
+                	</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
