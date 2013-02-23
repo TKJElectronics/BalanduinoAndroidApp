@@ -4,21 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/seekText"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/seekTextLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/margin"
-        android:layout_marginTop="7dp"
-        android:text="@string/coefficientText" />
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin" >
+
+        <TextView
+            android:id="@+id/seekText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="@dimen/margin"
+            android:text="@string/coefficientText" />
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/coefficientLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/seekText"
-        android:layout_alignRight="@id/seekText"
-        android:layout_below="@id/seekText"
+        android:layout_alignLeft="@id/seekTextLayout"
+        android:layout_alignRight="@id/seekTextLayout"
+        android:layout_below="@id/seekTextLayout"
         android:orientation="horizontal" >
 
         <TextView
@@ -51,8 +59,8 @@
         android:id="@+id/pairWithWii"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/seekText"
-        android:layout_alignRight="@id/seekText"
+        android:layout_alignLeft="@id/seekTextLayout"
+        android:layout_alignRight="@id/seekTextLayout"
         android:layout_below="@id/seek"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="7dp" >
@@ -75,8 +83,8 @@
     <RelativeLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/seekText"
-        android:layout_alignRight="@id/seekText"
+        android:layout_alignLeft="@id/seekTextLayout"
+        android:layout_alignRight="@id/seekTextLayout"
         android:layout_below="@id/pairWithWii"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="7dp" >

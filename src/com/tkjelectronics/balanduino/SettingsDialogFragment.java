@@ -40,7 +40,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 				
 		if(SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide seekbar and text
 			view.findViewById(R.id.seekText).setVisibility(View.GONE);
-			seekValue.setVisibility(View.GONE);
+			view.findViewById(R.id.coefficientLayout).setVisibility(View.GONE);
 			mSeekbar.setVisibility(View.GONE);
 		}
 		
