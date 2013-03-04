@@ -9,28 +9,33 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class SettingsDialogFragment extends SherlockDialogFragment {
 	Button mRestoreButton;
 	Button mPairButton;
+	int maxAngle;
+	int maxTurning;
+	boolean backToSpot;
 
 	public SettingsDialogFragment() {
 	}
 	
 	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {		
+	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		View view = getSherlockActivity().getLayoutInflater().inflate(R.layout.settings_dialog, null);
 		
-		final TextView seekValue = (TextView) view.findViewById(R.id.alertText);
-		seekValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.filter_coefficient));
-		final SeekBar mSeekbar = (SeekBar) view.findViewById(R.id.seek);
-		mSeekbar.setProgress((int) (BalanduinoActivity.mSensorFusion.filter_coefficient * mSeekbar.getMax()));
-		mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+		final TextView coefficientValue = (TextView) view.findViewById(R.id.coefficientValue);
+		coefficientValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.filter_coefficient));
+		final SeekBar mSeekbarCoefficient = (SeekBar) view.findViewById(R.id.coefficientSeekBar);
+		mSeekbarCoefficient.setProgress((int) (BalanduinoActivity.mSensorFusion.filter_coefficient * mSeekbarCoefficient.getMax()));
+		mSeekbarCoefficient.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-				BalanduinoActivity.mSensorFusion.tempFilter_coefficient = ((float) progress) / mSeekbar.getMax();
-				seekValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.tempFilter_coefficient));
+				BalanduinoActivity.mSensorFusion.tempFilter_coefficient = ((float) progress) / mSeekbarCoefficient.getMax();
+				coefficientValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.tempFilter_coefficient));
 			}
 			public void onStartTrackingTouch(SeekBar seekBar) {
 			}
@@ -41,16 +46,61 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 		if(SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide seekbar and text
 			view.findViewById(R.id.seekText).setVisibility(View.GONE);
 			view.findViewById(R.id.coefficientLayout).setVisibility(View.GONE);
-			mSeekbar.setVisibility(View.GONE);
+			mSeekbarCoefficient.setVisibility(View.GONE);
 		}
+		
+		final TextView angleValue = (TextView) view.findViewById(R.id.angleValue);
+		maxAngle = BalanduinoActivity.maxAngle;
+		angleValue.setText(Integer.toString(maxAngle));
+		final SeekBar mSeekbarAngle = (SeekBar) view.findViewById(R.id.angleSeekBar);
+		mSeekbarAngle.setProgress(maxAngle);
+		mSeekbarAngle.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+				maxAngle = progress+1; // The seekbar doesn't allow to set the mimimum value, so we will add 1
+				angleValue.setText(Integer.toString(maxAngle));
+			}
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+		});
+		
+		final TextView turningValue = (TextView) view.findViewById(R.id.turningValue);
+		maxTurning = BalanduinoActivity.maxTurning;
+		turningValue.setText(Integer.toString(maxTurning));
+		final SeekBar mSeekbarTurning = (SeekBar) view.findViewById(R.id.turningSeekBar);
+		mSeekbarTurning.setProgress(maxTurning);
+		mSeekbarTurning.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
+				maxTurning = progress+1; // The seekbar doesn't allow to set the mimimum value, so we will add 1
+				turningValue.setText(Integer.toString(maxTurning));
+			}
+			public void onStartTrackingTouch(SeekBar seekBar) {
+			}
+			public void onStopTrackingTouch(SeekBar seekBar) {
+			}
+		});
+		
+		CheckBox mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
+		backToSpot = BalanduinoActivity.backToSpot;
+		mCheckBox.setChecked(backToSpot);
+		mCheckBox.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				backToSpot = ((CheckBox) v).isChecked();
+			}
+		});
 		
 		mRestoreButton = (Button) view.findViewById(R.id.restore);
 		mRestoreButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (BalanduinoActivity.mChatService != null) {
-					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-						BalanduinoActivity.mChatService.write("R;".getBytes(), false);
+					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+						BalanduinoActivity.mChatService.write(BalanduinoActivity.restoreDefaultValues.getBytes());
+						Toast.makeText(getSherlockActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
+						dismiss();
+					}
 				}
 			}
 		});
@@ -59,8 +109,10 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			@Override
 			public void onClick(View v) {
 				if (BalanduinoActivity.mChatService != null) {
-					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-						BalanduinoActivity.mChatService.write("W;".getBytes(), false);
+					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendPairWithWii.getBytes());						
+						dismiss();
+					}
 				}
 			}
 		});
@@ -83,6 +135,15 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 					public void onClick(DialogInterface dialog, int id) {
 						// User clicked OK button
 						BalanduinoActivity.mSensorFusion.filter_coefficient = BalanduinoActivity.mSensorFusion.tempFilter_coefficient;
+						BalanduinoActivity.maxAngle = maxAngle;
+						BalanduinoActivity.maxTurning = maxTurning;
+						BalanduinoActivity.backToSpot = backToSpot;
+						if (BalanduinoActivity.mChatService != null) {
+							if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+								int val = backToSpot? 1 : 0;
+								BalanduinoActivity.mChatService.write((BalanduinoActivity.setMaxAngle + Integer.toString(maxAngle) + ";" + BalanduinoActivity.setMaxTurning + Integer.toString(maxTurning) + ";" + BalanduinoActivity.setBackToSpot + Integer.toString(val) + ";" + BalanduinoActivity.getSettings).getBytes());
+							}								
+						}
 					}
 				})
 				.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
