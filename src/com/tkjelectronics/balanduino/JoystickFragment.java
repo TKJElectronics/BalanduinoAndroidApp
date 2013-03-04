@@ -32,7 +32,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 		mJoystick.setOnJoystickChangeListener(this);
 		
 		mText1 = (TextView)v.findViewById(R.id.textView1);
-		mText1.setText("x: 0 y: 0");
+		mText1.setText(R.string.defaultJoystickValue);
 		return v;
 	}
 	
@@ -79,10 +79,10 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 					return;
 				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.JOYSTICK_FRAGMENT) {
 					if(joystickReleased)
-						BalanduinoActivity.mChatService.write("S;".getBytes(), false);
+						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
 					else {
-						String message = "J," + d.format(xValue) + ',' + d.format(yValue) + ";";
-						BalanduinoActivity.mChatService.write(message.getBytes(), false);
+						String message = BalanduinoActivity.sendJoystickValues + d.format(xValue) + ',' + d.format(yValue) + ";";
+						BalanduinoActivity.mChatService.write(message.getBytes());
 					}
 				}
 			}
