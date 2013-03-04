@@ -26,7 +26,7 @@
 		<apache.maven.version>3.0</apache.maven.version>
 		<maven.release.version>2.4</maven.release.version>
 		<java.version>1.6</java.version>
-		<jayway.maven.version>3.5.0</jayway.maven.version>
+		<jayway.maven.version>3.5.1</jayway.maven.version>
 
 		<antrun.version>1.7</antrun.version>
 		<jarsigner.version>1.2</jarsigner.version>
@@ -96,9 +96,6 @@
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
-					<excludes>
-						<exclude>**/*VoiceRecognition*.java</exclude>
-                	</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -152,11 +149,12 @@
 					<version>${vpi.version}</version>
 					<type>apklib</type>
 				</dependency>
-				<!-- Run "mvn install:install-file -Dfile=libs/GraphView-3.0-SNAPSHOT.jar -DgroupId=com.jjoe64 -DartifactId=graphview -Dversion=3.0-SNAPSHOT -Dpackaging=jar" first to install the library -->
 				<dependency>
 					<groupId>com.jjoe64</groupId>
 					<artifactId>graphview</artifactId>
 					<version>3.1</version>
+					<scope>system</scope>
+					<systemPath>${project.basedir}/libs/GraphView-3.1.jar</systemPath>
 				</dependency>
 			</dependencies>
 		</profile>
