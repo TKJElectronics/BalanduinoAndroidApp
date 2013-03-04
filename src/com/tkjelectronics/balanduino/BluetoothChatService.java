@@ -410,7 +410,7 @@ public class BluetoothChatService {
                 		
                     	// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
-                	}
+                    }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseSettings) && splitMessage.length == BalanduinoActivity.responseSettingsLength) {
                     	BalanduinoActivity.backToSpot = splitMessage[1].trim().equals("1");
                 		BalanduinoActivity.maxAngle = Integer.parseInt(splitMessage[2].trim());
@@ -419,7 +419,7 @@ public class BluetoothChatService {
                 		
                     	// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
-                	}
+                    }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseInfo) && splitMessage.length == BalanduinoActivity.responseInfoLength) {
                     	BalanduinoActivity.firmwareVersion = splitMessage[1].trim();
                 		BalanduinoActivity.mcu = splitMessage[2].trim();
@@ -429,7 +429,7 @@ public class BluetoothChatService {
                     	
                     	// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
-                	}
+                    }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseIMU) && splitMessage.length == BalanduinoActivity.responseIMULength) {
                 		BalanduinoActivity.accValue = splitMessage[1].trim();
                 		BalanduinoActivity.gyroValue = splitMessage[2].trim();
@@ -438,14 +438,13 @@ public class BluetoothChatService {
                 		
                 		// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
-                	}
+                    }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responsePairWii) && splitMessage.length == BalanduinoActivity.responsePairWiiLength) {
                     	BalanduinoActivity.pairingWithWii = true;
                     	
                     	// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                     }
-                    	
                 } catch (IOException e) {
                 	if(D)
                 		Log.e(TAG, "disconnected", e);                    

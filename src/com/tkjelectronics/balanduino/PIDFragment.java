@@ -162,7 +162,7 @@ public class PIDFragment extends SherlockFragment {
 				mButton.setText(R.string.updateValues);
 			else
 				mButton.setText(R.string.button);
-		}		
+		}
 	}
 	
 	@Override
