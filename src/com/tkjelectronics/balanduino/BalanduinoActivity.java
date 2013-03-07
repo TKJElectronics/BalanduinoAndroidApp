@@ -158,10 +158,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		// If the adapter is null, then Bluetooth is not supported
 		if (mBluetoothAdapter == null) {
-			if(mToast != null)
-				mToast.cancel(); // Close the toast if it's already open
-			mToast = Toast.makeText(getApplicationContext(),"Bluetooth is not available", Toast.LENGTH_LONG);
-			mToast.show();
+			showToast("Bluetooth is not available", Toast.LENGTH_LONG);
 			finish();
 			return;
 		}
@@ -400,19 +397,25 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	private void showToast(String message, int duration) {
+		if(mToast != null)
+			mToast.cancel(); // Close the toast if it's already open
+		mToast = Toast.makeText(getApplicationContext(),message,duration);
+		mToast.show();
+	}
 
 	// The Handler class that gets information back from the BluetoothChatService
 	static class BluetoothHandler extends Handler {
 		private final WeakReference<BalanduinoActivity>mActivity;
 		private final BalanduinoActivity mBalanduinoActivity;		
-		private String mConnectedDeviceName = null; // Name of the connected device
+		private String mConnectedDeviceName; // Name of the connected device
 		BluetoothHandler(BalanduinoActivity activity) {
 			mActivity = new WeakReference<BalanduinoActivity>(activity);
 			mBalanduinoActivity = mActivity.get();
         }
 		@Override
 		public void handleMessage(Message msg) {
-			Context context = mBalanduinoActivity.getApplicationContext();
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
 				mBalanduinoActivity.supportInvalidateOptionsMenu();
@@ -420,10 +423,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					if(mBalanduinoActivity.mToast != null)
-						mBalanduinoActivity.mToast.cancel(); // Close the toast if it's already open
-					mBalanduinoActivity.mToast = Toast.makeText(context,mBalanduinoActivity.getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
-					mBalanduinoActivity.mToast.show();
+					mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
 					if(mChatService == null)
 						return;
 					Handler myHandler = new Handler();
@@ -471,10 +471,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				}
 				if(pairingWithWii) {
 					pairingWithWii = false;
-					if(mBalanduinoActivity.mToast != null)
-						mBalanduinoActivity.mToast.cancel(); // Close the toast if it's already open
-					mBalanduinoActivity.mToast = Toast.makeText(context,"Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
-					mBalanduinoActivity.mToast.show();
+					mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
 				}
 				break;
 			case MESSAGE_DEVICE_NAME:
@@ -485,10 +482,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				mBalanduinoActivity.supportInvalidateOptionsMenu();				
 				PIDFragment.updateButton();
 				InfoFragment.updateButton();
-				if(mBalanduinoActivity.mToast != null)
-					mBalanduinoActivity.mToast.cancel(); // Close the toast if it's already open
-				mBalanduinoActivity.mToast = Toast.makeText(context,msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
-				mBalanduinoActivity.mToast.show();
+				mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				break;
 			case MESSAGE_RETRY:
 				if(D)
@@ -517,10 +511,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				// User did not enable Bluetooth or an error occured
 				if (D)
 					Log.d(TAG, "BT not enabled");
-				if(mToast != null)
-					mToast.cancel(); // Close the toast if it's already open
-				mToast = Toast.makeText(getApplicationContext(),R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT);
-				mToast.show();				
+				showToast(getString(R.string.bt_not_enabled_leaving), Toast.LENGTH_SHORT);				
 				finish();
 			}
 		}
@@ -536,10 +527,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object
 			BluetoothChatService.nRetries = 0; // Reset retry counter			
 			mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
-			if(mToast != null)
-				mToast.cancel(); // Close the toast if it's already open
-			mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
-			mToast.show();			
+			showToast(getString(R.string.connecting), Toast.LENGTH_SHORT);
 		}		
 	}
 }
