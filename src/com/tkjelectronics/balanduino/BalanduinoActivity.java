@@ -30,6 +30,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -224,26 +225,25 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if (!mBluetoothAdapter.isEnabled()) {
 			if (D)
 				Log.d(TAG, "Request enable BT");
-			Intent enableIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-			// Otherwise, setup the chat session
-		} else {
+		} else { // Otherwise, setup the chat session
 			if (mChatService == null)
 				setupBTService();
 		}
-		// Read the stored value for FILTER_COEFFICIENT
-		String filterCoefficient = PreferenceManager.getDefaultSharedPreferences(this).getString("filterCoefficient", null);		
+		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // Create SharedPreferences instance		
+		String filterCoefficient = preferences.getString("filterCoefficient", null); // Read the stored value for filter coefficient
 		if (filterCoefficient != null) {
 			mSensorFusion.filter_coefficient = Float.parseFloat(filterCoefficient);
 			mSensorFusion.tempFilter_coefficient = mSensorFusion.filter_coefficient;
 		}
 		// Read the previous back to spot value
-		backToSpot = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("backToSpot", true); // Back to spot is true by default
+		backToSpot = preferences.getBoolean("backToSpot", true); // Back to spot is true by default
 		// Read the previous max angle
-		maxAngle = PreferenceManager.getDefaultSharedPreferences(this).getInt("maxAngle", 7); // Seven is the default value
+		maxAngle = preferences.getInt("maxAngle", 7); // Seven is the default value
 		// Read the previous max turning value
-		maxTurning = PreferenceManager.getDefaultSharedPreferences(this).getInt("maxTurning", 20); // Twenty is the default value
+		maxTurning = preferences.getInt("maxTurning", 20); // Twenty is the default value
 	}
 
 	@Override
