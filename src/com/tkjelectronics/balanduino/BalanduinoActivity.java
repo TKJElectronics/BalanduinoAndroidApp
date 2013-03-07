@@ -23,7 +23,8 @@
 
 package com.tkjelectronics.balanduino;
 
-import android.annotation.SuppressLint;
+import java.lang.ref.WeakReference;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -71,9 +72,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
-
-	// Name of the connected device
-	private String mConnectedDeviceName = null;
+	
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
 	// Member object for the chat services
@@ -82,7 +81,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	private SensorManager mSensorManager = null;
 	
 	boolean btSecure; // If it's a new device we will pair with the device	
-	BluetoothDevice btDevice; // The BLuetoothDevice object
+	BluetoothDevice btDevice; // The BluetoothDevice object
 	
 	private UnderlinePageIndicator mUnderlinePageIndicator;
 	
@@ -147,7 +146,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public final static int responseIMULength = 4;
 	public final static int responsePairWiiLength = 1;
 	
-	private static Toast mToast;
+	private Toast mToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -305,8 +304,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	private void setupBTService() {
 		if (D)
 			Log.d(TAG, "setupBTService()");
-		// Initialize the BluetoothChatService to perform bluetooth connections
-		mChatService = new BluetoothChatService(this, mHandlerBluetooth);
+		// Initialize the BluetoothChatService to perform Bluetooth connections
+		mChatService = new BluetoothChatService(this, new BluetoothHandler(this));
 	}
 
 	@Override
@@ -402,36 +401,42 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	// The Handler that gets information back from the BluetoothChatService
-	@SuppressLint("HandlerLeak")
-	private final Handler mHandlerBluetooth = new Handler() {
+	// The Handler class that gets information back from the BluetoothChatService
+	static class BluetoothHandler extends Handler {
+		private final WeakReference<BalanduinoActivity>mActivity;
+		private final BalanduinoActivity mBalanduinoActivity;		
+		private String mConnectedDeviceName = null; // Name of the connected device
+		BluetoothHandler(BalanduinoActivity activity) {
+			mActivity = new WeakReference<BalanduinoActivity>(activity);
+			mBalanduinoActivity = mActivity.get();
+        }
 		@Override
 		public void handleMessage(Message msg) {
+			Context context = mBalanduinoActivity.getApplicationContext();
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
-				supportInvalidateOptionsMenu();
+				mBalanduinoActivity.supportInvalidateOptionsMenu();
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					if(mToast != null)
-						mToast.cancel(); // Close the toast if it's already open
-					mToast = Toast.makeText(getApplicationContext(),getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
-					mToast.show();
-					if (mChatService == null) {
+					if(mBalanduinoActivity.mToast != null)
+						mBalanduinoActivity.mToast.cancel(); // Close the toast if it's already open
+					mBalanduinoActivity.mToast = Toast.makeText(context,mBalanduinoActivity.getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
+					mBalanduinoActivity.mToast.show();
+					if(mChatService == null)
 						return;
-					}		
 					Handler myHandler = new Handler();
 					myHandler.postDelayed(new Runnable(){
 				        public void run() {
-							mChatService.write((getPIDValues + getSettings + getInfo).getBytes());
+				        	mChatService.write((getPIDValues + getSettings + getInfo).getBytes());
 				        }
 				    }, 1000); // Wait 1 second before sending the message
 					if(GraphFragment.mToggleButton != null) {
 						if(GraphFragment.mToggleButton.isChecked() && currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
 							myHandler.postDelayed(new Runnable(){
 						        public void run() {
-									mChatService.write(imuBegin.getBytes()); // Request data
+						        	mChatService.write(imuBegin.getBytes()); // Request data
 						        }
 						    }, 1000); // Wait 1 second before sending the message
 						} else {
@@ -454,9 +459,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					newPIDValues = false;
 					PIDFragment.updateView();
 				}
-				if(newSettings) {
+				if(newSettings)
 					newSettings = false;
-				}
 				if(newInfo) {
 					newInfo = false;
 					InfoFragment.updateView();
@@ -467,35 +471,33 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				}
 				if(pairingWithWii) {
 					pairingWithWii = false;
-					if(mToast != null)
-						mToast.cancel(); // Close the toast if it's already open
-					mToast = Toast.makeText(getApplicationContext(),"Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
-					mToast.show();
+					if(mBalanduinoActivity.mToast != null)
+						mBalanduinoActivity.mToast.cancel(); // Close the toast if it's already open
+					mBalanduinoActivity.mToast = Toast.makeText(context,"Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
+					mBalanduinoActivity.mToast.show();
 				}
 				break;
 			case MESSAGE_DEVICE_NAME:
-				// save the connected device's name
+				// Save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
 				break;
 			case MESSAGE_TOAST:				
-				supportInvalidateOptionsMenu();
+				mBalanduinoActivity.supportInvalidateOptionsMenu();				
 				PIDFragment.updateButton();
 				InfoFragment.updateButton();
-				if(mToast != null)
-					mToast.cancel(); // Close the toast if it's already open
-				mToast = Toast.makeText(getApplicationContext(),msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
-				mToast.show();
+				if(mBalanduinoActivity.mToast != null)
+					mBalanduinoActivity.mToast.cancel(); // Close the toast if it's already open
+				mBalanduinoActivity.mToast = Toast.makeText(context,msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
+				mBalanduinoActivity.mToast.show();
 				break;
 			case MESSAGE_RETRY:
-				if(btDevice != null) {
-					if(D)
-						Log.e(TAG, "MESSAGE_RETRY");
-					mChatService.connect(btDevice, btSecure);
-				}
+				if(D)
+					Log.e(TAG, "MESSAGE_RETRY");
+				mBalanduinoActivity.connectDevice(null, true);
 				break;
 			}
 		}
-	};
+	}	
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (D)
@@ -504,7 +506,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		case REQUEST_CONNECT_DEVICE:
 			// When DeviceListActivity returns with a device to connect to
 			if (resultCode == Activity.RESULT_OK)
-				connectDevice(data);
+				connectDevice(data,false);
 			break;
 		case REQUEST_ENABLE_BT:
 			// When the request to enable Bluetooth returns
@@ -524,18 +526,20 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		}
 	}
 
-	private void connectDevice(Intent data) {
-		// Get the device MAC address
-		String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-		btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
-		// Get the BLuetoothDevice object
-		btDevice = mBluetoothAdapter.getRemoteDevice(address);
-		BluetoothChatService.nRetries = 0; // Reset retry counter
-		// Attempt to connect to the device
-		mChatService.connect(btDevice, btSecure);
-		if(mToast != null)
-			mToast.cancel(); // Close the toast if it's already open
-		mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
-		mToast.show();
+	private void connectDevice(Intent data, boolean retry) {
+		if(retry) {
+			if(btDevice != null)				
+				mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
+		} else { // It's a new connection
+			String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address
+			btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device			
+			btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object
+			BluetoothChatService.nRetries = 0; // Reset retry counter			
+			mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
+			if(mToast != null)
+				mToast.cancel(); // Close the toast if it's already open
+			mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
+			mToast.show();			
+		}		
 	}
 }
