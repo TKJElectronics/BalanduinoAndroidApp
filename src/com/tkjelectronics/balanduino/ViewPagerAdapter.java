@@ -14,6 +14,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 	public static final int JOYSTICK_FRAGMENT = 1;
 	public static final int GRAPH_FRAGMENT = 2;
 	public static final int PID_FRAGMENT = 3;
+	public static final int INFO_FRAGMENT = 4;
 
 	public ViewPagerAdapter(FragmentManager fm) {
 		super(fm);

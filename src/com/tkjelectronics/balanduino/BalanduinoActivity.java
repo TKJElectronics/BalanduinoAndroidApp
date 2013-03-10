@@ -53,9 +53,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
-public class BalanduinoActivity extends SherlockFragmentActivity implements
-		ActionBar.TabListener/*, VoiceRecognitionFragment.signalListener*/ {
-
+public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private static final String TAG = "Balanduino";
 	public static final boolean D = false;
 
@@ -306,31 +304,30 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if(D)
-			Log.d(TAG,"onTabSelected: " + tab.getPosition());
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
+			Log.d(TAG,"onTabSelected: " + tab.getPosition());		
 		currentTabSelected = tab.getPosition();
-		mUnderlinePageIndicator.setCurrentItem(currentTabSelected);
+		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
-		if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && GraphFragment.mToggleButton != null) {
+		if(currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && GraphFragment.mToggleButton != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				if(GraphFragment.mToggleButton.isChecked())
 					mChatService.write(imuBegin.getBytes()); // Request data
 				else
 					mChatService.write(imuStop.getBytes()); // Stop sending data
 			}
+		} else if(currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT && mChatService != null) {
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+				mChatService.write(getInfo.getBytes()); // Update info
 		}
 	}
 
 	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if(D)
 			Log.d(TAG,"onTabUnselected: " + tab.getPosition());
-		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT/* || tab.getPosition() == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT*/) && mChatService != null) { // Send stop command if the user selects another tab
+		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT) && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(sendStop.getBytes());
 		} else if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
