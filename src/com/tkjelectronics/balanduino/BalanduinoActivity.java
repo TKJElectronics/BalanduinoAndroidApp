@@ -15,10 +15,6 @@
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
  * 
- * The fusion algorythme is from this guide: http://www.thousand-thoughts.com/2012/03/android-sensor-fusion-tutorial/
- * By Paul Lawitzki
- * The Bluetooth communication is based on the BluetoothChat sample included in the Android SDK, but with some improvements
- * 
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
