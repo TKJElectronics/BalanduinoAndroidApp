@@ -14,7 +14,7 @@
 	<prerequisites>
 		<maven>3.0.3</maven>
 	</prerequisites>
-
+	
 	<properties>
 		<android.version>4.1.1.4</android.version>
 		<android.platform>16</android.platform>
@@ -23,7 +23,8 @@
 		<abs.version>4.2.0</abs.version>
 		<vpi.version>2.4.1</vpi.version>
 
-		<apache.maven.version>3.0</apache.maven.version>
+		<maven.resources.version>2.6</maven.resources.version>
+		<maven.compiler.version>3.0</maven.compiler.version>
 		<maven.release.version>2.4</maven.release.version>
 		<java.version>1.6</java.version>
 		<jayway.maven.version>3.5.1</jayway.maven.version>
@@ -89,10 +90,35 @@
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
+		    <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>${maven.resources.version}</version>
+				<executions>
+					<execution>
+						<!-- Use the copy resources instead of resources, which adds it to the eclipse buildpath.
+							This is used to update accessory_filter.xml -->
+						<phase>initialize</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.basedir}</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.basedir}/src/templates</directory>
+									<targetPath>${project.basedir}</targetPath>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${apache.maven.version}</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
