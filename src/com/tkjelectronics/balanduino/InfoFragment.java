@@ -93,5 +93,10 @@ public class InfoFragment extends SherlockFragment {
 		// When the user resumes the view, then update the values
 		updateView();
 		updateButton();
+		
+		if (BalanduinoActivity.mChatService != null) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT)
+				BalanduinoActivity.mChatService.write(BalanduinoActivity.getInfo.getBytes());
+		}
 	}
 }
