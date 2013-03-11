@@ -90,7 +90,7 @@
 		<finalName>${project.artifactId}-${project.version}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
-		    <plugin>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>${maven.resources.version}</version>
