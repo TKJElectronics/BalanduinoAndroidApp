@@ -56,9 +56,10 @@ public class BluetoothChatService {
 	public static final int STATE_CONNECTED = 2; // now connected to a remote device
 	
 	boolean stopReading; // This is used to stop it from reading on the inpuStream
+	public boolean newConnection; // Prevent it from calling connectionFailed() if it trying to start a new connection
 	
 	private static final int MAXRETRIES = 100; // I know this might seem way too high! But it seems to work pretty well
-	public static int nRetries = 0;
+	public int nRetries = 0;
 
 	/**
 	 * Constructor. Prepares a new BluetoothChat session.
@@ -242,10 +243,10 @@ public class BluetoothChatService {
 			bundle.putString(BalanduinoActivity.TOAST,"Unable to connect to device");
 			msg.setData(bundle);			
 		}
-		// Send message
-		mHandler.sendMessage(msg);		
-		// Start the service over to restart listening mode
-		BluetoothChatService.this.start();
+		if(!newConnection) {			
+			mHandler.sendMessage(msg); // Send message			
+			BluetoothChatService.this.start(); // Start the service over to restart listening mode
+		}
 	}
 
 	/**
@@ -313,6 +314,7 @@ public class BluetoothChatService {
 
 			// Always cancel discovery because it will slow down a connection
 			mAdapter.cancelDiscovery();
+			newConnection = false;
 
 			// Make a connection to the BluetoothSocket
 			try {
@@ -328,7 +330,8 @@ public class BluetoothChatService {
 						Log.e(TAG, "unable to close() " + mSocketType
 							+ " socket during connection failure", e2);
 				}
-				connectionFailed();
+				if(!newConnection)
+					connectionFailed();
 				return;
 			}
 

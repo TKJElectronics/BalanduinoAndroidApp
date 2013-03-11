@@ -512,13 +512,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	private void connectDevice(Intent data, boolean retry) {
 		if(retry) {
-			if(btDevice != null)				
+			if(btDevice != null) {
+				mChatService.start(); // This will stop all the running threads
 				mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
+			}
 		} else { // It's a new connection
+			mChatService.newConnection = true;
+			mChatService.start(); // This will stop all the running threads
 			String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address
 			btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device			
 			btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object
-			BluetoothChatService.nRetries = 0; // Reset retry counter			
+			mChatService.nRetries = 0; // Reset retry counter
 			mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
 			showToast(getString(R.string.connecting), Toast.LENGTH_SHORT);
 		}		
