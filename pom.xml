@@ -107,6 +107,8 @@
 				<configuration>
 					<preparationGoals>clean verify -Prelease</preparationGoals>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<localCheckout>true</localCheckout>
+					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
 			<plugin>
