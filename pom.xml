@@ -212,6 +212,31 @@
 			<build>
 				<plugins>
 					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${maven.resources.version}</version>
+						<executions>
+							<execution>
+								<!-- Use the copy resources instead of resources, which adds it to the eclipse buildpath.
+									This is used to update accessory_filter.xml -->
+								<phase>initialize</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.basedir}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${project.basedir}/src/templates</directory>
+											<targetPath>${project.basedir}</targetPath>
+											<filtering>true</filtering>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<!-- Sign the apk -->
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-jarsigner-plugin</artifactId>
