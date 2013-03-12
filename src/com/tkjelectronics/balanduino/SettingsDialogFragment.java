@@ -39,9 +39,6 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 	int maxAngle;
 	int maxTurning;
 	boolean backToSpot;
-
-	public SettingsDialogFragment() {
-	}
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
