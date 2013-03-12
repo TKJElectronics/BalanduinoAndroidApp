@@ -1,3 +1,22 @@
+/*************************************************************************************
+ * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ *
+ * This software may be distributed and modified under the terms of the GNU
+ * General Public License version 2 (GPL2) as published by the Free Software
+ * Foundation and appearing in the file GPL2.TXT included in the packaging of
+ * this file. Please note that GPL2 Section 2[b] requires that all works based
+ * on this software must also be made publicly available under the terms of
+ * the GPL2 ("Copyleft").
+ *
+ * Contact information
+ * -------------------
+ *
+ * Kristian Lauszus, TKJ Electronics
+ * Web      :  http://www.tkjelectronics.com
+ * e-mail   :  kristianl@tkjelectronics.com
+ * 
+ ************************************************************************************/
+
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
@@ -76,7 +95,7 @@ public class PIDFragment extends SherlockFragment {
 							oldKpValue = newKpValue;						
 							mHandler.post(new Runnable() {
 								public void run() {
-									BalanduinoActivity.mChatService.write(("P," + newKpValue + ";").getBytes(), false);
+									BalanduinoActivity.mChatService.write((BalanduinoActivity.setPValue + newKpValue + ";").getBytes());
 								}
 							});
 							counter = 25;
@@ -87,7 +106,7 @@ public class PIDFragment extends SherlockFragment {
 							oldKiValue = newKiValue;
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
-									BalanduinoActivity.mChatService.write(("I," + newKiValue + ";").getBytes(), false);
+									BalanduinoActivity.mChatService.write((BalanduinoActivity.setIValue + newKiValue + ";").getBytes());
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -98,7 +117,7 @@ public class PIDFragment extends SherlockFragment {
 							oldKdValue = newKdValue;
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
-									BalanduinoActivity.mChatService.write(("D," + newKdValue + ";").getBytes(), false);
+									BalanduinoActivity.mChatService.write((BalanduinoActivity.setDValue + newKdValue + ";").getBytes());
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -109,7 +128,7 @@ public class PIDFragment extends SherlockFragment {
 							oldTargetAngleValue = newTargetAngleValue;
 							mHandler.postDelayed(new Runnable() {
 								public void run() {
-									BalanduinoActivity.mChatService.write(("T," + newTargetAngleValue + ";").getBytes(), false);
+									BalanduinoActivity.mChatService.write((BalanduinoActivity.setTargetAngle + newTargetAngleValue + ";").getBytes());
 								}
 							}, counter); // Wait before sending the message						
 							counter += 25;
@@ -118,11 +137,11 @@ public class PIDFragment extends SherlockFragment {
 					if(counter != 0) {
 						mHandler.postDelayed(new Runnable() {
 							public void run() {
-								BalanduinoActivity.mChatService.write("GP;".getBytes(), false);
+								BalanduinoActivity.mChatService.write(BalanduinoActivity.getPIDValues.getBytes());
 							}
 						}, counter); // Wait before sending the message
 						if (D) 
-							Log.i(TAG, "Kp Value: " + newKpValue + "," + newKiValue + "," + newKdValue + "," + newTargetAngleValue);
+							Log.i(TAG, newKpValue + "," + newKiValue + "," + newKdValue + "," + newTargetAngleValue);
 					}
 					counter = 0; // Reset counter															
 				}
@@ -157,12 +176,7 @@ public class PIDFragment extends SherlockFragment {
 	}
 	
 	public static void updateButton() {
-		if (BalanduinoActivity.mChatService == null) {
-			if (D)
-				Log.e(TAG, "mChatService == null");
-			return;
-		}
-		if(mButton != null) {
+		if (BalanduinoActivity.mChatService != null && mButton != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mButton.setText(R.string.updateValues);
 			else

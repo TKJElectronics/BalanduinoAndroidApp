@@ -14,19 +14,21 @@
 	<prerequisites>
 		<maven>3.0.3</maven>
 	</prerequisites>
-
+	
 	<properties>
-		<android.version>4.1.1.4</android.version>
-		<android.platform>16</android.platform>
-		<android-support.version>r7</android-support.version>
+		<android.version>4.2.2_r2</android.version>
+		<android.platform>17</android.platform>
+		<android-support.artifactId>compatibility-v4</android-support.artifactId>
+		<android-support.version>12</android-support.version>
 
 		<abs.version>4.2.0</abs.version>
 		<vpi.version>2.4.1</vpi.version>
 
-		<apache.maven.version>3.0</apache.maven.version>
+		<maven.resources.version>2.6</maven.resources.version>
+		<maven.compiler.version>3.0</maven.compiler.version>
 		<maven.release.version>2.4</maven.release.version>
 		<java.version>1.6</java.version>
-		<jayway.maven.version>3.5.0</jayway.maven.version>
+		<jayway.maven.version>3.5.1</jayway.maven.version>
 
 		<antrun.version>1.7</antrun.version>
 		<jarsigner.version>1.2</jarsigner.version>
@@ -78,7 +80,7 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.android</groupId>
+			<groupId>android</groupId>
 			<artifactId>android</artifactId>
 			<version>${android.version}</version>
 			<scope>provided</scope>
@@ -92,13 +94,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>${apache.maven.version}</version>
+				<version>${maven.compiler.version}</version>
 				<configuration>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
-					<excludes>
-						<exclude>**/*VoiceRecognition*.java</exclude>
-                	</excludes>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -106,7 +105,10 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>${maven.release.version}</version>
 				<configuration>
+					<preparationGoals>clean verify -Prelease</preparationGoals>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
+					<localCheckout>true</localCheckout>
+					<pushChanges>false</pushChanges>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -136,8 +138,8 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>com.google.android</groupId>
-					<artifactId>support-v4</artifactId>
+					<groupId>android.support</groupId>
+					<artifactId>${android-support.artifactId}</artifactId>
 					<version>${android-support.version}</version>
 				</dependency>
 				<dependency>
@@ -145,15 +147,27 @@
 					<artifactId>actionbarsherlock</artifactId>
 					<version>${abs.version}</version>
 					<type>apklib</type>
+					<exclusions>
+						<exclusion>
+							<groupId>com.google.android</groupId>
+							<artifactId>support-v4</artifactId>
+						</exclusion>
+					</exclusions>
 				</dependency>
 				<dependency>
 					<groupId>com.viewpagerindicator</groupId>
 					<artifactId>library</artifactId>
 					<version>${vpi.version}</version>
 					<type>apklib</type>
+					<exclusions>
+						<exclusion>
+							<groupId>com.google.android</groupId>
+							<artifactId>support-v4</artifactId>
+						</exclusion>
+					</exclusions>
 				</dependency>
-				<!-- Run "mvn install:install-file -Dfile=libs/GraphView-3.0-SNAPSHOT.jar -DgroupId=com.jjoe64 -DartifactId=graphview -Dversion=3.0-SNAPSHOT -Dpackaging=jar" first to install the library -->
 				<dependency>
+					<!-- Run "mvn install:install-file -Dfile=libs/GraphView-3.1.jar -DgroupId=com.jjoe64 -DartifactId=graphview -Dversion=3.1 -Dpackaging=jar" to install the library -->
 					<groupId>com.jjoe64</groupId>
 					<artifactId>graphview</artifactId>
 					<version>3.1</version>
@@ -169,8 +183,8 @@
 			</activation>
 			<dependencies>
 				<dependency>
-					<groupId>com.google.android</groupId>
-					<artifactId>support-v4</artifactId>
+					<groupId>android.support</groupId>
+					<artifactId>${android-support.artifactId}</artifactId>
 					<version>${android-support.version}</version>
 					<!-- It is coming from ActionBarSherlock or ViewPagerIndicator dependency -->
 					<scope>provided</scope>
@@ -197,6 +211,31 @@
 
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${maven.resources.version}</version>
+						<executions>
+							<execution>
+								<!-- Use the copy resources instead of resources, which adds it to the eclipse buildpath.
+									This is used to update accessory_filter.xml -->
+								<phase>initialize</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${project.basedir}</outputDirectory>
+									<resources>
+										<resource>
+											<directory>${project.basedir}/src/templates</directory>
+											<targetPath>${project.basedir}</targetPath>
+											<filtering>true</filtering>
+										</resource>
+									</resources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<!-- Sign the apk -->
 						<groupId>org.apache.maven.plugins</groupId>
@@ -229,6 +268,7 @@
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
+						<version>${jayway.maven.version}</version>
 						<inherited>true</inherited>
 						<configuration>
 							<release>true</release>

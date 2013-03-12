@@ -1,3 +1,22 @@
+/*************************************************************************************
+ * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ *
+ * This software may be distributed and modified under the terms of the GNU
+ * General Public License version 2 (GPL2) as published by the Free Software
+ * Foundation and appearing in the file GPL2.TXT included in the packaging of
+ * this file. Please note that GPL2 Section 2[b] requires that all works based
+ * on this software must also be made publicly available under the terms of
+ * the GPL2 ("Copyleft").
+ *
+ * Contact information
+ * -------------------
+ *
+ * Kristian Lauszus, TKJ Electronics
+ * Web      :  http://www.tkjelectronics.com
+ * e-mail   :  kristianl@tkjelectronics.com
+ * 
+ ************************************************************************************/
+
 package com.tkjelectronics.balanduino;
 
 import android.support.v4.app.FragmentManager;
@@ -14,7 +33,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 	public static final int JOYSTICK_FRAGMENT = 1;
 	public static final int GRAPH_FRAGMENT = 2;
 	public static final int PID_FRAGMENT = 3;
-	//public static final int VOICERECOGNITION_FRAGMENT = 4;
+	public static final int INFO_FRAGMENT = 4;
 
 	public ViewPagerAdapter(FragmentManager fm) {
 		super(fm);
@@ -35,9 +54,9 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 		case 3:
 			SherlockFragment fragment3 = new PIDFragment();
 			return fragment3;
-		/*case 4:
-			SherlockFragment fragment4 = new VoiceRecognitionFragment();
-			return fragment4;*/
+		case 4:
+			SherlockFragment fragment4 = new InfoFragment();
+			return fragment4;
 		default:
 			return null;
 		}
@@ -45,8 +64,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// We will just disable voice control, as it's too slow! Set this to five in order to activate it		
-		return 4;
+		// Return number of tabs		
+		return 5;
 	}
 
 	@Override
@@ -60,8 +79,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 			return "Graph";
 		case 3:
 			return "PID Adjustment";
-		/*case 4:
-			return "Voice control";*/
+		case 4:
+			return "Info";
 		}
 		return null;
 	}
