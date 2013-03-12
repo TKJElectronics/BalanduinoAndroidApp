@@ -15,21 +15,21 @@
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
  * 
- * The fusion algorythme is from this guide: http://www.thousand-thoughts.com/2012/03/android-sensor-fusion-tutorial/
- * By Paul Lawitzki
- * The Bluetooth communication is based on the BluetoothChat sample included in the Android SDK, but with some improvements
- * 
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
 
-import android.annotation.SuppressLint;
+import java.lang.ref.WeakReference;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,9 +49,7 @@ import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
-public class BalanduinoActivity extends SherlockFragmentActivity implements
-		ActionBar.TabListener/*, VoiceRecognitionFragment.signalListener*/ {
-
+public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private static final String TAG = "Balanduino";
 	public static final boolean D = false;
 
@@ -69,9 +67,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
-
-	// Name of the connected device
-	private String mConnectedDeviceName = null;
+	
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
 	// Member object for the chat services
@@ -80,7 +76,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	private SensorManager mSensorManager = null;
 	
 	boolean btSecure; // If it's a new device we will pair with the device	
-	BluetoothDevice btDevice; // The BLuetoothDevice object
+	BluetoothDevice btDevice; // The BluetoothDevice object
 	
 	private UnderlinePageIndicator mUnderlinePageIndicator;
 	
@@ -97,16 +93,59 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 	public static String targetAngleValue = "";
 	public static boolean newPIDValues;
 	
-	//private static SpeechRecognizer mSpeechRecognizer;
-	//public static boolean toggleButtonState;
-	//private static Context context;
+	public static boolean backToSpot = true;
+	public static int maxAngle = 7; // Seven is the default value
+	public static int maxTurning = 20; // Twenty is the default value
+	public static boolean newSettings;
 	
-	private static Toast mToast;
+	public static String appVersion;
+	public static String firmwareVersion;
+	public static String mcu;
+	public static String batteryLevel;
+	public static double runtime;
+	public static boolean newInfo;
+	
+	public static boolean pairingWithWii;
+	
+	public final static String getPIDValues = "GP;";
+	public final static String getSettings = "GS;";
+	public final static String getInfo = "GI;";
+		
+	public final static String setPValue = "SP,";
+	public final static String setIValue = "SI,";
+	public final static String setDValue = "SD,";
+	public final static String setTargetAngle = "ST,";
+	public final static String setMaxAngle = "SA,";
+	public final static String setMaxTurning = "SU,";
+	public final static String setBackToSpot = "SB,";
+	
+	public final static String imuBegin = "IB;";
+	public final static String imuStop = "IS;";
+	
+	public final static String sendStop = "CS;";
+	public final static String sendIMUValues = "CM,";
+	public final static String sendJoystickValues = "CJ,";	
+	public final static String sendPairWithWii = "CW;";
+	
+	public final static String restoreDefaultValues = "CR;";
+		
+	public final static String responsePIDValues = "P";
+	public final static String responseSettings = "S";
+	public final static String responseInfo = "I";
+	public final static String responseIMU = "V";
+	public final static String responsePairWii = "WC";
+	
+	public final static int responsePIDValuesLength = 5;
+	public final static int responseSettingsLength = 4;
+	public final static int responseInfoLength = 5;
+	public final static int responseIMULength = 4;
+	public final static int responsePairWiiLength = 1;
+	
+	private Toast mToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		//context = getApplicationContext();
 		
 		setContentView(R.layout.activity_main);
 
@@ -114,14 +153,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 		// If the adapter is null, then Bluetooth is not supported
 		if (mBluetoothAdapter == null) {
-			if(mToast != null)
-				mToast.cancel(); // Close the toast if it's already open
-			mToast = Toast.makeText(getApplicationContext(),"Bluetooth is not available", Toast.LENGTH_LONG);
-			mToast.show();
+			showToast("Bluetooth is not available", Toast.LENGTH_LONG);
 			finish();
 			return;
 		}
-		//initSpeechRecognizer();
 
 		// get sensorManager and initialize sensor listeners
 		mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
@@ -166,60 +201,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					.setText(mViewPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
-	}
-	/*
-	private void initSpeechRecognizer() {
-    	if(mSpeechRecognizer == null) {
-    		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
-    		if (!SpeechRecognizer.isRecognitionAvailable(getApplicationContext())) {
-    			if(mToast != null)
-						mToast.cancel(); // Close the toast if it's already open
-    			mToast = Toast.makeText(getApplicationContext(),"Speech Recognition is not available",Toast.LENGTH_LONG);
-    			mToast.show();
-    		}
-    		mSpeechRecognizer.setRecognitionListener(new VoiceRecognitionListener());
-    	}
-    }
-	
-	static void startSpeechRecognizer() {
-		if(D)
-			Log.d(TAG, "startSpeechRecognizer");
-		if(mSpeechRecognizer == null) {
-			if(D)
-				Log.d(TAG, "mSpeechRecognizer == null");
-			return;
+		try {
+			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			BalanduinoActivity.appVersion = pInfo.versionName; // Read the app version
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
 		}
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		mSpeechRecognizer.startListening(intent);	
-	}	
-	
-	static void restartSpeechRecognizer() {
-		if(D)
-			Log.d(TAG, "restartSpeechRecognizer");
-		if(mSpeechRecognizer != null) {
-			mSpeechRecognizer.stopListening();
-			mSpeechRecognizer.cancel();
-			mSpeechRecognizer.destroy();
-		}
-		mSpeechRecognizer = SpeechRecognizer.createSpeechRecognizer(getAppContext());
-		mSpeechRecognizer.setRecognitionListener(new VoiceRecognitionListener());
-		
-		if(toggleButtonState) // Start it again if the button is on
-			startSpeechRecognizer();
 	}
-	
-	public static Context getAppContext() {
-        return context;
-    }
-	
-	public void toggleButtonChanged(boolean toggleButton) {
-		toggleButtonState = toggleButton;
-		if(D)
-			Log.d(TAG, "Toggle Button Pressed: " + toggleButtonState);		
-		if(toggleButtonState)
-			startSpeechRecognizer();		
-	};*/
 
 	@Override
 	public void onStart() {
@@ -231,23 +219,25 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if (!mBluetoothAdapter.isEnabled()) {
 			if (D)
 				Log.d(TAG, "Request enable BT");
-			Intent enableIntent = new Intent(
-					BluetoothAdapter.ACTION_REQUEST_ENABLE);
+			Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
 			startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-			// Otherwise, setup the chat session
-		} else {
+		} else { // Otherwise, setup the chat session
 			if (mChatService == null)
 				setupBTService();
 		}
-		// Read the stored value for FILTER_COEFFICIENT
-		String filterCoefficient = PreferenceManager
-				.getDefaultSharedPreferences(this).getString(
-						"filterCoefficient", null);
+		
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // Create SharedPreferences instance		
+		String filterCoefficient = preferences.getString("filterCoefficient", null); // Read the stored value for filter coefficient
 		if (filterCoefficient != null) {
-			mSensorFusion.filter_coefficient = Float
-					.parseFloat(filterCoefficient);
+			mSensorFusion.filter_coefficient = Float.parseFloat(filterCoefficient);
 			mSensorFusion.tempFilter_coefficient = mSensorFusion.filter_coefficient;
 		}
+		// Read the previous back to spot value
+		backToSpot = preferences.getBoolean("backToSpot", true); // Back to spot is true by default
+		// Read the previous max angle
+		maxAngle = preferences.getInt("maxAngle", 7); // Seven is the default value
+		// Read the previous max turning value
+		maxTurning = preferences.getInt("maxTurning", 20); // Twenty is the default value
 	}
 
 	@Override
@@ -259,11 +249,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		// device's battery.
 		mSensorFusion.unregisterListeners();
 
-		// Store the value for FILTER_COEFFICIENT at shutdown
-		Editor edit = PreferenceManager.getDefaultSharedPreferences(this)
-				.edit();
-		edit.putString("filterCoefficient",
-				Float.toString(mSensorFusion.filter_coefficient));
+		// Store the value for FILTER_COEFFICIENT and max angle at shutdown
+		Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
+		edit.putString("filterCoefficient",Float.toString(mSensorFusion.filter_coefficient));
+		edit.putBoolean("backToSpot", backToSpot);
+		edit.putInt("maxAngle", maxAngle);
+		edit.putInt("maxTurning", maxTurning);
 		edit.commit();
 	}
 
@@ -276,12 +267,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		if (mChatService != null)
 			mChatService.stop();
 		mSensorFusion.unregisterListeners();
-		/*
-		if (mSpeechRecognizer != null) {
-			mSpeechRecognizer.stopListening();
-			mSpeechRecognizer.cancel();
-			mSpeechRecognizer.destroy();
-        }*/
 	}
 
 	@Override
@@ -293,7 +278,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		mSensorFusion.unregisterListeners();
 		if(mChatService != null) { // Send stop command and stop sending graph data command
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				mChatService.write("S;GS;".getBytes(), false);
+				mChatService.write((sendStop + imuStop).getBytes());
 			}
 		}
 	}
@@ -303,58 +288,47 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		super.onResume();
 		if (D)
 			Log.e(TAG, "+ ON RESUME +");
-		// restore the sensor listeners when user resumes the application.
+		// Restore the sensor listeners when user resumes the application.
 		mSensorFusion.initListeners();
-		//initSpeechRecognizer();
 	}
 
 	private void setupBTService() {
 		if (D)
 			Log.d(TAG, "setupBTService()");
-		// Initialize the BluetoothChatService to perform bluetooth connections
-		mChatService = new BluetoothChatService(this, mHandlerBluetooth);
+		// Initialize the BluetoothChatService to perform Bluetooth connections
+		mChatService = new BluetoothChatService(this, new BluetoothHandler(this));
 	}
 
 	@Override
-	public void onTabSelected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if(D)
-			Log.d(TAG,"onTabSelected: " + tab.getPosition());
-		// When the given tab is selected, switch to the corresponding page in
-		// the ViewPager.
+			Log.d(TAG,"onTabSelected: " + tab.getPosition());		
 		currentTabSelected = tab.getPosition();
-		mUnderlinePageIndicator.setCurrentItem(currentTabSelected);
+		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
-		//if(currentTabSelected == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT)
-			//restartSpeechRecognizer(); // Restart service
-		if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && GraphFragment.mToggleButton != null) {
+		if(currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && GraphFragment.mToggleButton != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				if(GraphFragment.mToggleButton.isChecked()) {
-					byte[] send = "GB;".getBytes(); // Request data
-					mChatService.write(send, false);
-				} else {					
-					byte[] send = "GS;".getBytes(); // Stop sending data
-					mChatService.write(send, false);
-				}
+				if(GraphFragment.mToggleButton.isChecked())
+					mChatService.write(imuBegin.getBytes()); // Request data
+				else
+					mChatService.write(imuStop.getBytes()); // Stop sending data
 			}
+		} else if(currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT && mChatService != null) {
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+				mChatService.write(getInfo.getBytes()); // Update info
 		}
 	}
 
 	@Override
-	public void onTabUnselected(ActionBar.Tab tab,
-			FragmentTransaction fragmentTransaction) {
+	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if(D)
 			Log.d(TAG,"onTabUnselected: " + tab.getPosition());
-		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT/* || tab.getPosition() == ViewPagerAdapter.VOICERECOGNITION_FRAGMENT*/) && mChatService != null) { // Send stop command if the user selects another tab
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				byte[] send = "S;".getBytes();
-				mChatService.write(send, false);				
-			}
+		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT) && mChatService != null) { // Send stop command if the user selects another tab
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+				mChatService.write(sendStop.getBytes());
 		} else if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				byte[] send = "GS;".getBytes();
-				mChatService.write(send, false);	
-			}
+			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+				mChatService.write(imuStop.getBytes());
 		} else if(tab.getPosition() == ViewPagerAdapter.PID_FRAGMENT) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
@@ -409,53 +383,59 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 			dialogFragment.show(getSupportFragmentManager(), null);
 			return true;
 		case android.R.id.home:
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.tkjelectronics.com/"));
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
 			startActivity(browserIntent);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
+	
+	private void showToast(String message, int duration) {
+		if(mToast != null)
+			mToast.cancel(); // Close the toast if it's already open
+		mToast = Toast.makeText(getApplicationContext(),message,duration);
+		mToast.show();
+	}
 
-	// The Handler that gets information back from the BluetoothChatService
-	@SuppressLint("HandlerLeak")
-	private final Handler mHandlerBluetooth = new Handler() {
+	// The Handler class that gets information back from the BluetoothChatService
+	static class BluetoothHandler extends Handler {
+		private final WeakReference<BalanduinoActivity>mActivity;
+		private final BalanduinoActivity mBalanduinoActivity;		
+		private String mConnectedDeviceName; // Name of the connected device
+		BluetoothHandler(BalanduinoActivity activity) {
+			mActivity = new WeakReference<BalanduinoActivity>(activity);
+			mBalanduinoActivity = mActivity.get();
+        }
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
 			case MESSAGE_STATE_CHANGE:
-				supportInvalidateOptionsMenu();
+				mBalanduinoActivity.supportInvalidateOptionsMenu();
 				if (D)
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					if(mToast != null)
-						mToast.cancel(); // Close the toast if it's already open
-					mToast = Toast.makeText(getApplicationContext(),getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
-					mToast.show();
-					if (mChatService == null) {
+					mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
+					if(mChatService == null)
 						return;
-					}		
 					Handler myHandler = new Handler();
 					myHandler.postDelayed(new Runnable(){
 				        public void run() {
-				        	byte[] send = "GP;".getBytes();
-							mChatService.write(send, false);
+				        	mChatService.write((getPIDValues + getSettings + getInfo).getBytes());
 				        }
 				    }, 1000); // Wait 1 second before sending the message
 					if(GraphFragment.mToggleButton != null) {
-						if(GraphFragment.mToggleButton.isChecked()) {
+						if(GraphFragment.mToggleButton.isChecked() && currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
 							myHandler.postDelayed(new Runnable(){
 						        public void run() {
-						        	byte[] send = "GB;".getBytes(); // Request data
-									mChatService.write(send, false);
+						        	mChatService.write(imuBegin.getBytes()); // Request data
 						        }
 						    }, 1000); // Wait 1 second before sending the message
 						} else {
 							myHandler.postDelayed(new Runnable(){
 								public void run() {
-									byte[] send = "GS;".getBytes(); // Stop sending data
-									mChatService.write(send, false);
+									mChatService.write(imuStop.getBytes()); // Stop sending data
 								}
 							}, 1000); // Wait 1 second before sending the message
 						}
@@ -465,39 +445,46 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 					break;
 				}
 				PIDFragment.updateButton();
+				InfoFragment.updateButton();
 				break;
 			case MESSAGE_READ:
-				if(newIMUValues) {
-					newIMUValues = false;
-					GraphFragment.updateValues();					
-				}
 				if(newPIDValues) {
 					newPIDValues = false;
 					PIDFragment.updateView();
 				}
+				if(newSettings)
+					newSettings = false;
+				if(newInfo) {
+					newInfo = false;
+					InfoFragment.updateView();
+				}
+				if(newIMUValues) {
+					newIMUValues = false;
+					GraphFragment.updateValues();					
+				}
+				if(pairingWithWii) {
+					pairingWithWii = false;
+					mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
+				}
 				break;
 			case MESSAGE_DEVICE_NAME:
-				// save the connected device's name
+				// Save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
 				break;
 			case MESSAGE_TOAST:				
-				supportInvalidateOptionsMenu();
+				mBalanduinoActivity.supportInvalidateOptionsMenu();				
 				PIDFragment.updateButton();
-				if(mToast != null)
-					mToast.cancel(); // Close the toast if it's already open
-				mToast = Toast.makeText(getApplicationContext(),msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
-				mToast.show();
+				InfoFragment.updateButton();
+				mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				break;
 			case MESSAGE_RETRY:
-				if(btDevice != null) {
-					if(D)
-						Log.e(TAG, "MESSAGE_RETRY");
-					mChatService.connect(btDevice, btSecure);
-				}
+				if(D)
+					Log.e(TAG, "MESSAGE_RETRY");
+				mBalanduinoActivity.connectDevice(null, true);
 				break;
 			}
 		}
-	};
+	}	
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (D)
@@ -506,7 +493,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 		case REQUEST_CONNECT_DEVICE:
 			// When DeviceListActivity returns with a device to connect to
 			if (resultCode == Activity.RESULT_OK)
-				connectDevice(data);
+				connectDevice(data,false);
 			break;
 		case REQUEST_ENABLE_BT:
 			// When the request to enable Bluetooth returns
@@ -517,27 +504,27 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements
 				// User did not enable Bluetooth or an error occured
 				if (D)
 					Log.d(TAG, "BT not enabled");
-				if(mToast != null)
-					mToast.cancel(); // Close the toast if it's already open
-				mToast = Toast.makeText(getApplicationContext(),R.string.bt_not_enabled_leaving, Toast.LENGTH_SHORT);
-				mToast.show();				
+				showToast(getString(R.string.bt_not_enabled_leaving), Toast.LENGTH_SHORT);				
 				finish();
 			}
 		}
 	}
 
-	private void connectDevice(Intent data) {
-		// Get the device MAC address
-		String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
-		btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
-		// Get the BLuetoothDevice object
-		btDevice = mBluetoothAdapter.getRemoteDevice(address);
-		BluetoothChatService.nRetries = 0; // Reset retry counter
-		// Attempt to connect to the device
-		mChatService.connect(btDevice, btSecure);
-		if(mToast != null)
-			mToast.cancel(); // Close the toast if it's already open
-		mToast = Toast.makeText(getApplicationContext(),R.string.connecting, Toast.LENGTH_SHORT);
-		mToast.show();
+	private void connectDevice(Intent data, boolean retry) {
+		if(retry) {
+			if(btDevice != null) {
+				mChatService.start(); // This will stop all the running threads
+				mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
+			}
+		} else { // It's a new connection
+			mChatService.newConnection = true;
+			mChatService.start(); // This will stop all the running threads
+			String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address
+			btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device			
+			btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object
+			mChatService.nRetries = 0; // Reset retry counter
+			mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
+			showToast(getString(R.string.connecting), Toast.LENGTH_SHORT);
+		}		
 	}
 }
