@@ -383,7 +383,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			dialogFragment.show(getSupportFragmentManager(), null);
 			return true;
 		case android.R.id.home:
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.tkjelectronics.com/"));
+			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
 			startActivity(browserIntent);
 			return true;
 		default:
