@@ -105,6 +105,7 @@
 				<artifactId>maven-release-plugin</artifactId>
 				<version>${maven.release.version}</version>
 				<configuration>
+					<preparationGoals>clean verify -Prelease</preparationGoals>
 					<autoVersionSubmodules>true</autoVersionSubmodules>
 				</configuration>
 			</plugin>
