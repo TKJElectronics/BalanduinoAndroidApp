@@ -6,13 +6,15 @@
 The code is released under the GNU General Public License.
 _________
 
-This is the code for the Android app to control the Balancing robot.
+This is the code for the Android app to control the Balanduino, the Balancing robot.
 
-The source code for the robot can be found here: <https://github.com/TKJElectronics/BalancingRobotArduino>.
+More information can be found at our Kickstarter campaign: <http://www.kickstarter.com/projects/tkjelectronics/balanduino-balancing-robot-kit>.
 
-Also check out the video: <http://www.youtube.com/watch?v=N28C_JqVhGU>.
+The source code for the robot will released as soon as the Kickstarter campaign is finished.
 
-For more information see my blog post at <http://blog.tkjelectronics.dk/2012/03/the-balancing-robot/> or send me an email at <a href="mailto:kristianl@tkjelectronics.dk?subject=BalanduinoAndroidApp">kristianl@tkjelectronics.dk</a>.
+Also check out the video: <http://youtu.be/0cqVr4hAc_w>.
+
+For more information send me an email at <a href="mailto:kristianl@tkjelectronics.dk?subject=BalanduinoAndroidApp">kristianl@tkjelectronics.dk</a>.
 
 # Screenshots
 <a href="http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino" alt="Screenshots">
