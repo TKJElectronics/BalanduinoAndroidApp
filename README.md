@@ -12,7 +12,7 @@ More information can be found at our Kickstarter campaign: <http://www.kickstart
 
 The source code for the robot will released as soon as the Kickstarter campaign is finished.
 
-Also check out the video: <http://youtu.be/0cqVr4hAc_w>.
+Also check out the video: <http://www.youtube.com/watch?v=_kQniPbg9zc>.
 
 For more information send me an email at <a href="mailto:kristianl@tkjelectronics.dk?subject=BalanduinoAndroidApp">kristianl@tkjelectronics.dk</a>.
 
