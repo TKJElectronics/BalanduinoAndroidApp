@@ -29,6 +29,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
@@ -36,16 +37,13 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Window;
-
 /**
  * This Activity appears as a dialog. It lists any paired devices and devices
  * detected in the area after discovery. When a device is chosen by the user,
  * the MAC address of the device is sent back to the parent Activity in the
  * result Intent.
  */
-public class DeviceListActivity extends SherlockFragmentActivity {
+public class DeviceListActivity extends Activity {
 	// Debugging
 	private static final String TAG = "DeviceListActivity";
 	private static final boolean D = BalanduinoActivity.D;
@@ -143,9 +141,8 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 		if (D)
 			Log.d(TAG, "doDiscovery()");
 		
-		if(android.os.Build.VERSION.SDK_INT >= 11)
-			setSupportProgressBarIndeterminateVisibility(true);
-		// Indicate scanning in the title		
+		// Indicate scanning in the title
+		setProgressBarIndeterminateVisibility(true);
 		setTitle(R.string.scanning);
 
 		// Turn on sub-title for new devices
@@ -215,10 +212,8 @@ public class DeviceListActivity extends SherlockFragmentActivity {
 							+ device.getAddress());
 				}
 				// When discovery is finished, change the Activity title
-			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED
-					.equals(action)) {
-				if(android.os.Build.VERSION.SDK_INT >= 11)
-					setSupportProgressBarIndeterminateVisibility(false);
+			} else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
+				setProgressBarIndeterminateVisibility(false);
 				setTitle(R.string.select_device);
 				if (mNewDevicesArrayAdapter.getCount() == 0) {
 					String noDevices = getResources().getText(
