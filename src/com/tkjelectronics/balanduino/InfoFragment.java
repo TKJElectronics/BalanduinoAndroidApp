@@ -68,7 +68,7 @@ public class InfoFragment extends SherlockFragment {
 		if(mFirmwareVersion != null && BalanduinoActivity.firmwareVersion != null)
 			mFirmwareVersion.setText(BalanduinoActivity.firmwareVersion);
 		if(mMcu != null && BalanduinoActivity.mcu != null)
-			mMcu.setText("ATmega" + BalanduinoActivity.mcu);
+			mMcu.setText(BalanduinoActivity.mcu);
 		if(mBatterylevel != null && BalanduinoActivity.batteryLevel != null)
 			mBatterylevel.setText(BalanduinoActivity.batteryLevel);
 		if(mRuntime != null && BalanduinoActivity.runtime != 0) {	
