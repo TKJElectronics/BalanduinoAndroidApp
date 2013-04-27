@@ -10,7 +10,7 @@ This is the code for the Android app to control the Balanduino, the Balancing ro
 
 More information can be found at our Kickstarter campaign: <http://www.kickstarter.com/projects/tkjelectronics/balanduino-balancing-robot-kit>.
 
-The source code for the robot will released as soon as the Kickstarter campaign is finished.
+The source code for the robot can be found at the following link: <https://github.com/TKJElectronics/Balanduino>.
 
 A video for the Kickstarter presentation of the robot can be found here: <http://www.youtube.com/watch?v=_kQniPbg9zc>.
 
