@@ -82,7 +82,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	
 	@Override
 	public void onStart() {
-		super.onResume();
+		super.onStart();
 		mJoystick.invalidate();
 	}
 	@Override
