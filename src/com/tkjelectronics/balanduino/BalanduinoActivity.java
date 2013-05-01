@@ -445,7 +445,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 					break;
 				}
 				PIDFragment.updateButton();
-				InfoFragment.updateButton();
 				break;
 			case MESSAGE_READ:
 				if(newPIDValues) {
@@ -474,7 +473,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			case MESSAGE_TOAST:				
 				mBalanduinoActivity.supportInvalidateOptionsMenu();				
 				PIDFragment.updateButton();
-				InfoFragment.updateButton();
 				mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				break;
 			case MESSAGE_RETRY:

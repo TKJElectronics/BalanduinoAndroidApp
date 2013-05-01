@@ -20,12 +20,13 @@
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
@@ -35,8 +36,9 @@ public class InfoFragment extends SherlockFragment {
 	static TextView mMcu;
 	static TextView mBatterylevel;
 	static TextView mRuntime;
-	
-	static Button mButton;
+	static ToggleButton mToggleButton;
+	private static Handler mHandler = new Handler();
+	private static Runnable mRunnable;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
@@ -47,16 +49,25 @@ public class InfoFragment extends SherlockFragment {
 		mBatterylevel = (TextView) v.findViewById(R.id.batterylevel);
 		mRuntime = (TextView) v.findViewById(R.id.runtime);
 		
-		mButton = (Button) v.findViewById(R.id.button);
-		mButton.setOnClickListener(new OnClickListener() {
+		mRunnable = new Runnable() {
 			@Override
-			public void onClick(View v) {
-				if (BalanduinoActivity.mChatService != null) {
-					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+			public void run() {
+				mHandler.postDelayed(this, 500); // Send data every 500ms
+				if (BalanduinoActivity.mChatService != null && mToggleButton.isChecked() && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT) {
+					if(BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 						BalanduinoActivity.mChatService.write(BalanduinoActivity.getInfo.getBytes());
 				}
 			}
+		};
+		
+		mToggleButton = (ToggleButton) v.findViewById(R.id.button);
+		mToggleButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				updateButton();
+			}
 		});
+		
 		updateView();
 		updateButton();
 		return v;
@@ -79,24 +90,26 @@ public class InfoFragment extends SherlockFragment {
 	}
 	
 	public static void updateButton() {
-		if(BalanduinoActivity.mChatService != null && mButton != null) {
-			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				mButton.setText(R.string.updateInfo);
-			else
-				mButton.setText(R.string.button);
-		}
+		if(mToggleButton == null)
+			return;
+		if(mToggleButton.isChecked())
+			mToggleButton.setText("Stop");			
+		else
+			mToggleButton.setText("Start");
 	}
 	
 	@Override
 	public void onResume() {
 		super.onResume();
-		// When the user resumes the view, then update the values
-		updateView();
+		updateView(); // When the user resumes the view, then update the values
 		updateButton();
 		
-		if (BalanduinoActivity.mChatService != null) {
-			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT)
-				BalanduinoActivity.mChatService.write(BalanduinoActivity.getInfo.getBytes());
-		}
+		mHandler.postDelayed(mRunnable, 500); // Send data every 500ms
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
+		mHandler.removeCallbacks(mRunnable);
 	}
 }

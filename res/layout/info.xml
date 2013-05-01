@@ -123,12 +123,13 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textIsSelectable="false" />
 
-    <Button
+    <ToggleButton
         android:id="@+id/button"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/runtimeText"
         android:layout_margin="@dimen/margin"
-        android:text="@string/button" />
+        android:text="@string/button"
+        android:checked="true" />
 
 </RelativeLayout>
