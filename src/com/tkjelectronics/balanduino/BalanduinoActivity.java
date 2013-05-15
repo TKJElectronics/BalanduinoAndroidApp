@@ -94,7 +94,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public static boolean newPIDValues;
 	
 	public static boolean backToSpot = true;
-	public static int maxAngle = 7; // Seven is the default value
+	public static int maxAngle = 8; // Eight is the default value
 	public static int maxTurning = 20; // Twenty is the default value
 	public static boolean newSettings;
 	
@@ -235,7 +235,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		// Read the previous back to spot value
 		backToSpot = preferences.getBoolean("backToSpot", true); // Back to spot is true by default
 		// Read the previous max angle
-		maxAngle = preferences.getInt("maxAngle", 7); // Seven is the default value
+		maxAngle = preferences.getInt("maxAngle", 8); // Eight is the default value
 		// Read the previous max turning value
 		maxTurning = preferences.getInt("maxTurning", 20); // Twenty is the default value
 	}
