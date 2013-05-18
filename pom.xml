@@ -19,16 +19,16 @@
 		<android.version>4.2.2_r2</android.version>
 		<android.platform>17</android.platform>
 		<android-support.artifactId>compatibility-v4</android-support.artifactId>
-		<android-support.version>12</android-support.version>
+		<android-support.version>13</android-support.version>
 
-		<abs.version>4.3.0</abs.version>
+		<abs.version>4.3.1</abs.version>
 		<vpi.version>2.4.1</vpi.version>
 
 		<maven.resources.version>2.6</maven.resources.version>
 		<maven.compiler.version>3.0</maven.compiler.version>
 		<maven.release.version>2.4</maven.release.version>
 		<java.version>1.6</java.version>
-		<jayway.maven.version>3.5.1</jayway.maven.version>
+		<jayway.maven.version>3.5.3</jayway.maven.version>
 
 		<antrun.version>1.7</antrun.version>
 		<jarsigner.version>1.2</jarsigner.version>
