@@ -32,3 +32,11 @@ ant.properties
 local.properties
 proguard.cfg
 proguard-project.txt
+
+# Intellij project files
+*.iml
+*.ipr
+*.iws
+.idea/
+
+gen-external-apklibs/
