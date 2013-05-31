@@ -175,10 +175,7 @@ public class DeviceListActivity extends Activity {
 
 			String address = info.substring(info.length() - 17);
 
-			if(av.getId() == R.id.new_devices)
-				new_device = true;
-			else
-				new_device  = false;
+            new_device = av.getId() == R.id.new_devices;
 			
 			// Create the result Intent and include the MAC address
 			Intent intent = new Intent();

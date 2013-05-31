@@ -174,11 +174,10 @@ public class GraphFragment extends SherlockFragment {
 			return;
 		if (!(mToggleButton.isChecked()))
 			return;
-		
-		for (int i = 0; i < 3; i++) { // We will save the 100 last values
-			for (int i2 = 0; i2 < 100; i2++)
-				buffer[i][i2] = buffer[i][i2+1];
-		}
+
+        for (int i = 0; i < 3; i++)
+            System.arraycopy(buffer[i],1,buffer[i],0,100);
+        
 		try { // In some rare occasions the values can be corrupted
 			buffer[0][100] = Double.parseDouble(BalanduinoActivity.accValue);
 			buffer[1][100] = Double.parseDouble(BalanduinoActivity.gyroValue);
@@ -187,14 +186,10 @@ public class GraphFragment extends SherlockFragment {
 			if(D)
 				Log.e("RealTimeGraph", "error in input", e);
 			return;
-		}			
-		
-		boolean scroll;
-		if(!mCheckBox1.isChecked() && !mCheckBox2.isChecked() && !mCheckBox3.isChecked())
-			scroll = false;
-		else
-			scroll = true;
-			
+		}
+
+		boolean scroll = mCheckBox1.isChecked() || mCheckBox2.isChecked() || mCheckBox3.isChecked();
+
 		counter++;
 		accSeries.appendData(new GraphViewData(counter,buffer[0][100]), scroll);
 		if(buffer[1][100] <= 360 && buffer[1][100] >= 0) // Don't draw it if it would be larger than y-axis boundaries
