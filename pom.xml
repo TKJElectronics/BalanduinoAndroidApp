@@ -192,16 +192,19 @@
 			</dependencies>
 		</profile>
 		<profile>
-			<!-- To build run "mvn clean install -Prelease" this will build the apk 
-				and upload the file - you will have to create the profile in settings.xml 
-				too -->
-			<!-- By running mvn release:prepare -Darguments="-Dsign.keystore=/path/to/keystore 
-				\ -Dsign.alias=alias \ -Dsign.storepass=password \ -Dsign.keypass=password" 
-				\ -DpreparationGoals='clean install -Prelease' will also create a new tag 
-				to the git repository -->
+			<!--
+			To build run "mvn clean install android:deploy android:run" this will build the apk
+			and upload the file and run it on your device
+			-->
+			<!--
+			To release the apk run:
+			mvn release:prepare "-Darguments=-Dsign.keystore=/path/to/keystore \
+			-Dsign.alias=alias -Dsign.storepass=password -Dsign.keypass=password"
+			This will build the signed apk, update the manifest and accessory_filter and create a new tag at the git repository
+			-->
 			<id>release</id>
 			<activation>
-				<!-- via this activation the profile is automatically used when the release 
+				<!-- Via this activation the profile is automatically used when the release
 					is done with the maven release plugin -->
 				<property>
 					<name>performRelease</name>
@@ -217,7 +220,7 @@
 						<version>${maven.resources.version}</version>
 						<executions>
 							<execution>
-								<!-- Use the copy resources instead of resources, which adds it to the eclipse buildpath.
+								<!-- Use the copy resources instead of resources, which adds it to the buildpath.
 									This is used to update accessory_filter.xml -->
 								<phase>initialize</phase>
 								<goals>
@@ -263,8 +266,7 @@
 						</executions>
 					</plugin>
 
-					<!-- the signed apk then needs to be zipaligned and we run the manifest 
-						update -->
+					<!-- The signed apk then needs to be zipaligned and we run the manifest update -->
 					<plugin>
 						<groupId>com.jayway.maven.plugins.android.generation2</groupId>
 						<artifactId>android-maven-plugin</artifactId>
