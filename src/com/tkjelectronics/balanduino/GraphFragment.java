@@ -101,7 +101,7 @@ public class GraphFragment extends SherlockFragment {
 		graphView.setLegendAlign(LegendAlign.BOTTOM);
 		graphView.scrollToEnd();
 
-		LinearLayout layout = (LinearLayout) v.findViewById(R.id.graph);
+		LinearLayout layout = (LinearLayout) v.findViewById(R.id.linegraph);
 		layout.addView(graphView);
 		
 		mCheckBox1 = (CheckBox) v.findViewById(R.id.checkBox1);
