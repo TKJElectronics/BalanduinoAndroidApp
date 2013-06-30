@@ -37,7 +37,7 @@
     <string name="appVersion">App version:</string>
     <string name="firmwareVersion">Firmware version:</string>
     <string name="mcu">MCU:</string>
-    <string name="batterylevel">Batterylevel:</string>
+    <string name="batterylevel">Battery level:</string>
     <string name="runtime">Runtime:</string>
     <string name="updateInfo">Press to update information</string>
     
