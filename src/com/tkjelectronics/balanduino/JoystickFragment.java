@@ -47,37 +47,33 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.joystick, container, false);
 		
-		mJoystick = (JoystickView)v.findViewById(R.id.joystick);
+		mJoystick = (JoystickView) v.findViewById(R.id.joystick);
 		mJoystick.setOnJoystickChangeListener(this);
 		
-		mText1 = (TextView)v.findViewById(R.id.textView1);
+		mText1 = (TextView) v.findViewById(R.id.textView1);
 		mText1.setText(R.string.defaultJoystickValue);
 		return v;
 	}
-	
-	@Override
+
+    private void newData(double xValue, double yValue, boolean joystickReleased) {
+        CustomViewPager.setPagingEnabled(joystickReleased);
+        this.joystickReleased = joystickReleased;
+        this.xValue = xValue;
+        this.yValue = yValue;
+        mText1.setText("x: " + d.format(xValue) + " y: " + d.format(yValue));
+    }
+
+    @Override
 	public void setOnTouchListener(double xValue, double yValue) {
-		joystickReleased = false;
-		CustomViewPager.setPagingEnabled(false);
-		this.xValue = xValue;
-		this.yValue = yValue;
-		mText1.setText("x: " + d.format(xValue) + " y: " + d.format(yValue));
+        newData(xValue,yValue,false);
 	}
-	@Override
+    @Override
 	public void setOnMovedListener(double xValue, double yValue) {
-		joystickReleased = false;
-		CustomViewPager.setPagingEnabled(false);
-		this.xValue = xValue;
-		this.yValue = yValue;
-		mText1.setText("x: " + d.format(xValue) + " y: " + d.format(yValue));
+        newData(xValue,yValue,false);
 	}
-	@Override
+    @Override
 	public void setOnReleaseListener(double xValue, double yValue) {
-		joystickReleased = true;
-		CustomViewPager.setPagingEnabled(true);
-		this.xValue = xValue;
-		this.yValue = yValue;
-		mText1.setText("x: " + d.format(xValue) + " y: " + d.format(yValue));
+        newData(xValue,yValue,true);
 	}
 	
 	@Override
@@ -93,7 +89,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 		mRunnable = new Runnable() {
 			@Override
 			public void run() {
-				mHandler.postDelayed(this, 150); // Send data every 150ms
+                mHandler.postDelayed(this, 150); // Send data every 150ms
 				if (BalanduinoActivity.mChatService == null)
 					return;
 				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.JOYSTICK_FRAGMENT) {

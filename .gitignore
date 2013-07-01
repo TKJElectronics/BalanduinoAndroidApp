@@ -38,5 +38,6 @@ proguard-project.txt
 *.ipr
 *.iws
 .idea/
+out/
 
 gen-external-apklibs/

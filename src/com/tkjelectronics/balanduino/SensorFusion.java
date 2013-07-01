@@ -77,7 +77,6 @@ public class SensorFusion implements SensorEventListener {
 	public static final int TIME_CONSTANT = 30;
 	public float filter_coefficient = 0.90f;
 	public float tempFilter_coefficient = filter_coefficient;
-	private Timer fuseTimer = new Timer();
 
 	public Handler mHandler = new Handler();
 
@@ -107,7 +106,7 @@ public class SensorFusion implements SensorEventListener {
 
 		// Wait for one second until gyroscope and magnetometer/accelerometer
 		// Data is initialized then schedule the complementary filter task
-		fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),1000, TIME_CONSTANT);
+        new Timer().scheduleAtFixedRate(new calculateFusedOrientationTask(),1000, TIME_CONSTANT);
 
 		// GUI stuff
 		d.setRoundingMode(RoundingMode.HALF_UP);
@@ -213,8 +212,7 @@ public class SensorFusion implements SensorEventListener {
 
 		// Initialization of the gyroscope based rotation matrix
 		if (initState) {
-			float[] initMatrix = new float[9];
-			initMatrix = getRotationMatrixFromOrientation(accMagOrientation);
+            float[] initMatrix = getRotationMatrixFromOrientation(accMagOrientation);
 			float[] test = new float[3];
 			SensorManager.getOrientation(initMatrix, test);
 			gyroMatrix = matrixMultiplication(gyroMatrix, initMatrix);

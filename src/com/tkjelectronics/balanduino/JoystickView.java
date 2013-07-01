@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright 2011 Thomas Niederberger
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -11,11 +11,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
+ * Modifications and improvements done by Kristian Lauszus, TKJ Electronics.
  */
 
-/*
- * I have modified this view to my needs and improved on it as well
- */
 package com.tkjelectronics.balanduino;
 
 import android.content.Context;
@@ -31,7 +30,7 @@ public class JoystickView extends View {
     final int holo_blue_dark = 0xff0099cc;
     final int buttonGray = 0xFF5C5C5C;
     	
-    private int circleColor = buttonGray;
+    private final int circleColor = buttonGray;
     private int buttonColor = buttonGray;
     
     private float x;
@@ -44,24 +43,24 @@ public class JoystickView extends View {
     private boolean firstDraw = true;
     
     Paint p = new Paint();
-    
+
     public JoystickView(Context context) {
         super(context);
-    }	 
+    }
     public JoystickView(Context context, AttributeSet attrs) {
     	super(context, attrs);
     }
     public JoystickView(Context context, AttributeSet attrs, int defStyle) {
     	super(context, attrs, defStyle);
     }
-    
+
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square        
     }
 
     @Override
-    protected void onDraw(Canvas canvas) {        
+    protected void onDraw(Canvas canvas) {
         if(firstDraw) {
         	firstDraw = false;
         	joystickRadius = (float)(getWidth()/3);
@@ -122,7 +121,7 @@ public class JoystickView extends View {
     	this.listener = listener;
     }
     
-    public static interface OnJoystickChangeListener {
+    public interface OnJoystickChangeListener {
     	public void setOnTouchListener(double xValue, double yValue);
     	public void setOnMovedListener(double xValue, double yValue);
     	public void setOnReleaseListener(double xValue, double yValue);

@@ -34,7 +34,7 @@ public class InfoFragment extends SherlockFragment {
 	static TextView mAppVersion;
 	static TextView mFirmwareVersion;
 	static TextView mMcu;
-	static TextView mBatterylevel;
+	static TextView mBatteryLevel;
 	static TextView mRuntime;
 	static ToggleButton mToggleButton;
 	private static Handler mHandler = new Handler();
@@ -46,7 +46,7 @@ public class InfoFragment extends SherlockFragment {
 		mAppVersion = (TextView) v.findViewById(R.id.appVersion);
 		mFirmwareVersion = (TextView) v.findViewById(R.id.firmwareVersion);
 		mMcu = (TextView) v.findViewById(R.id.mcu);
-		mBatterylevel = (TextView) v.findViewById(R.id.batterylevel);
+		mBatteryLevel = (TextView) v.findViewById(R.id.batterylevel);
 		mRuntime = (TextView) v.findViewById(R.id.runtime);
 		
 		mRunnable = new Runnable() {
@@ -80,8 +80,8 @@ public class InfoFragment extends SherlockFragment {
 			mFirmwareVersion.setText(BalanduinoActivity.firmwareVersion);
 		if(mMcu != null && BalanduinoActivity.mcu != null)
 			mMcu.setText(BalanduinoActivity.mcu);
-		if(mBatterylevel != null && BalanduinoActivity.batteryLevel != null)
-			mBatterylevel.setText(BalanduinoActivity.batteryLevel);
+		if(mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)
+			mBatteryLevel.setText(BalanduinoActivity.batteryLevel);
 		if(mRuntime != null && BalanduinoActivity.runtime != 0) {	
 			String minutes = Integer.toString((int)Math.floor(BalanduinoActivity.runtime));
 			String seconds = Integer.toString((int)(BalanduinoActivity.runtime%1/(1.0/60.0)));

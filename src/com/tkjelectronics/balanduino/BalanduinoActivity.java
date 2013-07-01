@@ -73,7 +73,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	// Member object for the chat services
 	public static BluetoothChatService mChatService = null;
 	public static SensorFusion mSensorFusion = null;
-	private SensorManager mSensorManager = null;
 	
 	boolean btSecure; // If it's a new device we will pair with the device	
 	BluetoothDevice btDevice; // The BluetoothDevice object
@@ -159,7 +158,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		}
 
 		// get sensorManager and initialize sensor listeners
-		mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+		SensorManager mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
 		mSensorFusion = new SensorFusion(mSensorManager);
 
 		// Set up the action bar.
@@ -370,11 +369,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		Intent serverIntent = null;
+
 		switch (item.getItemId()) {
 		case R.id.menu_connect:
 			// Launch the DeviceListActivity to see devices and do scan
-			serverIntent = new Intent(this, DeviceListActivity.class);
+			Intent serverIntent = new Intent(this, DeviceListActivity.class);
 			startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
 			return true;
 		case R.id.settings:
