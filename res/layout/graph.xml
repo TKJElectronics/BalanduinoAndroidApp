@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="5"
-        android:layout_margin="10dp" />
+        android:layout_margin="@dimen/margin" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -38,6 +38,68 @@
             android:layout_below="@id/checkBox2"
             android:checked="true"
             android:text="@string/kalman" />
+
+        <LinearLayout android:id="@+id/dummy"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_centerHorizontal="true"
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Rmeasure"
+            android:layout_alignBaseline="@id/checkBox3"
+            android:layout_toRightOf="@id/dummy"
+            android:layout_marginLeft="@dimen/margin"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@id/textView3"
+            android:layout_toRightOf="@id/textView3"
+            android:layout_marginLeft="@dimen/margin"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Qbias"
+            android:layout_alignLeft="@id/textView3"
+            android:layout_alignBaseline="@id/checkBox2"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/editText3"
+            android:layout_alignRight="@id/editText3"
+            android:layout_alignBaseline="@id/textView2"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Qangle"
+            android:layout_alignLeft="@id/textView3"
+            android:layout_alignBaseline="@id/checkBox1"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <EditText
+            android:id="@+id/editText1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/editText3"
+            android:layout_alignRight="@id/editText3"
+            android:layout_alignBaseline="@id/textView1"
+            android:inputType="numberDecimal|numberSigned" />
+
     </RelativeLayout>
 
     <LinearLayout
@@ -46,10 +108,19 @@
         android:layout_weight="1" >
 
         <ToggleButton
-            android:id="@+id/button"
-            android:layout_width="match_parent"
+            android:id="@+id/toggleButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="match_parent"
             android:checked="true" />
+
+        <Button
+            android:id="@+id/updateButton"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="Update" />
+
     </LinearLayout>
 
 </LinearLayout>

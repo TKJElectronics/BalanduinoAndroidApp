@@ -18,9 +18,13 @@
     <string name="defaultJoystickValue">x: 0 y: 0</string>
     
     <!-- Graph Fragment -->
-    <string name="acc">Show Accelerometer data</string>
-    <string name="gyro">Show Gyro data</string>
-    <string name="kalman">Show Kalman data</string>
+    <string name="acc">Accelerometer</string>
+    <string name="gyro">Gyro</string>
+    <string name="kalman">Kalman filter</string>
+
+    <string name="Qangle">Q<small><small>angle</small></small></string>
+    <string name="Qbias">Q<small><small>bias</small></small></string>
+    <string name="Rmeasure">R<small><small>measure</small></small></string>
     
     <!-- PID Fragment -->
     <string name="Kp">P:</string>

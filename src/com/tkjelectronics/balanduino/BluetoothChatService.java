@@ -433,6 +433,15 @@ public class BluetoothChatService {
                     	// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                     }
+                    else if(splitMessage[0].trim().equals(BalanduinoActivity.responseKalmanValues) && splitMessage.length == BalanduinoActivity.responseKalmanValuesLength) {
+                        BalanduinoActivity.Qangle = splitMessage[1].trim();
+                        BalanduinoActivity.Qbias = splitMessage[2].trim();
+                        BalanduinoActivity.Rmeasure = splitMessage[3].trim();
+                        BalanduinoActivity.newKalmanValues = true;
+
+                        // Send message back to the UI Activity
+                        mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
+                    }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseIMU) && splitMessage.length == BalanduinoActivity.responseIMULength) {
                 		BalanduinoActivity.accValue = splitMessage[1].trim();
                 		BalanduinoActivity.gyroValue = splitMessage[2].trim();

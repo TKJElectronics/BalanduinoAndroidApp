@@ -84,7 +84,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public static String accValue = "";
 	public static String gyroValue = "";
 	public static String kalmanValue = "";
-	public static boolean newIMUValues;
+    public static boolean newIMUValues;
+
+    public static String Qangle = "";
+    public static String Qbias = "";
+    public static String Rmeasure = "";
+	public static boolean newKalmanValues;
 	
 	public static String pValue = "";
 	public static String iValue = "";
@@ -109,14 +114,16 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String getPIDValues = "GP;";
 	public final static String getSettings = "GS;";
 	public final static String getInfo = "GI;";
+    public final static String getKalman = "GK;";
 		
 	public final static String setPValue = "SP,";
 	public final static String setIValue = "SI,";
 	public final static String setDValue = "SD,";
+    public final static String setKalman = "SK,";
 	public final static String setTargetAngle = "ST,";
 	public final static String setMaxAngle = "SA,";
 	public final static String setMaxTurning = "SU,";
-	public final static String setBackToSpot = "SB,";
+	public final static String setBackToSpot = "SB";
 	
 	public final static String imuBegin = "IB;";
 	public final static String imuStop = "IS;";
@@ -129,12 +136,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String restoreDefaultValues = "CR;";
 		
 	public final static String responsePIDValues = "P";
+    public final static String responseKalmanValues = "K";
 	public final static String responseSettings = "S";
 	public final static String responseInfo = "I";
 	public final static String responseIMU = "V";
 	public final static String responsePairWii = "WC";
 	
 	public final static int responsePIDValuesLength = 5;
+    public final static int responseKalmanValuesLength = 4;
 	public final static int responseSettingsLength = 4;
 	public final static int responseInfoLength = 5;
 	public final static int responseIMULength = 4;
@@ -300,20 +309,23 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-		if(D)
+		if (D)
 			Log.d(TAG,"onTabSelected: " + tab.getPosition());		
 		currentTabSelected = tab.getPosition();
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
-		if(currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null && GraphFragment.mToggleButton != null) {
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				if(GraphFragment.mToggleButton.isChecked())
-					mChatService.write(imuBegin.getBytes()); // Request data
-				else
-					mChatService.write(imuStop.getBytes()); // Stop sending data
-			}
-		} else if(currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT && mChatService != null) {
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		if (currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
+            mChatService.write(getKalman.getBytes());
+            if (GraphFragment.mToggleButton != null) {
+                if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+                    if (GraphFragment.mToggleButton.isChecked())
+                        mChatService.write(imuBegin.getBytes()); // Request data
+                    else
+                        mChatService.write(imuStop.getBytes()); // Stop sending data
+                }
+            }
+		} else if (currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT && mChatService != null) {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(getInfo.getBytes()); // Update info
 		}
 	}
@@ -328,7 +340,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		} else if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(imuStop.getBytes());
-		} else if(tab.getPosition() == ViewPagerAdapter.PID_FRAGMENT) {
+		}
+        if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT || tab.getPosition() == ViewPagerAdapter.PID_FRAGMENT) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
 		}
@@ -421,7 +434,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 					Handler myHandler = new Handler();
 					myHandler.postDelayed(new Runnable(){
 				        public void run() {
-				        	mChatService.write((getPIDValues + getSettings + getInfo).getBytes());
+				        	mChatService.write((getPIDValues + getSettings + getInfo + getKalman).getBytes());
 				        }
 				    }, 1000); // Wait 1 second before sending the message
 					if(GraphFragment.mToggleButton != null) {
@@ -458,8 +471,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				}
 				if(newIMUValues) {
 					newIMUValues = false;
-					GraphFragment.updateValues();					
+					GraphFragment.updateIMUValues();
 				}
+                if(newKalmanValues) {
+                    newKalmanValues = false;
+                    GraphFragment.updateKalmanValues();
+                }
 				if(pairingWithWii) {
 					pairingWithWii = false;
 					mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);

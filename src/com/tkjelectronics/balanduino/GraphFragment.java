@@ -27,8 +27,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ToggleButton;
+import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.jjoe64.graphview.GraphView;
@@ -39,6 +41,7 @@ import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
 
 public class GraphFragment extends SherlockFragment {
+    private static final String TAG = "GraphFragment";
 	private static final boolean D = BalanduinoActivity.D;
 	
 	private static GraphView graphView;
@@ -47,9 +50,16 @@ public class GraphFragment extends SherlockFragment {
 	private static GraphViewSeries kalmanSeries;
 	private static double counter = 100d;
 	public static ToggleButton mToggleButton;
+
 	private static CheckBox mCheckBox1;
 	private static CheckBox mCheckBox2;
 	private static CheckBox mCheckBox3;
+
+    private static EditText mQangle;
+    private static EditText mQbias;
+    private static EditText mRmeasure;
+    private static Button mButton;
+
 	private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
 	
 	public GraphFragment() {
@@ -138,7 +148,7 @@ public class GraphFragment extends SherlockFragment {
 			}
 		});
 
-		mToggleButton = (ToggleButton) v.findViewById(R.id.button);
+		mToggleButton = (ToggleButton) v.findViewById(R.id.toggleButton);
 		mToggleButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -157,6 +167,26 @@ public class GraphFragment extends SherlockFragment {
 				}
 			}
 		});
+
+        mQangle = (EditText) v.findViewById(R.id.editText1);
+        mQbias = (EditText) v.findViewById(R.id.editText2);
+        mRmeasure = (EditText) v.findViewById(R.id.editText3);
+        mButton = (Button) v.findViewById(R.id.updateButton);
+        mButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (BalanduinoActivity.mChatService == null) {
+                    if (D)
+                        Log.e(TAG, "mChatService == null");
+                    return;
+                }
+                BalanduinoActivity.Qangle = mQangle.getText().toString();
+                BalanduinoActivity.Qbias = mQbias.getText().toString();
+                BalanduinoActivity.Rmeasure = mRmeasure.getText().toString();
+                BalanduinoActivity.mChatService.write((BalanduinoActivity.setKalman + BalanduinoActivity.Qangle + "," + BalanduinoActivity.Qbias + "," + BalanduinoActivity.Rmeasure + ";").getBytes());
+            }
+        });
+
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
 				if(mToggleButton.isChecked())
@@ -168,8 +198,23 @@ public class GraphFragment extends SherlockFragment {
 		
 		return v;
 	}
+
+    public static void updateKalmanValues() {
+        if(mQangle != null) {
+            if(!(mQangle.getText().toString().equals(BalanduinoActivity.Qangle)))
+                mQangle.setText(BalanduinoActivity.Qangle);
+        }
+        if(mQbias != null) {
+            if(!(mQbias.getText().toString().equals(BalanduinoActivity.Qbias)))
+                mQbias.setText(BalanduinoActivity.Qbias);
+        }
+        if(mRmeasure != null) {
+            if(!(mRmeasure.getText().toString().equals(BalanduinoActivity.Rmeasure)))
+                mRmeasure.setText(BalanduinoActivity.Rmeasure);
+        }
+    }
 	
-	public static void updateValues() {
+	public static void updateIMUValues() {
 		if(mToggleButton == null)
 			return;
 		if (!(mToggleButton.isChecked()))
@@ -184,7 +229,7 @@ public class GraphFragment extends SherlockFragment {
 			buffer[2][100] = Double.parseDouble(BalanduinoActivity.kalmanValue);
 		} catch (NumberFormatException e) {
 			if(D)
-				Log.e("RealTimeGraph", "error in input", e);
+				Log.e(TAG, "error in input", e);
 			return;
 		}
 
