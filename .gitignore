@@ -21,12 +21,12 @@ local.properties
 .settings
 .checkstyle
 
-#Maven
+# Maven
 target
 release.properties
 pom.xml.*
 
-#Ant
+# Ant
 build.xml
 ant.properties
 local.properties
@@ -39,5 +39,8 @@ proguard-project.txt
 *.iws
 .idea/
 out/
-
 gen-external-apklibs/
+
+# Gradle
+.gradle
+build
