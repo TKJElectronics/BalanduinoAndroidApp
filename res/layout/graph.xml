@@ -62,7 +62,7 @@
             android:layout_alignBaseline="@id/textView3"
             android:layout_toRightOf="@id/textView3"
             android:layout_marginLeft="@dimen/margin"
-            android:inputType="numberDecimal|numberSigned" />
+            android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/textView2"
@@ -80,7 +80,7 @@
             android:layout_alignLeft="@id/editText3"
             android:layout_alignRight="@id/editText3"
             android:layout_alignBaseline="@id/textView2"
-            android:inputType="numberDecimal|numberSigned" />
+            android:inputType="numberDecimal" />
 
         <TextView
             android:id="@+id/textView1"
@@ -98,7 +98,7 @@
             android:layout_alignLeft="@id/editText3"
             android:layout_alignRight="@id/editText3"
             android:layout_alignBaseline="@id/textView1"
-            android:inputType="numberDecimal|numberSigned" />
+            android:inputType="numberDecimal" />
 
     </RelativeLayout>
 

@@ -341,7 +341,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(imuStop.getBytes());
 		}
-        if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT || tab.getPosition() == ViewPagerAdapter.PID_FRAGMENT) {
+        if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
 		}
