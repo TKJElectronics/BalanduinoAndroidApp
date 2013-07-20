@@ -1,3 +1,11 @@
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+
+project.ext.set('versionName', '0.5-SNAPSHOT')
+project.ext.set('versionCode', 5)
+
+project.ext.set('archivesBaseName', "BalanduinoAndroidApp-" + project.versionName)
+
 buildscript {
     repositories {
         mavenCentral()
@@ -10,6 +18,30 @@ buildscript {
 task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
     gradleVersion = '1.6'
 }
+
+task filter(type: Copy) {
+    println "Updating accessory filter version to: " + project.versionName
+    delete('res/xml/accessory_filter.xml') // Delete old file
+    from 'src/templates'
+    into 'res/xml'
+    expand(version: project.versionName) // Substitute version in accessory_filter.xml
+}
+
+task update {
+    def manifestFile = file("AndroidManifest.xml")
+    def manifestText = manifestFile.getText()
+
+    println "Updating AndroidManifest versionName to: " + project.versionName
+    def matcherVersionName = Pattern.compile("android:versionName=\"(.*?)\"").matcher(manifestText)
+    manifestText = matcherVersionName.replaceAll("android:versionName=\"" + project.versionName + "\"")
+
+    println "Updating AndroidManifest versionCode to: " + project.versionCode
+    def matcherVersionCode = Pattern.compile("android:versionCode=\"(.*?)\"").matcher(manifestText)
+    manifestText = matcherVersionCode.replaceAll("android:versionCode=\"" + project.versionCode + "\"")
+    
+    manifestFile.write(manifestText)
+}
+update.dependsOn filter
 
 apply plugin: 'android'
 
@@ -35,8 +67,8 @@ android {
     buildToolsVersion '17.0.0'
 
     defaultConfig {
-        versionCode = 5
-        versionName = '0.5b'
+        versionName = project.versionName
+        versionCode = project.versionCode
     }
 
     signingConfigs {
@@ -73,3 +105,11 @@ if (project.hasProperty('storeFile') && project.hasProperty('storePassword') && 
 } else {
     android.buildTypes.release.signingConfig = null
 }
+
+// Releasing:
+// 1. Update versionName and versionCode
+// 2. Run 'gradle clean update build'
+// 3. Move APK to releases directory
+// 4. Upload to Github and create tag
+// 5. Upload to Google Play Store
+//    * Also take new screenshots if necessary
