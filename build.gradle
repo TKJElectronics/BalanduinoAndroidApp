@@ -34,6 +34,21 @@ android {
     compileSdkVersion 17
     buildToolsVersion '17.0.0'
 
+    defaultConfig {
+        versionCode = 5
+        versionName = '0.5b'
+    }
+
+    signingConfigs {
+        release
+    }
+
+    buildTypes {
+        release {            
+            signingConfig signingConfigs.release
+        }
+    }
+
     sourceSets {
         main {
             manifest.srcFile 'AndroidManifest.xml'
@@ -47,4 +62,14 @@ android {
 
         instrumentTest.setRoot('tests')
     }
+}
+
+// These values are all set in my global gradle.properties file
+if (project.hasProperty('storeFile') && project.hasProperty('storePassword') && project.hasProperty('keyAlias') && project.hasProperty('keyPassword')) {
+    android.signingConfigs.release.storeFile = file(storeFile)
+    android.signingConfigs.release.storePassword = storePassword
+    android.signingConfigs.release.keyAlias = keyAlias
+    android.signingConfigs.release.keyPassword = keyPassword
+} else {
+    android.buildTypes.release.signingConfig = null
 }
