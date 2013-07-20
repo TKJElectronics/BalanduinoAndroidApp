@@ -51,7 +51,7 @@ import com.viewpagerindicator.UnderlinePageIndicator;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
 	private static final String TAG = "Balanduino";
-	public static final boolean D = false;
+	public static final boolean D = BuildConfig.DEBUG; // This is automatally set by Gradle
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
