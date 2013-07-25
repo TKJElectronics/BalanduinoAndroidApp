@@ -105,7 +105,7 @@ public class GraphFragment extends SherlockFragment {
 		graphView.setManualYAxisBounds(360, 0);
 		graphView.setViewPort(0, 100);
 		graphView.setScrollable(true);
-		graphView.setDiscableTouch(true);
+		graphView.setDisableTouch(true);
 
 		graphView.setShowLegend(true);
 		graphView.setLegendAlign(LegendAlign.BOTTOM);
