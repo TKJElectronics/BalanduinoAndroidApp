@@ -102,7 +102,7 @@
         android:layout_toRightOf="@id/batterylevelText"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textIsSelectable="false" />
-    
+
     <TextView
         android:id="@+id/runtimeText"
         android:layout_width="wrap_content"

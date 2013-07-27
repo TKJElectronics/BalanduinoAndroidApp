@@ -14,13 +14,14 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +29,7 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
-public class ImuFragment extends SherlockFragment {
+public class ImuFragment extends Fragment {
 	private Button mButton;
 	public TextView mPitchView;
 	public TextView mRollView;
@@ -45,13 +44,13 @@ public class ImuFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.imu, container, false);
-		
+
 		mPitchView = (TextView) v.findViewById(R.id.textView1);
 		mRollView = (TextView) v.findViewById(R.id.textView2);
 		mCoefficient = (TextView) v.findViewById(R.id.textView3);
 		mTableRow = (TableRow) v.findViewById(R.id.tableRowCoefficient);
 		mButton = (Button) v.findViewById(R.id.button);
-		
+
 		mHandler.postDelayed(new Runnable() { // Hide the menu icon and tablerow if there is no build in gyroscope in the device
 			@Override
 			public void run() {
@@ -63,11 +62,11 @@ public class ImuFragment extends SherlockFragment {
 		}, 100); // Wait 100ms before running the code
 		return v;
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
-		
+
 		mRunnable = new Runnable() {
 			@Override
 			public void run() {
@@ -76,11 +75,11 @@ public class ImuFragment extends SherlockFragment {
 					return;
 				mPitchView.setText(BalanduinoActivity.mSensorFusion.pitch);
 				mRollView.setText(BalanduinoActivity.mSensorFusion.roll);
-				mCoefficient.setText(BalanduinoActivity.mSensorFusion.coefficient);				
+				mCoefficient.setText(BalanduinoActivity.mSensorFusion.coefficient);
 
 				counter++;
 				if (counter > 2) { // Only send data every 150ms time
-					counter = 0;						
+					counter = 0;
 					if (BalanduinoActivity.mChatService == null)
 						return;
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT) {
@@ -99,7 +98,7 @@ public class ImuFragment extends SherlockFragment {
 						if(BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT)
 							CustomViewPager.setPagingEnabled(true);
 					}
-				}				
+				}
 			}
 		};
 		mHandler.postDelayed(mRunnable, 50); // Update IMU data every 50ms

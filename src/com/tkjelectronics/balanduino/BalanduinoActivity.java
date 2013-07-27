@@ -14,7 +14,7 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
@@ -38,18 +38,17 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
-public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
+public class BalanduinoActivity extends ActionBarActivity implements ActionBar.TabListener {
 	private static final String TAG = "Balanduino";
 	public static final boolean D = BuildConfig.DEBUG; // This is automatally set by Gradle
 
@@ -67,20 +66,20 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
 	private static final int REQUEST_ENABLE_BT = 2;
-	
+
 	// Local Bluetooth adapter
 	private BluetoothAdapter mBluetoothAdapter = null;
 	// Member object for the chat services
 	public static BluetoothChatService mChatService = null;
 	public static SensorFusion mSensorFusion = null;
-	
-	boolean btSecure; // If it's a new device we will pair with the device	
+
+	boolean btSecure; // If it's a new device we will pair with the device
 	BluetoothDevice btDevice; // The BluetoothDevice object
-	
+
 	private UnderlinePageIndicator mUnderlinePageIndicator;
-	
+
 	public static int currentTabSelected;
-	
+
 	public static String accValue = "";
 	public static String gyroValue = "";
 	public static String kalmanValue = "";
@@ -90,32 +89,32 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static String Qbias = "";
     public static String Rmeasure = "";
 	public static boolean newKalmanValues;
-	
+
 	public static String pValue = "";
 	public static String iValue = "";
 	public static String dValue = "";
 	public static String targetAngleValue = "";
 	public static boolean newPIDValues;
-	
+
 	public static boolean backToSpot = true;
 	public static int maxAngle = 8; // Eight is the default value
 	public static int maxTurning = 20; // Twenty is the default value
 	public static boolean newSettings;
-	
+
 	public static String appVersion;
 	public static String firmwareVersion;
 	public static String mcu;
 	public static String batteryLevel;
 	public static double runtime;
 	public static boolean newInfo;
-	
+
 	public static boolean pairingWithWii;
-	
+
 	public final static String getPIDValues = "GP;";
 	public final static String getSettings = "GS;";
 	public final static String getInfo = "GI;";
     public final static String getKalman = "GK;";
-		
+
 	public final static String setPValue = "SP,";
 	public final static String setIValue = "SI,";
 	public final static String setDValue = "SD,";
@@ -124,37 +123,37 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String setMaxAngle = "SA,";
 	public final static String setMaxTurning = "SU,";
 	public final static String setBackToSpot = "SB";
-	
+
 	public final static String imuBegin = "IB;";
 	public final static String imuStop = "IS;";
-	
+
 	public final static String sendStop = "CS;";
 	public final static String sendIMUValues = "CM,";
-	public final static String sendJoystickValues = "CJ,";	
+	public final static String sendJoystickValues = "CJ,";
 	public final static String sendPairWithWii = "CW;";
-	
+
 	public final static String restoreDefaultValues = "CR;";
-		
+
 	public final static String responsePIDValues = "P";
     public final static String responseKalmanValues = "K";
 	public final static String responseSettings = "S";
 	public final static String responseInfo = "I";
 	public final static String responseIMU = "V";
 	public final static String responsePairWii = "WC";
-	
+
 	public final static int responsePIDValuesLength = 5;
     public final static int responseKalmanValuesLength = 4;
 	public final static int responseSettingsLength = 4;
 	public final static int responseInfoLength = 5;
 	public final static int responseIMULength = 4;
 	public final static int responsePairWiiLength = 1;
-	
+
 	private Toast mToast;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_main);
 
 		// Get local Bluetooth adapter
@@ -177,13 +176,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(
-				getSupportFragmentManager());
+		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
 
 		// Set up the ViewPager with the adapter.
 		ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mViewPagerAdapter);
-		
+
 		// Bind the underline indicator to the adapter
 		mUnderlinePageIndicator = (UnderlinePageIndicator)findViewById(R.id.indicator);
 		mUnderlinePageIndicator.setViewPager(mViewPager);
@@ -233,8 +231,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			if (mChatService == null)
 				setupBTService();
 		}
-		
-		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // Create SharedPreferences instance		
+
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // Create SharedPreferences instance
 		String filterCoefficient = preferences.getString("filterCoefficient", null); // Read the stored value for filter coefficient
 		if (filterCoefficient != null) {
 			mSensorFusion.filter_coefficient = Float.parseFloat(filterCoefficient);
@@ -270,7 +268,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onDestroy() {
 		super.onDestroy();
 		if (D)
-			Log.e(TAG, "--- ON DESTROY ---");		
+			Log.e(TAG, "--- ON DESTROY ---");
 		// Stop the Bluetooth chat services
 		if (mChatService != null)
 			mChatService.stop();
@@ -310,7 +308,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if (D)
-			Log.d(TAG,"onTabSelected: " + tab.getPosition());		
+			Log.d(TAG,"onTabSelected: " + tab.getPosition());
 		currentTabSelected = tab.getPosition();
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
@@ -356,8 +354,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if(D)
 			Log.e(TAG,"onPrepareOptionsMenu");
-		super.onPrepareOptionsMenu(menu);
-		MenuItem menuItem = menu.findItem(R.id.menu_connect);
+		MenuItem menuItem = menu.findItem(R.id.menu_connect); // Find item
 		if (mChatService == null)
 			menuItem.setIcon(R.drawable.device_access_bluetooth);
 		else {
@@ -366,45 +363,41 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			else
 				menuItem.setIcon(R.drawable.device_access_bluetooth);
 		}
-		return true;
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if(D)
 			Log.e(TAG,"onCreateOptionsMenu");
-		super.onCreateOptionsMenu(menu);
-		// Inflate the menu; this adds items to the action bar if it is present.
-		MenuInflater inflater = getSupportMenuInflater();	  	
-		inflater.inflate(R.menu.menu, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-
 		switch (item.getItemId()) {
-		case R.id.menu_connect:
-			// Launch the DeviceListActivity to see devices and do scan
-			Intent serverIntent = new Intent(this, DeviceListActivity.class);
-			startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
-			return true;
-		case R.id.settings:
-			// Open up the settings dialog
-			SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
-			dialogFragment.show(getSupportFragmentManager(), null);
-			return true;
-		case android.R.id.home:
-			Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
-			startActivity(browserIntent);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
+			case R.id.menu_connect:
+				// Launch the DeviceListActivity to see devices and do scan
+				Intent serverIntent = new Intent(this, DeviceListActivity.class);
+				startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
+				return true;
+			case R.id.settings:
+				// Open up the settings dialog
+				SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
+				dialogFragment.show(getSupportFragmentManager(), null);
+				return true;
+			case android.R.id.home:
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
+				startActivity(browserIntent);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
 		}
 	}
-	
+
 	private void showToast(String message, int duration) {
-		if(mToast != null)
+        if(mToast != null)
 			mToast.cancel(); // Close the toast if it's already open
 		mToast = Toast.makeText(getApplicationContext(),message,duration);
 		mToast.show();
@@ -413,7 +406,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	// The Handler class that gets information back from the BluetoothChatService
 	static class BluetoothHandler extends Handler {
 		private final WeakReference<BalanduinoActivity>mActivity;
-		private final BalanduinoActivity mBalanduinoActivity;		
+		private final BalanduinoActivity mBalanduinoActivity;
 		private String mConnectedDeviceName; // Name of the connected device
 		BluetoothHandler(BalanduinoActivity activity) {
 			mActivity = new WeakReference<BalanduinoActivity>(activity);
@@ -451,9 +444,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 								}
 							}, 1000); // Wait 1 second before sending the message
 						}
-					}					
+					}
 					break;
-				case BluetoothChatService.STATE_CONNECTING:					
+				case BluetoothChatService.STATE_CONNECTING:
 					break;
 				}
 				PIDFragment.updateButton();
@@ -486,8 +479,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				// Save the connected device's name
 				mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
 				break;
-			case MESSAGE_TOAST:				
-				mBalanduinoActivity.supportInvalidateOptionsMenu();				
+			case MESSAGE_TOAST:
+				mBalanduinoActivity.supportInvalidateOptionsMenu();
 				PIDFragment.updateButton();
 				mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				break;
@@ -498,7 +491,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				break;
 			}
 		}
-	}	
+	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (D)
@@ -518,7 +511,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				// User did not enable Bluetooth or an error occured
 				if (D)
 					Log.d(TAG, "BT not enabled");
-				showToast(getString(R.string.bt_not_enabled_leaving), Toast.LENGTH_SHORT);				
+				showToast(getString(R.string.bt_not_enabled_leaving), Toast.LENGTH_SHORT);
 				finish();
 			}
 		}
@@ -534,11 +527,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			mChatService.newConnection = true;
 			mChatService.start(); // This will stop all the running threads
 			String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address
-			btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device			
+			btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
 			btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object
 			mChatService.nRetries = 0; // Reset retry counter
 			mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
 			showToast(getString(R.string.connecting), Toast.LENGTH_SHORT);
-		}		
+		}
 	}
 }

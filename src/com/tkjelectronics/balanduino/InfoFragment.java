@@ -14,13 +14,14 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,9 +29,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
-public class InfoFragment extends SherlockFragment {
+public class InfoFragment extends Fragment {
 	static TextView mAppVersion;
 	static TextView mFirmwareVersion;
 	static TextView mMcu;
@@ -39,7 +38,7 @@ public class InfoFragment extends SherlockFragment {
 	static ToggleButton mToggleButton;
 	private static Handler mHandler = new Handler();
 	private static Runnable mRunnable;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.info, container, false);
@@ -48,7 +47,7 @@ public class InfoFragment extends SherlockFragment {
 		mMcu = (TextView) v.findViewById(R.id.mcu);
 		mBatteryLevel = (TextView) v.findViewById(R.id.batterylevel);
 		mRuntime = (TextView) v.findViewById(R.id.runtime);
-		
+
 		mRunnable = new Runnable() {
 			@Override
 			public void run() {
@@ -59,7 +58,7 @@ public class InfoFragment extends SherlockFragment {
 				}
 			}
 		};
-		
+
 		mToggleButton = (ToggleButton) v.findViewById(R.id.button);
 		mToggleButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -67,12 +66,12 @@ public class InfoFragment extends SherlockFragment {
 				updateButton();
 			}
 		});
-		
+
 		updateView();
 		updateButton();
 		return v;
 	}
-	
+
 	public static void updateView() {
 		if(mAppVersion != null && BalanduinoActivity.appVersion != null)
 			mAppVersion.setText(BalanduinoActivity.appVersion);
@@ -82,31 +81,31 @@ public class InfoFragment extends SherlockFragment {
 			mMcu.setText(BalanduinoActivity.mcu);
 		if(mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)
 			mBatteryLevel.setText(BalanduinoActivity.batteryLevel);
-		if(mRuntime != null && BalanduinoActivity.runtime != 0) {	
+		if(mRuntime != null && BalanduinoActivity.runtime != 0) {
 			String minutes = Integer.toString((int)Math.floor(BalanduinoActivity.runtime));
 			String seconds = Integer.toString((int)(BalanduinoActivity.runtime%1/(1.0/60.0)));
 			mRuntime.setText(minutes + " min " + seconds + " sec");
 		}
 	}
-	
+
 	public static void updateButton() {
 		if(mToggleButton == null)
 			return;
 		if(mToggleButton.isChecked())
-			mToggleButton.setText("Stop");			
+			mToggleButton.setText("Stop");
 		else
 			mToggleButton.setText("Start");
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
 		updateView(); // When the user resumes the view, then update the values
 		updateButton();
-		
+
 		mHandler.postDelayed(mRunnable, 500); // Send data every 500ms
 	}
-	
+
 	@Override
 	public void onPause() {
 		super.onPause();

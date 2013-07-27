@@ -14,13 +14,14 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,7 +33,6 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 import android.widget.Button;
 
-import com.actionbarsherlock.app.SherlockFragment;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
@@ -40,10 +40,10 @@ import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
 
-public class GraphFragment extends SherlockFragment {
+public class GraphFragment extends Fragment {
     private static final String TAG = "GraphFragment";
 	private static final boolean D = BalanduinoActivity.D;
-	
+
 	private static GraphView graphView;
 	private static GraphViewSeries accSeries;
 	private static GraphViewSeries gyroSeries;
@@ -61,7 +61,7 @@ public class GraphFragment extends SherlockFragment {
     private static Button mButton;
 
 	private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
-	
+
 	public GraphFragment() {
 		for (int i = 0; i < 3; i++)
 			for (int i2 = 0; i2 < buffer[i].length; i2++)
@@ -71,11 +71,11 @@ public class GraphFragment extends SherlockFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.graph, container, false);
-		
+
 		GraphViewData[] data0 = new GraphViewData[101];
 		GraphViewData[] data1 = new GraphViewData[101];
 		GraphViewData[] data2 = new GraphViewData[101];
-		
+
 		for (int i = 0; i < 101; i++) { // Restore last data
 			data0[i] = new GraphViewData(counter-100+i, buffer[0][i]);
 			data1[i] = new GraphViewData(counter-100+i, buffer[1][i]);
@@ -84,11 +84,11 @@ public class GraphFragment extends SherlockFragment {
 		accSeries = new GraphViewSeries("Accelerometer",new GraphViewSeriesStyle(Color.RED, 2), data0);
 		gyroSeries = new GraphViewSeries("Gyro", new GraphViewSeriesStyle(Color.GREEN, 2), data1);
 		kalmanSeries = new GraphViewSeries("Kalman", new GraphViewSeriesStyle(Color.BLUE, 2), data2);
-		
+
 		graphView = new LineGraphView(getActivity(), "");
 		if(mCheckBox1 != null) {
 			if(mCheckBox1.isChecked())
-				graphView.addSeries(accSeries);			
+				graphView.addSeries(accSeries);
 		} else
 			graphView.addSeries(accSeries);
 		if(mCheckBox2 != null) {
@@ -113,7 +113,7 @@ public class GraphFragment extends SherlockFragment {
 
 		LinearLayout layout = (LinearLayout) v.findViewById(R.id.linegraph);
 		layout.addView(graphView);
-		
+
 		mCheckBox1 = (CheckBox) v.findViewById(R.id.checkBox1);
 		mCheckBox1.setOnClickListener(new OnClickListener() {
 			@Override
@@ -156,7 +156,7 @@ public class GraphFragment extends SherlockFragment {
 					mToggleButton.setText("Stop");
 				else
 					mToggleButton.setText("Start");
-				
+
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
 						if(((ToggleButton) v).isChecked())
@@ -195,7 +195,7 @@ public class GraphFragment extends SherlockFragment {
 					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
 			}
 		}
-		
+
 		return v;
 	}
 
@@ -213,7 +213,7 @@ public class GraphFragment extends SherlockFragment {
                 mRmeasure.setText(BalanduinoActivity.Rmeasure);
         }
     }
-	
+
 	public static void updateIMUValues() {
 		if(mToggleButton == null)
 			return;
@@ -222,7 +222,7 @@ public class GraphFragment extends SherlockFragment {
 
         for (int i = 0; i < 3; i++)
             System.arraycopy(buffer[i],1,buffer[i],0,100);
-        
+
 		try { // In some rare occasions the values can be corrupted
 			buffer[0][100] = Double.parseDouble(BalanduinoActivity.accValue);
 			buffer[1][100] = Double.parseDouble(BalanduinoActivity.gyroValue);
@@ -240,7 +240,7 @@ public class GraphFragment extends SherlockFragment {
 		if(buffer[1][100] <= 360 && buffer[1][100] >= 0) // Don't draw it if it would be larger than y-axis boundaries
 			gyroSeries.appendData(new GraphViewData(counter,buffer[1][100]), scroll);
 		kalmanSeries.appendData(new GraphViewData(counter,buffer[2][100]), scroll);
-		
+
 		if(!scroll)
 			graphView.redrawAll();
 	}
@@ -252,10 +252,10 @@ public class GraphFragment extends SherlockFragment {
 			mToggleButton.setText("Stop");
 		else
 			mToggleButton.setText("Start");
-		
+
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-				if(mToggleButton.isChecked()) 
+				if(mToggleButton.isChecked())
 					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
 				else
 					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data

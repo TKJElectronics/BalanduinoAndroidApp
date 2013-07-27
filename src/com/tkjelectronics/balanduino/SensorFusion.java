@@ -7,11 +7,11 @@
  * the rights to use, copy, modify, merge, publish, distribute, sublicense,
  * and/or sell copies of the Software, and to permit persons to whom the
  * Software is furnished to do so, subject to the following conditions:
- * 
- * 
+ *
+ *
  * The above copyright notice and this permission notice shall be included
  * in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
  * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -23,14 +23,12 @@
 
 package com.tkjelectronics.balanduino;
 
+import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import java.lang.Math;
-import java.math.RoundingMode;
 
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -141,7 +139,7 @@ public class SensorFusion implements SensorEventListener {
 	public void unregisterListeners() {
 		mSensorManager.unregisterListener(this);
 	}
-	
+
 	@Override
 	public void onAccuracyChanged(Sensor sensor, int accuracy) {
 	}
@@ -362,7 +360,7 @@ public class SensorFusion implements SensorEventListener {
 			mHandler.post(updateOreintationDisplayTask);
 		}
 	}
-	
+
 	public void updateOreintationDisplay() {
 		switch (IMUOutputSelection) {
 		case 0:

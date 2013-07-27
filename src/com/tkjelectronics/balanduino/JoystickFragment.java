@@ -14,7 +14,7 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
@@ -25,20 +25,19 @@ import java.util.Locale;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
-public class JoystickFragment extends SherlockFragment implements JoystickView.OnJoystickChangeListener {
+public class JoystickFragment extends Fragment implements JoystickView.OnJoystickChangeListener {
 	DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	JoystickView mJoystick;
 	TextView mText1;
 	private Handler mHandler = new Handler();
 	private Runnable mRunnable;
-	
+
 	double xValue;
 	double yValue;
 	boolean joystickReleased;
@@ -46,10 +45,10 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.joystick, container, false);
-		
+
 		mJoystick = (JoystickView) v.findViewById(R.id.joystick);
 		mJoystick.setOnJoystickChangeListener(this);
-		
+
 		mText1 = (TextView) v.findViewById(R.id.textView1);
 		mText1.setText(R.string.defaultJoystickValue);
 		return v;
@@ -75,7 +74,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	public void setOnReleaseListener(double xValue, double yValue) {
         newData(xValue,yValue,true);
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -85,7 +84,7 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 	public void onResume() {
 		super.onResume();
 		mJoystick.invalidate();
-		
+
 		mRunnable = new Runnable() {
 			@Override
 			public void run() {
@@ -122,5 +121,5 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 		super.onStop();
 		mJoystick.invalidate();
 		CustomViewPager.setPagingEnabled(true);
-	}	
+	}
 }

@@ -14,13 +14,14 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,9 +31,7 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-
-public class PIDFragment extends SherlockFragment {
+public class PIDFragment extends Fragment {
 	private static final String TAG = "PIDFragment";
 	private static final boolean D = BalanduinoActivity.D;
 
@@ -43,10 +42,10 @@ public class PIDFragment extends SherlockFragment {
 
     float newKpValue, newKiValue, newKdValue, newTargetAngleValue;
     float oldKpValue, oldKiValue, oldKdValue, oldTargetAngleValue;
-	
+
 	Handler mHandler = new Handler();
 	int counter = 0;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -177,10 +176,10 @@ public class PIDFragment extends SherlockFragment {
 								BalanduinoActivity.mChatService.write(BalanduinoActivity.getPIDValues.getBytes());
 							}
 						}, counter); // Wait before sending the message
-						if (D) 
+						if (D)
 							Log.i(TAG, newKpValue + "," + newKiValue + "," + newKdValue + "," + newTargetAngleValue);
 					}
-					counter = 0; // Reset counter															
+					counter = 0; // Reset counter
 				}
 			}
 		});
@@ -188,7 +187,7 @@ public class PIDFragment extends SherlockFragment {
 		updateButton();
 		return v;
 	}
-	
+
 	public static void updateView() {
 		if (mKpView != null && mKpSeekBar != null && mKpSeekBarValue != null && !BalanduinoActivity.pValue.isEmpty()) {
             mKpView.setText(BalanduinoActivity.pValue);
@@ -211,7 +210,7 @@ public class PIDFragment extends SherlockFragment {
             mTargetAngleSeekBar.setProgress((int)((Float.parseFloat(BalanduinoActivity.targetAngleValue)-150.0f)*10.0f));
         }
 	}
-	
+
 	public static void updateButton() {
 		if (BalanduinoActivity.mChatService != null && mButton != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
@@ -220,7 +219,7 @@ public class PIDFragment extends SherlockFragment {
 				mButton.setText(R.string.button);
 		}
 	}
-	
+
 	@Override
 	public void onResume() {
 		super.onResume();
@@ -229,6 +228,6 @@ public class PIDFragment extends SherlockFragment {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
                 updateView();
 			updateButton();
-		}		
+		}
 	}
 }

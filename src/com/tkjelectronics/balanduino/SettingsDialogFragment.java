@@ -14,17 +14,16 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
-
-import com.actionbarsherlock.app.SherlockDialogFragment;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -33,17 +32,17 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SettingsDialogFragment extends SherlockDialogFragment {
+public class SettingsDialogFragment extends DialogFragment {
 	Button mRestoreButton;
 	Button mPairButton;
 	int maxAngle;
 	int maxTurning;
 	boolean backToSpot;
-	
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		View view = getSherlockActivity().getLayoutInflater().inflate(R.layout.settings_dialog, null);
-		
+		View view = getActivity().getLayoutInflater().inflate(R.layout.settings_dialog, null);
+
 		final TextView coefficientValue = (TextView) view.findViewById(R.id.coefficientValue);
 		coefficientValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.filter_coefficient));
 		final SeekBar mSeekbarCoefficient = (SeekBar) view.findViewById(R.id.coefficientSeekBar);
@@ -58,13 +57,13 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
-				
+
 		if(SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide seekbar and text
 			view.findViewById(R.id.seekText).setVisibility(View.GONE);
 			view.findViewById(R.id.coefficientLayout).setVisibility(View.GONE);
 			mSeekbarCoefficient.setVisibility(View.GONE);
 		}
-		
+
 		final TextView angleValue = (TextView) view.findViewById(R.id.angleValue);
 		maxAngle = BalanduinoActivity.maxAngle;
 		angleValue.setText(Integer.toString(maxAngle));
@@ -80,7 +79,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
-		
+
 		final TextView turningValue = (TextView) view.findViewById(R.id.turningValue);
 		maxTurning = BalanduinoActivity.maxTurning;
 		turningValue.setText(Integer.toString(maxTurning));
@@ -96,7 +95,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			public void onStopTrackingTouch(SeekBar seekBar) {
 			}
 		});
-		
+
 		CheckBox mCheckBox = (CheckBox) view.findViewById(R.id.checkBox);
 		backToSpot = BalanduinoActivity.backToSpot;
 		mCheckBox.setChecked(backToSpot);
@@ -106,7 +105,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 				backToSpot = ((CheckBox) v).isChecked();
 			}
 		});
-		
+
 		mRestoreButton = (Button) view.findViewById(R.id.restore);
 		mRestoreButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -114,7 +113,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 						BalanduinoActivity.mChatService.write(BalanduinoActivity.restoreDefaultValues.getBytes());
-						Toast.makeText(getSherlockActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
 						dismiss();
 					}
 				}
@@ -126,13 +125,13 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			public void onClick(View v) {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendPairWithWii.getBytes());						
+						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendPairWithWii.getBytes());
 						dismiss();
 					}
 				}
 			}
 		});
-		
+
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				mRestoreButton.setText(R.string.restoreButtonText);
@@ -142,8 +141,8 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 				mPairButton.setText(R.string.button);
 			}
 		}
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(getSherlockActivity());
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 		// Set title
 		builder.setTitle(R.string.dialog_title)
 				// Add the buttons
@@ -158,7 +157,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 							if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 								int val = backToSpot? 1 : 0;
 								BalanduinoActivity.mChatService.write((BalanduinoActivity.setMaxAngle + Integer.toString(maxAngle) + ";" + BalanduinoActivity.setMaxTurning + Integer.toString(maxTurning) + ";" + BalanduinoActivity.setBackToSpot + Integer.toString(val) + ";" + BalanduinoActivity.getSettings).getBytes());
-							}								
+							}
 						}
 					}
 				})
@@ -173,7 +172,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 				// Create the AlertDialog
 		return builder.create();
 	}
-	
+
 	@Override
 	public void onCancel(DialogInterface dialog) {
 		// User pressed back, home or pressed outside the dialog

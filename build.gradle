@@ -1,7 +1,7 @@
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-project.ext.set('versionName', '0.5-SNAPSHOT')
+project.ext.set('versionName', '0.5b')
 project.ext.set('versionCode', 5)
 
 project.ext.set('archivesBaseName', "BalanduinoAndroidApp-" + project.versionName)
@@ -22,7 +22,7 @@ task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
 task filter(type: Copy) {
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
-    
+
     def firstLine = accessoryText.substring(0, accessoryText.indexOf('>')+1) // We need to skip the first line in the xml file
     accessoryText = accessoryText.substring(accessoryText.indexOf('>')+1)
 
@@ -44,7 +44,7 @@ task update {
     println "Updating AndroidManifest versionCode to: " + project.versionCode
     def matcherVersionCode = Pattern.compile("android:versionCode=\"(.*?)\"").matcher(manifestText)
     manifestText = matcherVersionCode.replaceAll("android:versionCode=\"" + project.versionCode + "\"")
-    
+
     manifestFile.write(manifestText)
 }
 update.dependsOn filter
@@ -54,27 +54,24 @@ apply plugin: 'android'
 repositories {
     mavenCentral()
     maven {
-        url 'https://github.com/skyisle/abs-aar/raw/master'
-    }
-    maven {
         url 'https://github.com/dahlgren/vpi-aar/raw/master'
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: '*.jar')
+    //compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':libs:GraphView')
-    compile 'com.actionbarsherlock:actionbarsherlock:4.3.2-SNAPSHOT'
+    compile 'com.android.support:appcompat-v7:18.0.+'
     compile 'com.viewpagerindicator:library:2.4.2-SNAPSHOT'
 }
 
 android {
-    compileSdkVersion 17
-    buildToolsVersion '17.0.0'
+    compileSdkVersion 18
+    buildToolsVersion '18.0.0'
 
     defaultConfig {
         minSdkVersion 10
-        targetSdkVersion 17
+        targetSdkVersion 18
         versionName = project.versionName
         versionCode = project.versionCode
     }
@@ -84,7 +81,7 @@ android {
     }
 
     buildTypes {
-        release {            
+        release {
             signingConfig signingConfigs.release
         }
     }

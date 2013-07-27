@@ -19,10 +19,9 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-
-import com.actionbarsherlock.app.SherlockFragment;
 
 /**
  * A {@link FragmentPagerAdapter} that returns a fragment corresponding to one
@@ -40,7 +39,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 	}
 
 	@Override
-	public SherlockFragment getItem(int position) {
+	public Fragment getItem(int position) {
 		switch (position) {
 		case 0:
 			return new ImuFragment();
