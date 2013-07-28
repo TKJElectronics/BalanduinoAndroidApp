@@ -51,19 +51,23 @@ import android.widget.Toast;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
 public class BalanduinoActivity extends ActionBarActivity implements ActionBar.TabListener {
-	private static final String TAG = "Balanduino";
-	public static final boolean D = BuildConfig.DEBUG; // This is automatally set by Gradle
+    private static final String TAG = "Balanduino";
+    public static final boolean D = BuildConfig.DEBUG; // This is automatally set by Gradle
+
+    private static Activity activity;
+    private static Context context;
+    private Toast mToast;
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
-	public static final int MESSAGE_READ = 2;
-	public static final int MESSAGE_DEVICE_NAME = 3;
-	public static final int MESSAGE_TOAST = 4;
-	public static final int MESSAGE_RETRY = 5;
+    public static final int MESSAGE_READ = 2;
+    public static final int MESSAGE_DEVICE_NAME = 3;
+    public static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_RETRY = 5;
 
-	// Key names received from the BluetoothChatService Handler
-	public static final String DEVICE_NAME = "device_name";
-	public static final String TOAST = "toast";
+    // Key names received from the BluetoothChatService Handler
+    public static final String DEVICE_NAME = "device_name";
+    public static final String TOAST = "toast";
 
 	// Intent request codes
 	private static final int REQUEST_CONNECT_DEVICE = 1;
@@ -79,17 +83,16 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	BluetoothDevice btDevice; // The BluetoothDevice object
 
 	private UnderlinePageIndicator mUnderlinePageIndicator;
-
 	public static int currentTabSelected;
 
 	public static String accValue = "";
 	public static String gyroValue = "";
 	public static String kalmanValue = "";
-    public static boolean newIMUValues;
+	public static boolean newIMUValues;
 
-    public static String Qangle = "";
-    public static String Qbias = "";
-    public static String Rmeasure = "";
+	public static String Qangle = "";
+	public static String Qbias = "";
+	public static String Rmeasure = "";
 	public static boolean newKalmanValues;
 
 	public static String pValue = "";
@@ -112,18 +115,18 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 
 	public static boolean pairingWithWii;
 
-    public static boolean buttonState;
-    public static boolean joystickReleased;
+	public static boolean buttonState;
+	public static boolean joystickReleased;
 
 	public final static String getPIDValues = "GP;";
 	public final static String getSettings = "GS;";
 	public final static String getInfo = "GI;";
-    public final static String getKalman = "GK;";
+	public final static String getKalman = "GK;";
 
 	public final static String setPValue = "SP,";
 	public final static String setIValue = "SI,";
 	public final static String setDValue = "SD,";
-    public final static String setKalman = "SK,";
+	public final static String setKalman = "SK,";
 	public final static String setTargetAngle = "ST,";
 	public final static String setMaxAngle = "SA,";
 	public final static String setMaxTurning = "SU,";
@@ -140,22 +143,18 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	public final static String restoreDefaultValues = "CR;";
 
 	public final static String responsePIDValues = "P";
-    public final static String responseKalmanValues = "K";
+	public final static String responseKalmanValues = "K";
 	public final static String responseSettings = "S";
 	public final static String responseInfo = "I";
 	public final static String responseIMU = "V";
 	public final static String responsePairWii = "WC";
 
 	public final static int responsePIDValuesLength = 5;
-    public final static int responseKalmanValuesLength = 4;
+	public final static int responseKalmanValuesLength = 4;
 	public final static int responseSettingsLength = 4;
 	public final static int responseInfoLength = 5;
 	public final static int responseIMULength = 4;
 	public final static int responsePairWiiLength = 1;
-
-	private Toast mToast;
-    private static Activity activity;
-    private static Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
