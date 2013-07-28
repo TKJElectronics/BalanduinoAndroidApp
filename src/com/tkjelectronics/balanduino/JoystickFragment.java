@@ -23,6 +23,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -38,9 +39,9 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
 	private Handler mHandler = new Handler();
 	private Runnable mRunnable;
 
-	double xValue;
-	double yValue;
-	boolean joystickReleased;
+	private double xValue;
+	private double yValue;
+	private boolean joystickReleased;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,11 +52,18 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
 
 		mText1 = (TextView) v.findViewById(R.id.textView1);
 		mText1.setText(R.string.defaultJoystickValue);
+
+        BalanduinoActivity.joystickReleased = true;
+
 		return v;
 	}
 
     private void newData(double xValue, double yValue, boolean joystickReleased) {
+        if (xValue == 0 && yValue == 0)
+            joystickReleased = true;
+
         CustomViewPager.setPagingEnabled(joystickReleased);
+        BalanduinoActivity.joystickReleased = joystickReleased;
         this.joystickReleased = joystickReleased;
         this.xValue = xValue;
         this.yValue = yValue;
@@ -84,6 +92,7 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
 	public void onResume() {
 		super.onResume();
 		mJoystick.invalidate();
+        BalanduinoActivity.joystickReleased = true;
 
 		mRunnable = new Runnable() {
 			@Override
@@ -91,13 +100,15 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
                 mHandler.postDelayed(this, 150); // Send data every 150ms
 				if (BalanduinoActivity.mChatService == null)
 					return;
-				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.JOYSTICK_FRAGMENT) {
-					if(joystickReleased)
-						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
-					else {
-						String message = BalanduinoActivity.sendJoystickValues + d.format(xValue) + ',' + d.format(yValue) + ";";
-						BalanduinoActivity.mChatService.write(message.getBytes());
-					}
+				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) {
+                    if (!getResources().getBoolean(R.bool.isTablet) || !BalanduinoActivity.buttonState) { // Don't send stop if the button in the IMU fragment is pressed
+                        if(joystickReleased || (xValue == 0 && yValue == 0))
+                            BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
+                        else {
+                            String message = BalanduinoActivity.sendJoystickValues + d.format(xValue) + ',' + d.format(yValue) + ";";
+                            BalanduinoActivity.mChatService.write(message.getBytes());
+                        }
+                    }
 				}
 			}
 		};
@@ -108,6 +119,7 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
 	public void onPause() {
 		super.onPause();
 		mJoystick.invalidate();
+        BalanduinoActivity.joystickReleased = true;
 		CustomViewPager.setPagingEnabled(true);
 		mHandler.removeCallbacks(mRunnable);
 	}
@@ -115,11 +127,13 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
 	public void onDestroyView() {
 		super.onDestroyView();
 		mJoystick.invalidate();
+        BalanduinoActivity.joystickReleased = true;
 	}
 	@Override
 	public void onStop() {
 		super.onStop();
 		mJoystick.invalidate();
+        BalanduinoActivity.joystickReleased = true;
 		CustomViewPager.setPagingEnabled(true);
 	}
 }

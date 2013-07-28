@@ -52,7 +52,7 @@ public class InfoFragment extends Fragment {
 			@Override
 			public void run() {
 				mHandler.postDelayed(this, 500); // Send data every 500ms
-				if (BalanduinoActivity.mChatService != null && mToggleButton.isChecked() && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT) {
+				if (BalanduinoActivity.mChatService != null && mToggleButton.isChecked() && BalanduinoActivity.checkTab(ViewPagerAdapter.INFO_FRAGMENT)) {
 					if(BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 						BalanduinoActivity.mChatService.write(BalanduinoActivity.getInfo.getBytes());
 				}

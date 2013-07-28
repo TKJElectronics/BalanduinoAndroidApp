@@ -14,11 +14,13 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 package com.tkjelectronics.balanduino;
 
+import android.content.Context;
+import android.content.res.Configuration;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -34,9 +36,20 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 	public static final int PID_FRAGMENT = 3;
 	public static final int INFO_FRAGMENT = 4;
 
-	public ViewPagerAdapter(FragmentManager fm) {
+    Context context;
+
+	public ViewPagerAdapter(Context context, FragmentManager fm) {
 		super(fm);
+        this.context = context;
 	}
+
+    @Override
+    public float getPageWidth(int position) {
+        if (context.getResources().getBoolean(R.bool.isTablet) && context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+            return 0.5f; // On tablets in landscape mode two fragments are shown side by side
+        else
+            return 1.0f;
+    }
 
 	@Override
 	public Fragment getItem(int position) {
@@ -58,7 +71,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
 	@Override
 	public int getCount() {
-		// Return number of tabs		
+		// Return number of tabs
 		return 5;
 	}
 

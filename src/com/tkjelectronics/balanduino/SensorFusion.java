@@ -30,12 +30,14 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Handler;
 import android.util.Log;
+import android.view.Surface;
 
 public class SensorFusion implements SensorEventListener {
 	// For debugging
@@ -44,6 +46,7 @@ public class SensorFusion implements SensorEventListener {
 
 	// Stores information about all the different sensors
 	private SensorManager mSensorManager = null;
+    private Context context;
 
 	// angular speeds from gyro
 	private float[] gyro = new float[3];
@@ -81,7 +84,8 @@ public class SensorFusion implements SensorEventListener {
 	public static int IMUOutputSelection = -1;
 	DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 
-	public SensorFusion(SensorManager manager) {
+	public SensorFusion(Context context, SensorManager manager) {
+        this.context = context;
 		mSensorManager = manager;
 
 		/* Init gyro values */
@@ -362,10 +366,12 @@ public class SensorFusion implements SensorEventListener {
 	}
 
 	public void updateOreintationDisplay() {
-		switch (IMUOutputSelection) {
+        float pitchOut = 0, rollOut = 0;
+
+        switch (IMUOutputSelection) {
 		case 0:
-			pitch = d.format(accMagOrientation[1] * 180 / Math.PI);
-			roll = d.format(accMagOrientation[2] * 180 / Math.PI);
+            pitchOut = accMagOrientation[1];
+            rollOut = accMagOrientation[2];
 			break;
 		/*case 1:
 			mAzimuthView.setText(d.format(gyroOrientation[0] * 180 / Math.PI));
@@ -373,10 +379,31 @@ public class SensorFusion implements SensorEventListener {
 			mRollView.setText(d.format(gyroOrientation[2] * 180 / Math.PI));
 			break;*/
 		case 2:
-			pitch = d.format(fusedOrientation[1] * 180 / Math.PI);
-			roll = d.format(fusedOrientation[2] * 180 / Math.PI);
+            pitchOut = fusedOrientation[1];
+            rollOut = fusedOrientation[2];
 			break;
 		}
+
+        if (context.getResources().getBoolean(R.bool.isTablet)) {
+            int rotation = BalanduinoActivity.getRotation();
+            if (rotation == Surface.ROTATION_90) { // Landscape
+                float pitchTemp = pitchOut;
+                pitchOut = rollOut;
+                rollOut = -pitchTemp;
+            } else if (rotation == Surface.ROTATION_180) { // Reverse Portrait
+                pitchOut = -pitchOut;
+                rollOut = -rollOut;
+            }
+            else if (rotation == Surface.ROTATION_270) { // Reverse Landscape
+                float pitchTemp = pitchOut;
+                pitchOut = -rollOut;
+                rollOut = pitchTemp;
+            }
+            //else // We don't do anything in portrait mode
+        }
+
+        pitch = d.format(pitchOut * 180 / Math.PI);
+        roll = d.format(rollOut * 180 / Math.PI);
 		coefficient = d.format(tempFilter_coefficient);
 	}
 

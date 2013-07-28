@@ -19,10 +19,14 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -60,6 +64,9 @@ public class ImuFragment extends Fragment {
 					mTableRow.setVisibility(View.GONE); // If not then hide the tablerow
 			}
 		}, 100); // Wait 100ms before running the code
+
+        BalanduinoActivity.buttonState = false;
+
 		return v;
 	}
 
@@ -84,19 +91,29 @@ public class ImuFragment extends Fragment {
 						return;
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT) {
 						buttonState = mButton.isPressed();
-						CustomViewPager.setPagingEnabled(!buttonState);
-						if (buttonState) {
-							String message = BalanduinoActivity.sendIMUValues + BalanduinoActivity.mSensorFusion.pitch + ',' + BalanduinoActivity.mSensorFusion.roll + ";";
-							BalanduinoActivity.mChatService.write(message.getBytes());
-							mButton.setText(R.string.sendingData);
-						} else {
-							BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
-							mButton.setText(R.string.notSendingData);
-						}
+                        BalanduinoActivity.buttonState = buttonState;
+
+                        if (BalanduinoActivity.joystickReleased || getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE) // Check if joystick is released or we are not in landscape mode
+                            CustomViewPager.setPagingEnabled(!buttonState); // Set the ViewPager according to the button
+                        else
+                            CustomViewPager.setPagingEnabled(false);
+
+                        if (BalanduinoActivity.joystickReleased) {
+                            if (buttonState) {
+                                lockRotation();
+                                String message = BalanduinoActivity.sendIMUValues + BalanduinoActivity.mSensorFusion.pitch + ',' + BalanduinoActivity.mSensorFusion.roll + ";";
+                                BalanduinoActivity.mChatService.write(message.getBytes());
+                                mButton.setText(R.string.sendingData);
+                            } else {
+                                unlockRotation();
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
+                                mButton.setText(R.string.notSendingData);
+                            }
+                        }
 					} else {
 						mButton.setText(R.string.button);
-						if(BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT)
-							CustomViewPager.setPagingEnabled(true);
+                        if (BalanduinoActivity.currentTabSelected == ViewPagerAdapter.IMU_FRAGMENT && BalanduinoActivity.joystickReleased)
+                            CustomViewPager.setPagingEnabled(true);
 					}
 				}
 			}
@@ -104,9 +121,40 @@ public class ImuFragment extends Fragment {
 		mHandler.postDelayed(mRunnable, 50); // Update IMU data every 50ms
 	}
 
+    private void lockRotation() {
+        if (getResources().getBoolean(R.bool.isTablet)) { // Check if the layout can rotate
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED); // Lock screen orientation so it doesn't rotate
+            else { // Lock rotation manually - source: http://blogs.captechconsulting.com/blog/eric-miles/programmatically-locking-android-screen-orientation
+                int rotation = BalanduinoActivity.getRotation();
+                int lock;
+
+                if (rotation == Surface.ROTATION_90) // Landscape
+                    lock = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+                else if (rotation == Surface.ROTATION_180) // Reverse Portrait
+                    lock = ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT;
+                else if (rotation == Surface.ROTATION_270) // Reverse Landscape
+                    lock = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+                else
+                    lock = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
+                getActivity().setRequestedOrientation(lock);
+            }
+        }
+    }
+
+    private void unlockRotation() {
+        if (getResources().getBoolean(R.bool.isTablet)) { // Check if the layout can rotate
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER); // Unlock screen orientation
+            else
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR); // Unlock screen orientation
+        }
+    }
+
 	@Override
 	public void onPause() {
 		super.onPause();
 		mHandler.removeCallbacks(mRunnable);
+        unlockRotation();
 	}
 }

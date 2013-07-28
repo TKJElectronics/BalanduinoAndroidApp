@@ -158,7 +158,7 @@ public class GraphFragment extends Fragment {
 					mToggleButton.setText("Start");
 
 				if (BalanduinoActivity.mChatService != null) {
-					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 						if(((ToggleButton) v).isChecked())
 							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
 						else
@@ -188,7 +188,7 @@ public class GraphFragment extends Fragment {
         });
 
 		if (BalanduinoActivity.mChatService != null) {
-			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 				if(mToggleButton.isChecked())
 					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
 				else
@@ -254,7 +254,7 @@ public class GraphFragment extends Fragment {
 			mToggleButton.setText("Start");
 
 		if (BalanduinoActivity.mChatService != null) {
-			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
+			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 				if(mToggleButton.isChecked())
 					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
 				else

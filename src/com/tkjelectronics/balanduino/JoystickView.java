@@ -21,8 +21,10 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 public class JoystickView extends View {
     private OnJoystickChangeListener listener;
@@ -92,19 +94,19 @@ public class JoystickView extends View {
         	y = ((y-centerY)*joystickRadius/abs + centerY);
         }
     	invalidate();
-    	if (listener != null && event.getAction() == MotionEvent.ACTION_UP) {
-    		buttonColor = buttonGray;
-    		x = centerX;
-    		y = centerY;
-    		listener.setOnReleaseListener(0,0);
-    	}
-    	if (listener != null && event.getAction() == MotionEvent.ACTION_DOWN) {
-    		buttonColor = holo_blue_dark; 
-    		listener.setOnTouchListener(getXValue(), getYValue());
-    	}
-    	if (listener != null && event.getAction() == MotionEvent.ACTION_MOVE) {
-    		buttonColor = holo_blue_dark;
-    		listener.setOnMovedListener(getXValue(), getYValue());    	
+    	if (listener != null) {
+            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+                buttonColor = holo_blue_dark;
+                listener.setOnTouchListener(getXValue(), getYValue());
+    	    } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                buttonColor = holo_blue_dark;
+                listener.setOnMovedListener(getXValue(), getYValue());
+            } else { // Usually 'MotionEvent.ACTION_UP' or 'MotionEvent.ACTION_CANCEL'
+                buttonColor = buttonGray;
+                x = centerX;
+                y = centerY;
+                listener.setOnReleaseListener(0,0);
+            }
     	}
     	return true;
     }

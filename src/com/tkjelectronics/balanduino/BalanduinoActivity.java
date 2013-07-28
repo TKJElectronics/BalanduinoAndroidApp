@@ -28,10 +28,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.content.pm.PackageInfo;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.res.Configuration;
 import android.hardware.SensorManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -96,7 +98,7 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	public static String targetAngleValue = "";
 	public static boolean newPIDValues;
 
-	public static boolean backToSpot = true;
+	public static boolean backToSpot;
 	public static int maxAngle = 8; // Eight is the default value
 	public static int maxTurning = 20; // Twenty is the default value
 	public static boolean newSettings;
@@ -109,6 +111,9 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	public static boolean newInfo;
 
 	public static boolean pairingWithWii;
+
+    public static boolean buttonState;
+    public static boolean joystickReleased;
 
 	public final static String getPIDValues = "GP;";
 	public final static String getSettings = "GS;";
@@ -149,10 +154,30 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	public final static int responsePairWiiLength = 1;
 
 	private Toast mToast;
+    private static Activity activity;
+    private static Context context;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        activity = this;
+        context = getApplicationContext();
+
+        if (!getResources().getBoolean(R.bool.isTablet))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT); // Set portrait mode only - for small screens like phones
+        else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER); // Full screen rotation
+        	else
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR); // Full screen rotation
+            new Handler().postDelayed(new Runnable() { // Hack to hide keyboard when the layout it rotated
+                @Override
+                public void run() {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard - this is needed when the device is rotated
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
+                }
+            }, 1000);
+        }
 
 		setContentView(R.layout.activity_main);
 
@@ -167,7 +192,7 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 
 		// get sensorManager and initialize sensor listeners
 		SensorManager mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
-		mSensorFusion = new SensorFusion(mSensorManager);
+		mSensorFusion = new SensorFusion(getApplicationContext(), mSensorManager);
 
 		// Set up the action bar.
 		final ActionBar actionBar = getSupportActionBar();
@@ -179,8 +204,11 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
 
 		// Set up the ViewPager with the adapter.
-		ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
+        CustomViewPager mViewPager = (CustomViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mViewPagerAdapter);
+
+        if (getResources().getBoolean(R.bool.isTablet))
+            mViewPager.setOffscreenPageLimit(2); // Since two fragments is selected in landscape mode, this is used to smooth things out
 
 		// Bind the underline indicator to the adapter
 		mUnderlinePageIndicator = (UnderlinePageIndicator)findViewById(R.id.indicator);
@@ -208,8 +236,7 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 					.setTabListener(this));
 		}
 		try {
-			PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-			BalanduinoActivity.appVersion = pInfo.versionName; // Read the app version
+			BalanduinoActivity.appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
 		} catch (NameNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -264,14 +291,18 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 		edit.commit();
 	}
 
+    @Override
+    public void onBackPressed() {
+        if (mChatService != null)
+            mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
+        finish(); // Exits the app
+    }
+
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
 		if (D)
 			Log.e(TAG, "--- ON DESTROY ---");
-		// Stop the Bluetooth chat services
-		if (mChatService != null)
-			mChatService.stop();
 		mSensorFusion.unregisterListeners();
 	}
 
@@ -312,7 +343,7 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 		currentTabSelected = tab.getPosition();
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
-		if (currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
+		if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
             mChatService.write(getKalman.getBytes());
             if (GraphFragment.mToggleButton != null) {
                 if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
@@ -322,24 +353,28 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
                         mChatService.write(imuStop.getBytes()); // Stop sending data
                 }
             }
-		} else if (currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT && mChatService != null) {
+		} else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
 			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(getInfo.getBytes()); // Update info
 		}
+        if(!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
+        }
 	}
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if(D)
-			Log.d(TAG,"onTabUnselected: " + tab.getPosition());
-		if((tab.getPosition() == ViewPagerAdapter.IMU_FRAGMENT || tab.getPosition() == ViewPagerAdapter.JOYSTICK_FRAGMENT) && mChatService != null) { // Send stop command if the user selects another tab
+			Log.d(TAG,"onTabUnselected: " + tab.getPosition() + " " + currentTabSelected);
+		if((checkTab(ViewPagerAdapter.IMU_FRAGMENT) || checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(sendStop.getBytes());
-		} else if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT && mChatService != null) {
+		} else if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(imuStop.getBytes());
 		}
-        if(tab.getPosition() == ViewPagerAdapter.GRAPH_FRAGMENT) {
+        if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
 		}
@@ -349,6 +384,10 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
+
+    public static boolean checkTab(int tab) {
+        return (currentTabSelected == tab || (context.getResources().getBoolean(R.bool.isTablet) && context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && currentTabSelected == tab-1)); // Check the tab to the left as well in landscape mode
+    }
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
@@ -396,7 +435,13 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 		}
 	}
 
+    public static int getRotation() {
+        return activity.getWindowManager().getDefaultDisplay().getRotation();
+    }
+
 	private void showToast(String message, int duration) {
+        if (duration != Toast.LENGTH_SHORT && duration != Toast.LENGTH_LONG)
+            throw new IllegalArgumentException();
         if(mToast != null)
 			mToast.cancel(); // Close the toast if it's already open
 		mToast = Toast.makeText(getApplicationContext(),message,duration);
@@ -421,24 +466,24 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 					Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
-					mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " "+ mConnectedDeviceName, Toast.LENGTH_SHORT);
+					mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
 					if(mChatService == null)
 						return;
-					Handler myHandler = new Handler();
-					myHandler.postDelayed(new Runnable(){
+					Handler mHandler = new Handler();
+					mHandler.postDelayed(new Runnable(){
 				        public void run() {
 				        	mChatService.write((getPIDValues + getSettings + getInfo + getKalman).getBytes());
 				        }
 				    }, 1000); // Wait 1 second before sending the message
 					if(GraphFragment.mToggleButton != null) {
-						if(GraphFragment.mToggleButton.isChecked() && currentTabSelected == ViewPagerAdapter.GRAPH_FRAGMENT) {
-							myHandler.postDelayed(new Runnable(){
+						if(GraphFragment.mToggleButton.isChecked() && checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+							mHandler.postDelayed(new Runnable(){
 						        public void run() {
 						        	mChatService.write(imuBegin.getBytes()); // Request data
 						        }
 						    }, 1000); // Wait 1 second before sending the message
 						} else {
-							myHandler.postDelayed(new Runnable(){
+							mHandler.postDelayed(new Runnable(){
 								public void run() {
 									mChatService.write(imuStop.getBytes()); // Stop sending data
 								}

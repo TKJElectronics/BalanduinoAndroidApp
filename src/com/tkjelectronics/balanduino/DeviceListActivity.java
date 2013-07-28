@@ -118,10 +118,11 @@ public class DeviceListActivity extends Activity {
 	}
 
     private class CustomArrayAdapter extends ArrayAdapter<String> {
-        boolean selectable = true; // Selectable by default
+        boolean selectable;
 
         public CustomArrayAdapter(Context context, int resource) {
             super(context, resource);
+            this.selectable = true; // Selectable by default
         }
 
         /**
