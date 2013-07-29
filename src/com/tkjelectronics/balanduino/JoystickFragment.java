@@ -23,7 +23,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -39,13 +38,12 @@ public class JoystickFragment extends Fragment implements JoystickView.OnJoystic
 	private Handler mHandler = new Handler();
 	private Runnable mRunnable;
 
-	private double xValue;
-	private double yValue;
+	private double xValue, yValue;
 	private boolean joystickReleased;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.joystick, container, false);
+        View v = inflater.inflate(R.layout.joystick, container, false);
 
 		mJoystick = (JoystickView) v.findViewById(R.id.joystick);
 		mJoystick.setOnJoystickChangeListener(this);

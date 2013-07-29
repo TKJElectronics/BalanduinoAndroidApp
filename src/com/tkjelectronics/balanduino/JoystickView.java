@@ -21,10 +21,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 public class JoystickView extends View {
     private OnJoystickChangeListener listener;
@@ -35,8 +33,8 @@ public class JoystickView extends View {
     private final int circleColor = buttonGray;
     private int buttonColor = buttonGray;
     
-    private float x;
-    private float y;
+    private float x, y; // These are in the intern coordinates
+    private double lastX, lastY; // These are in the extern coordinates
     private float buttonRadius;
     private float joystickRadius;
     private float centerX;
@@ -93,22 +91,38 @@ public class JoystickView extends View {
         	x = ((x-centerX)*joystickRadius/abs + centerX);
         	y = ((y-centerY)*joystickRadius/abs + centerY);
         }
-    	invalidate();
+
+        if (lastX == 0 && lastY == 0 && (getYValue() > 0.80 || getYValue() < -0.80)) {
+            x = centerX;
+            y = centerY;
+            return true;
+        }
+        lastX = getXValue();
+        lastY = getYValue();
+
+        invalidate();
+
     	if (listener != null) {
-            if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
+            int actionMask = event.getActionMasked();
+            if (actionMask == MotionEvent.ACTION_DOWN) {
                 buttonColor = holo_blue_dark;
                 listener.setOnTouchListener(getXValue(), getYValue());
-    	    } else if (event.getActionMasked() == MotionEvent.ACTION_MOVE) {
+                return true;
+    	    } else if (actionMask == MotionEvent.ACTION_MOVE) {
                 buttonColor = holo_blue_dark;
                 listener.setOnMovedListener(getXValue(), getYValue());
-            } else { // Usually 'MotionEvent.ACTION_UP' or 'MotionEvent.ACTION_CANCEL'
+                return true;
+            } else if (actionMask == MotionEvent.ACTION_UP || actionMask == MotionEvent.ACTION_CANCEL) {
                 buttonColor = buttonGray;
                 x = centerX;
                 y = centerY;
+                lastX = 0;
+                lastY = 0;
                 listener.setOnReleaseListener(0,0);
+                return true;
             }
     	}
-    	return true;
+    	return false;
     }
     
     public double getXValue() {
@@ -116,7 +130,7 @@ public class JoystickView extends View {
     }
     
     public double getYValue() {
-    	return ((y-centerY)/joystickRadius)*-1; // Y-axis should be positive upwards
+    	return -((y-centerY)/joystickRadius); // Y-axis should be positive upwards
     }   
 
     public void setOnJoystickChangeListener(OnJoystickChangeListener listener) {
