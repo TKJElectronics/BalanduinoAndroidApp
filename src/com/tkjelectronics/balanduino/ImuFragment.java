@@ -24,7 +24,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Surface;
 import android.view.View;
@@ -33,7 +32,9 @@ import android.widget.Button;
 import android.widget.TableRow;
 import android.widget.TextView;
 
-public class ImuFragment extends Fragment {
+import com.actionbarsherlock.app.SherlockFragment;
+
+public class ImuFragment extends SherlockFragment {
 	private Button mButton;
 	public TextView mPitchView;
 	public TextView mRollView;

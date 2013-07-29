@@ -21,7 +21,6 @@ package com.tkjelectronics.balanduino;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +32,7 @@ import android.widget.LinearLayout;
 import android.widget.ToggleButton;
 import android.widget.Button;
 
+import com.actionbarsherlock.app.SherlockFragment;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
@@ -40,7 +40,7 @@ import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
 import com.jjoe64.graphview.LineGraphView;
 
-public class GraphFragment extends Fragment {
+public class GraphFragment extends SherlockFragment {
     private static final String TAG = "GraphFragment";
 	private static final boolean D = BalanduinoActivity.D;
 

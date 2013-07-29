@@ -23,7 +23,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -32,7 +31,9 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class SettingsDialogFragment extends DialogFragment {
+import com.actionbarsherlock.app.SherlockDialogFragment;
+
+public class SettingsDialogFragment extends SherlockDialogFragment {
 	Button mRestoreButton;
 	Button mPairButton;
 	int maxAngle;
@@ -41,7 +42,7 @@ public class SettingsDialogFragment extends DialogFragment {
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		View view = getActivity().getLayoutInflater().inflate(R.layout.settings_dialog, null);
+		View view = getSherlockActivity().getLayoutInflater().inflate(R.layout.settings_dialog, null);
 
 		final TextView coefficientValue = (TextView) view.findViewById(R.id.coefficientValue);
 		coefficientValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.filter_coefficient));
@@ -113,7 +114,7 @@ public class SettingsDialogFragment extends DialogFragment {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 						BalanduinoActivity.mChatService.write(BalanduinoActivity.restoreDefaultValues.getBytes());
-						Toast.makeText(getActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getSherlockActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
 						dismiss();
 					}
 				}
@@ -142,7 +143,7 @@ public class SettingsDialogFragment extends DialogFragment {
 			}
 		}
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+		AlertDialog.Builder builder = new AlertDialog.Builder(getSherlockActivity());
 		// Set title
 		builder.setTitle(R.string.dialog_title)
 				// Add the buttons

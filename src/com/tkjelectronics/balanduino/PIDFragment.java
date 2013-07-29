@@ -21,7 +21,6 @@ package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,7 +30,9 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-public class PIDFragment extends Fragment {
+import com.actionbarsherlock.app.SherlockFragment;
+
+public class PIDFragment extends SherlockFragment {
 	private static final String TAG = "PIDFragment";
 	private static final boolean D = BalanduinoActivity.D;
 

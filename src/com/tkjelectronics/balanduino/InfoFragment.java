@@ -21,7 +21,6 @@ package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,7 +28,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-public class InfoFragment extends Fragment {
+import com.actionbarsherlock.app.SherlockFragment;
+
+public class InfoFragment extends SherlockFragment {
 	static TextView mAppVersion;
 	static TextView mFirmwareVersion;
 	static TextView mMcu;

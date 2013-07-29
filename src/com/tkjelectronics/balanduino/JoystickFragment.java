@@ -25,13 +25,14 @@ import java.util.Locale;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class JoystickFragment extends Fragment implements JoystickView.OnJoystickChangeListener {
+import com.actionbarsherlock.app.SherlockFragment;
+
+public class JoystickFragment extends SherlockFragment implements JoystickView.OnJoystickChangeListener {
 	DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 	JoystickView mJoystick;
 	TextView mText1;

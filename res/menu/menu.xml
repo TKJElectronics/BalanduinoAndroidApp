@@ -1,12 +1,10 @@
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:balanduino="http://schemas.android.com/apk/res-auto">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/menu_connect"
         android:icon="@drawable/device_access_bluetooth"
         android:title="@string/connect"
-        balanduino:showAsAction="ifRoom|withText" />
+        android:showAsAction="ifRoom|withText" />
     <item android:id="@+id/settings"
         android:icon="@drawable/ic_menu_preferences"
         android:title="@string/settings"
-        balanduino:showAsAction="ifRoom|withText" />
+        android:showAsAction="ifRoom|withText" />
 </menu>

@@ -40,19 +40,19 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.actionbarsherlock.app.ActionBar;
+import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
-public class BalanduinoActivity extends ActionBarActivity implements ActionBar.TabListener {
+public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "Balanduino";
-    public static final boolean D = BuildConfig.DEBUG; // This is automatally set by Gradle
+    public static final boolean D = BuildConfig.DEBUG; // This is automatically set by Gradle
 
     private static Activity activity;
     private static Context context;
@@ -200,7 +200,7 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(this, getSupportFragmentManager());
+		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
 
 		// Set up the ViewPager with the adapter.
         CustomViewPager mViewPager = (CustomViewPager) findViewById(R.id.pager);
@@ -408,7 +408,7 @@ public class BalanduinoActivity extends ActionBarActivity implements ActionBar.T
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if(D)
 			Log.e(TAG,"onCreateOptionsMenu");
-		getMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
+		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
 		return super.onCreateOptionsMenu(menu);
 	}
 
