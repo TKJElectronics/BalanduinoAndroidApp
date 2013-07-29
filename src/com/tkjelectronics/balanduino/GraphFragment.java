@@ -122,7 +122,6 @@ public class GraphFragment extends Fragment {
 					graphView.addSeries(accSeries);
 				else
 					graphView.removeSeries(accSeries);
-				graphView.redrawAll(); // Redraw it in case the stop button is pressed
 			}
 		});
 		mCheckBox2 = (CheckBox) v.findViewById(R.id.checkBox2);
@@ -133,7 +132,6 @@ public class GraphFragment extends Fragment {
 					graphView.addSeries(gyroSeries);
 				else
 					graphView.removeSeries(gyroSeries);
-				graphView.redrawAll(); // Redraw it in case the stop button is pressed
 			}
 		});
 		mCheckBox3 = (CheckBox) v.findViewById(R.id.checkBox3);
@@ -144,7 +142,6 @@ public class GraphFragment extends Fragment {
 					graphView.addSeries(kalmanSeries);
 				else
 					graphView.removeSeries(kalmanSeries);
-				graphView.redrawAll(); // Redraw it in case the stop button is pressed
 			}
 		});
 
