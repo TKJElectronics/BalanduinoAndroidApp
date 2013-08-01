@@ -15,6 +15,19 @@ buildscript {
     }
 }
 
+allprojects {
+  group = 'com.tkjelectronics.balanduino'
+  version = project.versionName
+
+  repositories {
+    mavenCentral()
+  }
+
+  tasks.withType(Compile) {
+    options.encoding = "UTF-8"
+  }
+}
+
 task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
     gradleVersion = '1.6'
 }
@@ -53,17 +66,14 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://github.com/dahlgren/vpi-aar/raw/master'
-    }
 }
 
 dependencies {
     //compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':libs:GraphView')
+    compile project(':libs:Android-ViewPagerIndicator:library')
     compile 'com.android.support:support-v4:18.0.+'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.viewpagerindicator:library:2.4.2-SNAPSHOT'
 }
 
 android {
