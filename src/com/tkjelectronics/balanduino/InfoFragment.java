@@ -81,7 +81,7 @@ public class InfoFragment extends SherlockFragment {
 		if(mMcu != null && BalanduinoActivity.mcu != null)
 			mMcu.setText(BalanduinoActivity.mcu);
 		if(mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)
-			mBatteryLevel.setText(BalanduinoActivity.batteryLevel);
+			mBatteryLevel.setText(BalanduinoActivity.batteryLevel + 'V');
 		if(mRuntime != null && BalanduinoActivity.runtime != 0) {
 			String minutes = Integer.toString((int)Math.floor(BalanduinoActivity.runtime));
 			String seconds = Integer.toString((int)(BalanduinoActivity.runtime%1/(1.0/60.0)));
