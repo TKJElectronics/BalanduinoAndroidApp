@@ -24,7 +24,6 @@ import java.util.UUID;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -63,13 +62,10 @@ public class BluetoothChatService {
 
 	/**
 	 * Constructor. Prepares a new BluetoothChat session.
-	 * 
-	 * @param context
-	 *            The UI Activity Context
 	 * @param handler
 	 *            A Handler to send messages back to the UI Activity
 	 */
-	public BluetoothChatService(Context context, Handler handler) {
+	public BluetoothChatService(Handler handler) {
 		mAdapter = BluetoothAdapter.getDefaultAdapter();
 		mState = STATE_NONE;
 		mHandler = handler;
@@ -226,6 +222,10 @@ public class BluetoothChatService {
 		// Perform the write unsynchronized
 		r.write(out);
 	}
+
+    public void write(String string) {
+        write(string.getBytes());
+    }
 
 	/**
 	 * Indicate that the connection attempt failed and notify the UI Activity.

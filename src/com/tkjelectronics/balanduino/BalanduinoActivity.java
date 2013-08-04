@@ -314,7 +314,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		mSensorFusion.unregisterListeners();
 		if(mChatService != null) { // Send stop command and stop sending graph data command
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				mChatService.write((sendStop + imuStop).getBytes());
+				mChatService.write(sendStop + imuStop);
 			}
 		}
 	}
@@ -332,7 +332,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		if (D)
 			Log.d(TAG, "setupBTService()");
 		// Initialize the BluetoothChatService to perform Bluetooth connections
-		mChatService = new BluetoothChatService(this, new BluetoothHandler(this));
+		mChatService = new BluetoothChatService(new BluetoothHandler(this));
 	}
 
 	@Override
@@ -343,18 +343,18 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
 		if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
-            mChatService.write(getKalman.getBytes());
+            mChatService.write(getKalman);
             if (GraphFragment.mToggleButton != null) {
                 if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
                     if (GraphFragment.mToggleButton.isChecked())
-                        mChatService.write(imuBegin.getBytes()); // Request data
+                        mChatService.write(imuBegin); // Request data
                     else
-                        mChatService.write(imuStop.getBytes()); // Stop sending data
+                        mChatService.write(imuStop); // Stop sending data
                 }
             }
 		} else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
 			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				mChatService.write(getInfo.getBytes()); // Update info
+				mChatService.write(getInfo); // Update info
 		}
         if(!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
@@ -368,10 +368,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			Log.d(TAG,"onTabUnselected: " + tab.getPosition() + " " + currentTabSelected);
 		if((checkTab(ViewPagerAdapter.IMU_FRAGMENT) || checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) && mChatService != null) { // Send stop command if the user selects another tab
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				mChatService.write(sendStop.getBytes());
+				mChatService.write(sendStop);
 		} else if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				mChatService.write(imuStop.getBytes());
+				mChatService.write(imuStop);
 		}
         if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
@@ -471,20 +471,20 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 					Handler mHandler = new Handler();
 					mHandler.postDelayed(new Runnable(){
 				        public void run() {
-				        	mChatService.write((getPIDValues + getSettings + getInfo + getKalman).getBytes());
+				        	mChatService.write(getPIDValues + getSettings + getInfo + getKalman);
 				        }
 				    }, 1000); // Wait 1 second before sending the message
 					if(GraphFragment.mToggleButton != null) {
 						if(GraphFragment.mToggleButton.isChecked() && checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 							mHandler.postDelayed(new Runnable(){
 						        public void run() {
-						        	mChatService.write(imuBegin.getBytes()); // Request data
+						        	mChatService.write(imuBegin); // Request data
 						        }
 						    }, 1000); // Wait 1 second before sending the message
 						} else {
 							mHandler.postDelayed(new Runnable(){
 								public void run() {
-									mChatService.write(imuStop.getBytes()); // Stop sending data
+									mChatService.write(imuStop); // Stop sending data
 								}
 							}, 1000); // Wait 1 second before sending the message
 						}
