@@ -45,30 +45,25 @@ task update { // Task to update accessory filter and manifest to match version n
 
 apply plugin: 'android'
 
-repositories {
-    mavenCentral()
-    maven {
-        url 'https://github.com/dahlgren/vpi-aar/raw/master'
-    }
-}
-
-dependencies {
-    //compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':libs:GraphView')
-    compile 'com.android.support:support-v4:18.0.+'
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.viewpagerindicator:library:2.4.2-SNAPSHOT'
-}
-
 android {
     compileSdkVersion 18
     buildToolsVersion '18.0.1'
 
     defaultConfig {
-        minSdkVersion 10
         targetSdkVersion 18
         versionName = project.versionName
         versionCode = project.versionCode
+    }
+
+    productFlavors {
+        standard {
+            packageName "com.tkjelectronics.balanduino"
+            minSdkVersion 10
+        }
+        usb {
+            packageName "com.tkjelectronics.balanduino.usb"
+            minSdkVersion 12
+        }
     }
 
     signingConfigs {
@@ -88,6 +83,21 @@ android {
             res.srcDirs = ['res']
         }
     }
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://github.com/dahlgren/vpi-aar/raw/master'
+    }
+}
+
+dependencies {
+    compile project(':libs:GraphView')
+    compile 'com.android.support:support-v4:18.0.+'
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    compile 'com.viewpagerindicator:library:2.4.2-SNAPSHOT'
+    usbCompile project(':libs:PhysicaloidLibrary:PhysicaloidLibrary') // Only supported on API level above 12
 }
 
 // These values are all set in my global gradle.properties file
