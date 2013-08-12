@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -40,6 +41,7 @@ public class PIDFragment extends SherlockFragment {
     static TextView mKpView, mKiView, mKdView, mTargetAngleView;
 	static SeekBar mKpSeekBar, mKiSeekBar, mKdSeekBar, mTargetAngleSeekBar;
     static TextView mKpSeekBarValue, mKiSeekBarValue, mKdSeekBarValue, mTargetAngleSeekBarValue;
+    static RadioButton radio1, radio2;
 
     float newKpValue, newKiValue, newKdValue, newTargetAngleValue;
     float oldKpValue, oldKiValue, oldKdValue, oldTargetAngleValue;
@@ -48,8 +50,7 @@ public class PIDFragment extends SherlockFragment {
 	int counter = 0;
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.pid, container, false);
 
 		mKpView = (TextView) v.findViewById(R.id.textView1);
@@ -125,6 +126,21 @@ public class PIDFragment extends SherlockFragment {
             }
         });
 
+        radio1 = (RadioButton) v.findViewById(R.id.radio1);
+        radio1.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateView();
+            }
+        });
+        radio2 = (RadioButton) v.findViewById(R.id.radio2);
+        radio2.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateView();
+            }
+        });
+
 		mButton = (Button) v.findViewById(R.id.button);
 		mButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -139,7 +155,12 @@ public class PIDFragment extends SherlockFragment {
                         oldKpValue = newKpValue;
                         mHandler.post(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setPValue + newKpValue + ";").getBytes());
+                                char radioButton = '0';
+                                if (radio1.isChecked())
+                                    radioButton = '0';
+                                else if (radio2.isChecked())
+                                    radioButton = '1';
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setPValue + radioButton + "," + newKpValue + ";");
                             }
                         });
                         counter = 25;
@@ -148,7 +169,12 @@ public class PIDFragment extends SherlockFragment {
                         oldKiValue = newKiValue;
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setIValue + newKiValue + ";").getBytes());
+                                char radioButton = '0';
+                                if (radio1.isChecked())
+                                    radioButton = '0';
+                                else if (radio2.isChecked())
+                                    radioButton = '1';
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setIValue + radioButton + "," + newKiValue + ";");
                             }
                         }, counter); // Wait before sending the message
                         counter += 25;
@@ -157,7 +183,12 @@ public class PIDFragment extends SherlockFragment {
                         oldKdValue = newKdValue;
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setDValue + newKdValue + ";").getBytes());
+                                char radioButton = '0';
+                                if (radio1.isChecked())
+                                    radioButton = '0';
+                                else if (radio2.isChecked())
+                                    radioButton = '1';
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setDValue + radioButton + "," + newKdValue + ";");
                             }
                         }, counter); // Wait before sending the message
                         counter += 25;
@@ -166,7 +197,7 @@ public class PIDFragment extends SherlockFragment {
                         oldTargetAngleValue = newTargetAngleValue;
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setTargetAngle + newTargetAngleValue + ";").getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setTargetAngle + newTargetAngleValue + ";");
                             }
                         }, counter); // Wait before sending the message
                         counter += 25;
@@ -174,7 +205,12 @@ public class PIDFragment extends SherlockFragment {
 					if (counter != 0) {
 						mHandler.postDelayed(new Runnable() {
 							public void run() {
-								BalanduinoActivity.mChatService.write(BalanduinoActivity.getPIDValues.getBytes());
+                                String getValues = BalanduinoActivity.getPIDValues;
+                                if (radio1.isChecked())
+                                    getValues = BalanduinoActivity.getPIDValues;
+                                else if (radio2.isChecked())
+                                    getValues = BalanduinoActivity.getEncoderValues;
+								BalanduinoActivity.mChatService.write(getValues);
 							}
 						}, counter); // Wait before sending the message
 						if (D)
@@ -190,20 +226,44 @@ public class PIDFragment extends SherlockFragment {
 	}
 
 	public static void updateView() {
-		if (mKpView != null && mKpSeekBar != null && mKpSeekBarValue != null && !BalanduinoActivity.pValue.isEmpty()) {
-            mKpView.setText(BalanduinoActivity.pValue);
-            mKpSeekBarValue.setText(String.format("%.1f", Float.parseFloat(BalanduinoActivity.pValue))); // One decimal places
-            mKpSeekBar.setProgress((int)(Float.parseFloat(BalanduinoActivity.pValue)*10.0f));
+		if (mKpView != null && mKpSeekBar != null && mKpSeekBarValue != null) {
+            String Kp = "";
+            if (radio1.isChecked() && !BalanduinoActivity.pValue.isEmpty())
+                Kp = BalanduinoActivity.pValue;
+            else if (radio2.isChecked() && !BalanduinoActivity.encoderPValue.isEmpty())
+                Kp = BalanduinoActivity.encoderPValue;
+            mKpView.setText(Kp);
+            if (!Kp.equals("")) {
+                float value = Float.parseFloat(Kp);
+                mKpSeekBarValue.setText(String.format("%.1f", value)); // One decimal places
+                mKpSeekBar.setProgress((int)(value*10.0f));
+            }
 		}
-        if (mKiView != null && mKiSeekBar != null && mKiSeekBarValue != null && !BalanduinoActivity.iValue.isEmpty()) {
-            mKiView.setText(BalanduinoActivity.iValue);
-            mKiSeekBarValue.setText(String.format("%.1f", Float.parseFloat(BalanduinoActivity.iValue))); // One decimal places
-            mKiSeekBar.setProgress((int)(Float.parseFloat(BalanduinoActivity.iValue)*10.0f));
+        if (mKiView != null && mKiSeekBar != null && mKiSeekBarValue != null) {
+            String Ki = "";
+            if (radio1.isChecked() && !BalanduinoActivity.iValue.isEmpty())
+                Ki = BalanduinoActivity.iValue;
+            else if (radio2.isChecked() && !BalanduinoActivity.encoderIValue.isEmpty())
+                Ki = BalanduinoActivity.encoderIValue;
+            mKiView.setText(Ki);
+            if (!Ki.equals("")) {
+                float value = Float.parseFloat(Ki);
+                mKiSeekBarValue.setText(String.format("%.1f", value)); // One decimal places
+                mKiSeekBar.setProgress((int)(value*10.0f));
+            }
         }
-        if (mKdView != null && mKdSeekBar != null && mKdSeekBarValue != null && !BalanduinoActivity.dValue.isEmpty()) {
-            mKdView.setText(BalanduinoActivity.dValue);
-            mKdSeekBarValue.setText(String.format("%.3f", Float.parseFloat(BalanduinoActivity.dValue))); // Three decimal places
-            mKdSeekBar.setProgress((int)(Float.parseFloat(BalanduinoActivity.dValue)*1000.0f));
+        if (mKdView != null && mKdSeekBar != null && mKdSeekBarValue != null) {
+            String Kd = "";
+            if (radio1.isChecked() && !BalanduinoActivity.dValue.isEmpty())
+                Kd = BalanduinoActivity.dValue;
+            else if (radio2.isChecked() && !BalanduinoActivity.encoderDValue.isEmpty())
+                Kd = BalanduinoActivity.encoderDValue;
+            mKdView.setText(Kd);
+            if (!Kd.equals("")) {
+                float value = Float.parseFloat(Kd);
+                mKdSeekBarValue.setText(String.format("%.3f", value)); // Three decimal places
+                mKdSeekBar.setProgress((int)(value*1000.0f));
+            }
         }
         if (mTargetAngleView != null && mTargetAngleSeekBar != null && mTargetAngleSeekBarValue != null && !BalanduinoActivity.targetAngleValue.isEmpty()) {
             mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);

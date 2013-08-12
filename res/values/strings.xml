@@ -34,6 +34,8 @@
     <string name="currentValues">Current Values:</string>
     <string name="adjustValues">Adjust Values:</string>
     <string name="updateValues">Press to update PID values</string>
+    <string name="mainPID">Main</string>
+    <string name="encodersPID">Encoder</string>
 
     <!-- Info Fragment -->
     <string name="name">Balanduino</string>

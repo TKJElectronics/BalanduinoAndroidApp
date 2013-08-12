@@ -414,6 +414,15 @@ public class BluetoothChatService {
                     	// Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                     }
+                    else if(splitMessage[0].trim().equals(BalanduinoActivity.responseEncoderValues) && splitMessage.length == BalanduinoActivity.responseEncoderValuesLength) {
+                        BalanduinoActivity.encoderPValue = splitMessage[1].trim();
+                        BalanduinoActivity.encoderIValue = splitMessage[2].trim();
+                        BalanduinoActivity.encoderDValue = splitMessage[3].trim();
+                        BalanduinoActivity.newEncoderValues = true;
+
+                        // Send message back to the UI Activity
+                        mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
+                    }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseSettings) && splitMessage.length == BalanduinoActivity.responseSettingsLength) {
                     	BalanduinoActivity.backToSpot = splitMessage[1].trim().equals("1");
                 		BalanduinoActivity.maxAngle = Integer.parseInt(splitMessage[2].trim());

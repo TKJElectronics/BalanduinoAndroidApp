@@ -101,6 +101,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public static String targetAngleValue = "";
 	public static boolean newPIDValues;
 
+    public static String encoderPValue = "";
+    public static String encoderIValue = "";
+    public static String encoderDValue = "";
+    public static boolean newEncoderValues;
+
 	public static boolean backToSpot;
 	public static int maxAngle = 8; // Eight is the default value
 	public static int maxTurning = 20; // Twenty is the default value
@@ -119,13 +124,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public static boolean joystickReleased;
 
 	public final static String getPIDValues = "GP;";
+    public final static String getEncoderValues = "GE;";
 	public final static String getSettings = "GS;";
 	public final static String getInfo = "GI;";
 	public final static String getKalman = "GK;";
 
-	public final static String setPValue = "SP,";
-	public final static String setIValue = "SI,";
-	public final static String setDValue = "SD,";
+	public final static String setPValue = "SP";
+	public final static String setIValue = "SI";
+	public final static String setDValue = "SD";
 	public final static String setKalman = "SK,";
 	public final static String setTargetAngle = "ST,";
 	public final static String setMaxAngle = "SA,";
@@ -143,6 +149,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String restoreDefaultValues = "CR;";
 
 	public final static String responsePIDValues = "P";
+    public final static String responseEncoderValues = "E";
 	public final static String responseKalmanValues = "K";
 	public final static String responseSettings = "S";
 	public final static String responseInfo = "I";
@@ -150,6 +157,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String responsePairWii = "WC";
 
 	public final static int responsePIDValuesLength = 5;
+    public final static int responseEncoderValuesLength = 4;
 	public final static int responseKalmanValuesLength = 4;
 	public final static int responseSettingsLength = 4;
 	public final static int responseInfoLength = 5;
@@ -471,7 +479,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 					Handler mHandler = new Handler();
 					mHandler.postDelayed(new Runnable(){
 				        public void run() {
-				        	mChatService.write(getPIDValues + getSettings + getInfo + getKalman);
+				        	mChatService.write(getPIDValues + getEncoderValues + getSettings + getInfo + getKalman);
 				        }
 				    }, 1000); // Wait 1 second before sending the message
 					if(GraphFragment.mToggleButton != null) {
@@ -496,8 +504,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				PIDFragment.updateButton();
 				break;
 			case MESSAGE_READ:
-				if(newPIDValues) {
+				if(newPIDValues || newEncoderValues) {
 					newPIDValues = false;
+                    newEncoderValues = false;
 					PIDFragment.updateView();
 				}
 				if(newSettings)
