@@ -15,10 +15,6 @@ buildscript {
     }
 }
 
-task wrapper(type: org.gradle.api.tasks.wrapper.Wrapper) {
-    gradleVersion = '1.6'
-}
-
 task update { // Task to update accessory filter and manifest to match version number and code
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
