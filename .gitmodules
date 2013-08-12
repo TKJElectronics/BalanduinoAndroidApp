@@ -1,3 +1,6 @@
 [submodule "libs/GraphView"]
 	path = libs/GraphView
 	url = https://github.com/Lauszus/GraphView.git
+[submodule "libs/PhysicaloidLibrary"]
+	path = libs/PhysicaloidLibrary
+	url = https://github.com/Lauszus/PhysicaloidLibrary.git
