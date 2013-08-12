@@ -58,7 +58,7 @@
     <string name="backToSpot">Enable back to spot</string>
     <string name="wiiText">Press the button below to pair with a Wiimote or a Wii U Pro Controller.</string>
     <string name="wiiButtonText">Pair with Wiimote</string>
-    <string name="restoreText">Press the button below to restore the default PID and target angle values.</string>
+    <string name="restoreText">Press the button below to restore the default configuration values.</string>
     <string name="restoreButtonText">Restore values</string>
 
     <!--  DeviceListActivity -->
