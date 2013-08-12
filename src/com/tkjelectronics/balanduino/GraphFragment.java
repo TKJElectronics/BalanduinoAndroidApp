@@ -81,6 +81,7 @@ public class GraphFragment extends SherlockFragment {
 			data1[i] = new GraphViewData(counter-100+i, buffer[1][i]);
 			data2[i] = new GraphViewData(counter-100+i, buffer[2][i]);
 		}
+
 		accSeries = new GraphViewSeries("Accelerometer",new GraphViewSeriesStyle(Color.RED, 2), data0);
 		gyroSeries = new GraphViewSeries("Gyro", new GraphViewSeriesStyle(Color.GREEN, 2), data1);
 		kalmanSeries = new GraphViewSeries("Kalman", new GraphViewSeriesStyle(Color.BLUE, 2), data2);
@@ -233,10 +234,10 @@ public class GraphFragment extends SherlockFragment {
 		boolean scroll = mCheckBox1.isChecked() || mCheckBox2.isChecked() || mCheckBox3.isChecked();
 
 		counter++;
-		accSeries.appendData(new GraphViewData(counter,buffer[0][100]), scroll);
+		accSeries.appendData(new GraphViewData(counter,buffer[0][100]), scroll, 101);
 		if(buffer[1][100] <= 360 && buffer[1][100] >= 0) // Don't draw it if it would be larger than y-axis boundaries
-			gyroSeries.appendData(new GraphViewData(counter,buffer[1][100]), scroll);
-		kalmanSeries.appendData(new GraphViewData(counter,buffer[2][100]), scroll);
+			gyroSeries.appendData(new GraphViewData(counter,buffer[1][100]), scroll, 101);
+		kalmanSeries.appendData(new GraphViewData(counter,buffer[2][100]), scroll, 101);
 
 		if(!scroll)
 			graphView.redrawAll();
