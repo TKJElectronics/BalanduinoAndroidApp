@@ -92,7 +92,7 @@ public class JoystickView extends View {
         	y = ((y-centerY)*joystickRadius/abs + centerY);
         }
 
-        if (lastX == 0 && lastY == 0 && (getYValue() > 0.80 || getYValue() < -0.80)) {
+        if (lastX == 0 && lastY == 0 && (getXValue() > 0.50 || getXValue() < -0.50 || getYValue() > 0.50 || getYValue() < -0.50)) {
             x = centerX;
             y = centerY;
             return true;
