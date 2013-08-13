@@ -15,6 +15,19 @@ buildscript {
     }
 }
 
+allprojects {
+  group = 'com.tkjelectronics.balanduino'
+  version = project.versionName
+
+  repositories {
+    mavenCentral()
+  }
+
+  tasks.withType(Compile) {
+    options.encoding = "UTF-8"
+  }
+}
+
 task update { // Task to update accessory filter and manifest to match version number and code
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
@@ -47,17 +60,12 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://github.com/dahlgren/vpi-aar/raw/master'
-    }
 }
 
 dependencies {
-    //compile fileTree(dir: 'libs', include: '*.jar')
     compile project(':libs:GraphView')
-    compile 'com.android.support:support-v4:18.0.+'
+    compile project(':libs:Android-ViewPagerIndicator:library')
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.viewpagerindicator:library:2.4.2-SNAPSHOT'
 }
 
 android {

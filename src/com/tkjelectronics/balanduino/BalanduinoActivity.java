@@ -31,6 +31,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
@@ -340,6 +341,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		if (D)
 			Log.d(TAG,"onTabSelected: " + tab.getPosition());
 		currentTabSelected = tab.getPosition();
+
+        Resources mResources = getApplicationContext().getResources();
+        if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT) { // Check if the last tab is selected in landscape mode
+            currentTabSelected -= 1; // If so don't go any further
+            ActionBar bar = getSupportActionBar();
+            bar.selectTab(bar.getTabAt(currentTabSelected));
+        }
+
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
 		if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
