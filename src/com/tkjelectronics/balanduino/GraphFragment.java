@@ -33,7 +33,6 @@ import android.widget.ToggleButton;
 import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
@@ -44,21 +43,14 @@ public class GraphFragment extends SherlockFragment {
     private static final String TAG = "GraphFragment";
 	private static final boolean D = BalanduinoActivity.D;
 
-	private static GraphView graphView;
-	private static GraphViewSeries accSeries;
-	private static GraphViewSeries gyroSeries;
-	private static GraphViewSeries kalmanSeries;
+	private static LineGraphView graphView;
+	private static GraphViewSeries accSeries, gyroSeries, kalmanSeries;
 	private static double counter = 100d;
-	public static ToggleButton mToggleButton;
 
-	private static CheckBox mCheckBox1;
-	private static CheckBox mCheckBox2;
-	private static CheckBox mCheckBox3;
-
-    private static EditText mQangle;
-    private static EditText mQbias;
-    private static EditText mRmeasure;
+	private static CheckBox mCheckBox1, mCheckBox2, mCheckBox3;
+    private static EditText mQangle, mQbias, mRmeasure;
     private static Button mButton;
+    public static ToggleButton mToggleButton;
 
 	private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
 
