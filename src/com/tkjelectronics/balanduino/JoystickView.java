@@ -29,18 +29,15 @@ public class JoystickView extends View {
     
     final int holo_blue_dark = 0xff0099cc;
     final int buttonGray = 0xFF5C5C5C;
-    	
-    private final int circleColor = buttonGray;
+
     private int buttonColor = buttonGray;
     
     private float x, y; // These are in the intern coordinates
     private double lastX, lastY; // These are in the extern coordinates
     private float buttonRadius;
-    private float joystickRadius;
+    private float joystickRadius = 0;
     private float centerX;
     private float centerY;
-    
-    private boolean firstDraw = true;
     
     Paint p = new Paint();
 
@@ -61,19 +58,18 @@ public class JoystickView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        if(firstDraw) {
-        	firstDraw = false;
-        	joystickRadius = (float)(getWidth()/3);
+        if (joystickRadius == 0) { // Check if it has been set yet
+        	joystickRadius = (float)getWidth()/3;
         	buttonRadius = joystickRadius/2;
-        	centerX = (getWidth())/2;
-        	centerY = (getHeight())/2;
+        	centerX = (float)getWidth()/2;
+        	centerY = (float)getHeight()/2;
         	x = centerX;
         	y = centerY;
         }
         
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(3);
-        p.setColor(circleColor); 
+        p.setColor(buttonGray);
         canvas.drawCircle(centerX, centerY, joystickRadius, p);
         canvas.drawCircle(centerX, centerY, joystickRadius/2, p);
 
