@@ -222,18 +222,37 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
+                        if (D)
+                            Log.d(TAG, "ViewPager position: " + position);
+                        if (position < actionBar.getTabCount()) // Needed for when in landscape mode
+						    actionBar.setSelectedNavigationItem(position);
+                        else
+                            mUnderlinePageIndicator.setCurrentItem(position-1);
 					}
 				});
-		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mViewPagerAdapter.getCount(); i++) {
+
+        int count = mViewPagerAdapter.getCount();
+        Resources mResources = getApplicationContext().getResources();
+        boolean landscape = false;
+        if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            landscape = true;
+            count -= 1; // There is one less tab when in landscape mode
+        }
+
+		for (int i = 0; i < count; i++) { // For each of the sections in the app, add a tab to the action bar
+            String text;
+            if (landscape && i == count-1)
+                text =  mViewPagerAdapter.getPageTitle(i) + " & " + mViewPagerAdapter.getPageTitle(i+1); // Last tab in landscape mode have two titles in one tab
+            else
+                text = mViewPagerAdapter.getPageTitle(i).toString();
+
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
-					.setText(mViewPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+                     .setText(text)
+                     .setTabListener(this));
 		}
 		try {
 			BalanduinoActivity.appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
