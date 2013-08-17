@@ -15,19 +15,6 @@ buildscript {
     }
 }
 
-allprojects {
-  group = 'com.tkjelectronics.balanduino'
-  version = project.versionName
-
-  repositories {
-    mavenCentral()
-  }
-
-  tasks.withType(Compile) {
-    options.encoding = "UTF-8"
-  }
-}
-
 task update { // Task to update accessory filter and manifest to match version number and code
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
