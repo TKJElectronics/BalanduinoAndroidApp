@@ -27,7 +27,8 @@ This project is intended to be used with Android Studio and Gradle. See the foll
 
 This will automatically include the following third party libraries:
 
-* [Android ViewPagerIndicator](https://github.com/JakeWharton/Android-ViewPagerIndicator)
+* [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock)
+* [Android ViewPagerIndicator](https://github.com/Lauszus/Android-ViewPagerIndicator)
 * [GraphView library](https://github.com/Lauszus/GraphView)
 
-For more information send me an email at <a href="mailto:kristianl@tkjelectronics.dk?subject=BalanduinoAndroidApp">kristianl@tkjelectronics.dk</a>.
+For more information send me an email at <a href="mailto:kristianl@tkjelectronics.dk">kristianl@tkjelectronics.dk</a>.
