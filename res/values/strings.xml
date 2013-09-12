@@ -40,6 +40,7 @@
     <string name="manufacturer">by TKJ Electronics</string>
     <string name="appVersion">App version:</string>
     <string name="firmwareVersion">Firmware version:</string>
+    <string name="eepromVersion">EEPROM version:</string>
     <string name="mcu">MCU:</string>
     <string name="batterylevel">Battery level:</string>
     <string name="runtime">Runtime:</string>

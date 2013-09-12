@@ -150,9 +150,9 @@ public class GraphFragment extends SherlockFragment {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 						if(((ToggleButton) v).isChecked())
-							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
+							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
 						else
-							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
+							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
 					}
 				}
 			}
@@ -173,16 +173,16 @@ public class GraphFragment extends SherlockFragment {
                 BalanduinoActivity.Qangle = mQangle.getText().toString();
                 BalanduinoActivity.Qbias = mQbias.getText().toString();
                 BalanduinoActivity.Rmeasure = mRmeasure.getText().toString();
-                BalanduinoActivity.mChatService.write((BalanduinoActivity.setKalman + BalanduinoActivity.Qangle + "," + BalanduinoActivity.Qbias + "," + BalanduinoActivity.Rmeasure + ";").getBytes());
+                BalanduinoActivity.mChatService.write(BalanduinoActivity.setKalman + BalanduinoActivity.Qangle + "," + BalanduinoActivity.Qbias + "," + BalanduinoActivity.Rmeasure + ";");
             }
         });
 
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 				if(mToggleButton.isChecked())
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
 				else
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
 			}
 		}
 
@@ -246,9 +246,9 @@ public class GraphFragment extends SherlockFragment {
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 				if(mToggleButton.isChecked())
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
 				else
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
 			}
 		}
 	}

@@ -66,10 +66,30 @@
             android:textIsSelectable="false" />
 
     <TextView
+        android:id="@+id/eepromVersionText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/firmwareVersionText"
+        android:layout_marginBottom="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"
+        android:text="@string/eepromVersion"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/eepromVersion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/eepromVersionText"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_toRightOf="@id/eepromVersionText"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textIsSelectable="false" />
+
+    <TextView
             android:id="@+id/mcuText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/firmwareVersionText"
+            android:layout_below="@id/eepromVersionText"
             android:layout_marginBottom="@dimen/margin"
             android:layout_marginLeft="@dimen/margin"
             android:text="@string/mcu"

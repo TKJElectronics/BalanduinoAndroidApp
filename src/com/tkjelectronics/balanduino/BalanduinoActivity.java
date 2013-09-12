@@ -109,10 +109,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	public static String appVersion;
 	public static String firmwareVersion;
+    public static String eepromVersion;
 	public static String mcu;
-	public static String batteryLevel;
-	public static double runtime;
 	public static boolean newInfo;
+
+    public static String batteryLevel;
+    public static double runtime;
+    public static boolean newStatus;
 
 	public static boolean pairingWithWii;
 
@@ -136,6 +139,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String imuBegin = "IB;";
 	public final static String imuStop = "IS;";
 
+    public final static String statusBegin = "RB;";
+    public final static String statusStop = "RS;";
+
 	public final static String sendStop = "CS;";
 	public final static String sendIMUValues = "CM,";
 	public final static String sendJoystickValues = "CJ,";
@@ -148,13 +154,15 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String responseSettings = "S";
 	public final static String responseInfo = "I";
 	public final static String responseIMU = "V";
+    public final static String responseStatus = "R";
 	public final static String responsePairWii = "WC";
 
 	public final static int responsePIDValuesLength = 5;
 	public final static int responseKalmanValuesLength = 4;
 	public final static int responseSettingsLength = 4;
-	public final static int responseInfoLength = 5;
+	public final static int responseInfoLength = 4;
 	public final static int responseIMULength = 4;
+    public final static int responseStatusLength = 3;
 	public final static int responsePairWiiLength = 1;
 
 	@Override
@@ -334,7 +342,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		mSensorFusion.unregisterListeners();
 		if(mChatService != null) { // Send stop command and stop sending graph data command
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				mChatService.write(sendStop + imuStop);
+				mChatService.write(sendStop + imuStop + statusStop);
 			}
 		}
 	}
@@ -371,9 +379,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
 		if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
-            mChatService.write(getKalman);
-            if (GraphFragment.mToggleButton != null) {
-                if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+                mChatService.write(getKalman);
+                if (GraphFragment.mToggleButton != null) {
                     if (GraphFragment.mToggleButton.isChecked())
                         mChatService.write(imuBegin); // Request data
                     else
@@ -381,10 +389,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 }
             }
 		} else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				mChatService.write(getInfo); // Update info
+                if (InfoFragment.mToggleButton != null) {
+                    if (InfoFragment.mToggleButton.isChecked())
+                        mChatService.write(statusBegin); // Request data
+                    else
+                        mChatService.write(statusStop); // Stop sending data
+                }
+            }
 		}
-        if(!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
+        if (!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
             imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
         }
@@ -400,7 +415,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		} else if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
 			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(imuStop);
-		}
+		} else if(checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
+            if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+                mChatService.write(statusStop);
+        }
         if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
@@ -502,21 +520,28 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				        	mChatService.write(getPIDValues + getSettings + getInfo + getKalman);
 				        }
 				    }, 1000); // Wait 1 second before sending the message
-					if(GraphFragment.mToggleButton != null) {
-						if(GraphFragment.mToggleButton.isChecked() && checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
-							mHandler.postDelayed(new Runnable(){
+					if (GraphFragment.mToggleButton != null) {
+						if (GraphFragment.mToggleButton.isChecked() && checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+							mHandler.postDelayed(new Runnable() {
 						        public void run() {
 						        	mChatService.write(imuBegin); // Request data
 						        }
 						    }, 1000); // Wait 1 second before sending the message
 						} else {
-							mHandler.postDelayed(new Runnable(){
+							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									mChatService.write(imuStop); // Stop sending data
 								}
 							}, 1000); // Wait 1 second before sending the message
 						}
 					}
+                    if (checkTab(ViewPagerAdapter.INFO_FRAGMENT)) {
+                        mHandler.postDelayed(new Runnable() {
+                            public void run() {
+                                mChatService.write(statusBegin); // Request data
+                            }
+                        }, 1000); // Wait 1 second before sending the message
+                    }
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					break;
@@ -530,8 +555,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				}
 				if(newSettings)
 					newSettings = false;
-				if(newInfo) {
+				if(newInfo || newStatus) {
 					newInfo = false;
+                    newStatus = false;
 					InfoFragment.updateView();
 				}
 				if(newIMUValues) {
