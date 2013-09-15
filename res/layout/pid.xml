@@ -116,6 +116,7 @@
                     android:baselineAligned="false" >
 
                 <TextView
+                        android:id="@+id/targetAngleText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/targetAngle"
@@ -238,6 +239,7 @@
                     android:orientation="horizontal" >
 
                 <TextView
+                        android:id="@+id/targetAngleSeekBarText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="@dimen/margin"

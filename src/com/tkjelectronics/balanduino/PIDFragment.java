@@ -38,7 +38,7 @@ public class PIDFragment extends SherlockFragment {
 	private static final boolean D = BalanduinoActivity.D;
 
 	static Button mButton;
-    static TextView mKpView, mKiView, mKdView, mTargetAngleView;
+    static TextView mKpView, mKiView, mKdView, mTargetAngleView, mTargetAngleText, mTargetAngleSeekBarText;
 	static SeekBar mKpSeekBar, mKiSeekBar, mKdSeekBar, mTargetAngleSeekBar;
     static TextView mKpSeekBarValue, mKiSeekBarValue, mKdSeekBarValue, mTargetAngleSeekBarValue;
     static RadioButton radio1, radio2;
@@ -57,6 +57,8 @@ public class PIDFragment extends SherlockFragment {
 		mKiView = (TextView) v.findViewById(R.id.textView2);
 		mKdView = (TextView) v.findViewById(R.id.textView3);
 		mTargetAngleView = (TextView) v.findViewById(R.id.textView4);
+        mTargetAngleText = (TextView) v.findViewById(R.id.targetAngleText);
+        mTargetAngleSeekBarText = (TextView) v.findViewById(R.id.targetAngleSeekBarText);
 
         mKpSeekBar = (SeekBar) v.findViewById(R.id.KpSeekBar);
         mKpSeekBar.setMax(2000); // 0-20
@@ -126,20 +128,16 @@ public class PIDFragment extends SherlockFragment {
             }
         });
 
+        OnClickListener radioOnClickListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateView();
+            }
+        };
         radio1 = (RadioButton) v.findViewById(R.id.radio1);
-        radio1.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateView();
-            }
-        });
+        radio1.setOnClickListener(radioOnClickListener);
         radio2 = (RadioButton) v.findViewById(R.id.radio2);
-        radio2.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                updateView();
-            }
-        });
+        radio2.setOnClickListener(radioOnClickListener);
 
 		mButton = (Button) v.findViewById(R.id.button);
 		mButton.setOnClickListener(new OnClickListener() {
@@ -265,12 +263,28 @@ public class PIDFragment extends SherlockFragment {
                 mKdSeekBar.setProgress((int)(value*100.0f));
             }
         }
-        if (mTargetAngleView != null && mTargetAngleSeekBar != null && mTargetAngleSeekBarValue != null && !BalanduinoActivity.targetAngleValue.isEmpty()) {
-            mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
-            mTargetAngleSeekBarValue.setText(String.format("%.2f", Float.parseFloat(BalanduinoActivity.targetAngleValue))); // Two decimal places
-            mTargetAngleSeekBar.setProgress((int)((Float.parseFloat(BalanduinoActivity.targetAngleValue)-150.0f)*10.0f));
-        }
+        if (radio1.isChecked()) {
+            setTargetAngleVisibility(View.VISIBLE);
+
+            if (mTargetAngleView != null && mTargetAngleSeekBar != null && mTargetAngleSeekBarValue != null && !BalanduinoActivity.targetAngleValue.isEmpty()) {
+                mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
+                mTargetAngleSeekBarValue.setText(String.format("%.2f", Float.parseFloat(BalanduinoActivity.targetAngleValue))); // Two decimal places
+                mTargetAngleSeekBar.setProgress((int)((Float.parseFloat(BalanduinoActivity.targetAngleValue)-150.0f)*10.0f));
+            }
+        } else
+            setTargetAngleVisibility(View.GONE);
 	}
+
+    private static void setTargetAngleVisibility(int visibility) {
+        if (visibility != View.VISIBLE && visibility != View.INVISIBLE && visibility != View.GONE)
+            throw new IllegalArgumentException();
+
+        mTargetAngleView.setVisibility(visibility);
+        mTargetAngleSeekBarValue.setVisibility(visibility);
+        mTargetAngleSeekBar.setVisibility(visibility);
+        mTargetAngleText.setVisibility(visibility);
+        mTargetAngleSeekBarText.setVisibility(visibility);
+    }
 
 	public static void updateButton() {
 		if (BalanduinoActivity.mChatService != null && mButton != null) {
