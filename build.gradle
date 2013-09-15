@@ -66,14 +66,6 @@ android {
         }
     }
 
-    android.sourceSets.standard {
-        java.srcDirs = ['src_standard']
-    }
-
-    android.sourceSets.usb {
-        java.srcDirs = ['src_usb']
-    }
-
     signingConfigs {
         release
     }
@@ -90,6 +82,12 @@ android {
             java.srcDirs = ['src']
             res.srcDirs = ['res']
             assets.srcDirs = ['assets']
+        }
+        standard {
+            java.srcDirs = ['src_standard']
+        }
+        usb {
+            java.srcDirs = ['src_usb']
         }
     }
 }
