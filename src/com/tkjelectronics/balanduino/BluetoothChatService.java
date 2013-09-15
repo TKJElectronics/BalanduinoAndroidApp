@@ -425,12 +425,19 @@ public class BluetoothChatService {
                     }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseInfo) && splitMessage.length == BalanduinoActivity.responseInfoLength) {
                     	BalanduinoActivity.firmwareVersion = splitMessage[1].trim();
-                		BalanduinoActivity.mcu = splitMessage[2].trim();
-                		BalanduinoActivity.batteryLevel = splitMessage[3].trim();
-                		BalanduinoActivity.runtime = Double.parseDouble(splitMessage[4].trim());
+                        BalanduinoActivity.eepromVersion = splitMessage[2].trim();
+                		BalanduinoActivity.mcu = splitMessage[3].trim();
                 		BalanduinoActivity.newInfo = true;
                     	
                     	// Send message back to the UI Activity
+                        mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
+                    }
+                    else if(splitMessage[0].trim().equals(BalanduinoActivity.responseStatus) && splitMessage.length == BalanduinoActivity.responseStatusLength) {
+                        BalanduinoActivity.batteryLevel = splitMessage[1].trim();
+                        BalanduinoActivity.runtime = Double.parseDouble(splitMessage[2].trim());
+                        BalanduinoActivity.newStatus = true;
+
+                        // Send message back to the UI Activity
                         mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                     }
                     else if(splitMessage[0].trim().equals(BalanduinoActivity.responseKalmanValues) && splitMessage.length == BalanduinoActivity.responseKalmanValuesLength) {

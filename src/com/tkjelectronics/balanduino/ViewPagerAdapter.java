@@ -86,7 +86,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 		case 2:
 			return "Graph";
 		case 3:
-			return "PID Adjustment";
+			return "PID";
 		case 4:
 			return "Info";
 		}

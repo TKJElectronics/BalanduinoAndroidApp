@@ -1,1 +1,1 @@
-include ':libs:GraphView', ':libs:PhysicaloidLibrary:PhysicaloidLibrary'
+include ':libs:PhysicaloidLibrary:PhysicaloidLibrary'
