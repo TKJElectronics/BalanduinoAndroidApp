@@ -207,8 +207,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
+		// Create the adapter that will return a fragment for each of the primary sections of the app.
 		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
 
 		// Set up the ViewPager with the adapter.
@@ -447,7 +446,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			else
 				menuItem.setIcon(R.drawable.device_access_bluetooth);
 		}
-		return super.onPrepareOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
@@ -455,7 +454,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		if(D)
 			Log.e(TAG,"onCreateOptionsMenu");
 		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
