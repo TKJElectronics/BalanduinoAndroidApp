@@ -10,6 +10,10 @@ The aar dependencies for the libraries are then generated using the steps in thi
 * Source: <https://github.com/Lauszus/Android-ViewPagerIndicator>
 * Forked from: <https://github.com/JakeWharton/Android-ViewPagerIndicator>
 
+### Physicaloid Library
+* Source: <https://github.com/Lauszus/PhysicaloidLibrary>
+* Forked from: <https://github.com/ksksue/PhysicaloidLibrary>
+
 This is how I installed them respectively:
 
 ```
