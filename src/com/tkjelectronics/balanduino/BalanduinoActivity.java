@@ -31,6 +31,7 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.hardware.SensorManager;
 import android.net.Uri;
 import android.os.Build;
@@ -113,10 +114,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	public static String appVersion;
 	public static String firmwareVersion;
+    public static String eepromVersion;
 	public static String mcu;
-	public static String batteryLevel;
-	public static double runtime;
 	public static boolean newInfo;
+
+    public static String batteryLevel;
+    public static double runtime;
+    public static boolean newStatus;
 
 	public static boolean pairingWithWii;
 
@@ -141,6 +145,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String imuBegin = "IB;";
 	public final static String imuStop = "IS;";
 
+    public final static String statusBegin = "RB;";
+    public final static String statusStop = "RS;";
+
 	public final static String sendStop = "CS;";
 	public final static String sendIMUValues = "CM,";
 	public final static String sendJoystickValues = "CJ,";
@@ -154,14 +161,16 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public final static String responseSettings = "S";
 	public final static String responseInfo = "I";
 	public final static String responseIMU = "V";
+    public final static String responseStatus = "R";
 	public final static String responsePairWii = "WC";
 
 	public final static int responsePIDValuesLength = 5;
     public final static int responseEncoderValuesLength = 4;
 	public final static int responseKalmanValuesLength = 4;
 	public final static int responseSettingsLength = 4;
-	public final static int responseInfoLength = 5;
+	public final static int responseInfoLength = 4;
 	public final static int responseIMULength = 4;
+    public final static int responseStatusLength = 3;
 	public final static int responsePairWiiLength = 1;
 
 	@Override
@@ -206,8 +215,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayHomeAsUpEnabled(true);
 
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
+		// Create the adapter that will return a fragment for each of the primary sections of the app.
 		ViewPagerAdapter mViewPagerAdapter = new ViewPagerAdapter(getApplicationContext(), getSupportFragmentManager());
 
 		// Set up the ViewPager with the adapter.
@@ -229,18 +237,37 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
+                        if (D)
+                            Log.d(TAG, "ViewPager position: " + position);
+                        if (position < actionBar.getTabCount()) // Needed for when in landscape mode
+						    actionBar.setSelectedNavigationItem(position);
+                        else
+                            mUnderlinePageIndicator.setCurrentItem(position-1);
 					}
 				});
-		// For each of the sections in the app, add a tab to the action bar.
-		for (int i = 0; i < mViewPagerAdapter.getCount(); i++) {
+
+        int count = mViewPagerAdapter.getCount();
+        Resources mResources = getApplicationContext().getResources();
+        boolean landscape = false;
+        if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            landscape = true;
+            count -= 1; // There is one less tab when in landscape mode
+        }
+
+		for (int i = 0; i < count; i++) { // For each of the sections in the app, add a tab to the action bar
+            String text;
+            if (landscape && i == count-1)
+                text =  mViewPagerAdapter.getPageTitle(i) + " & " + mViewPagerAdapter.getPageTitle(i+1); // Last tab in landscape mode have two titles in one tab
+            else
+                text = mViewPagerAdapter.getPageTitle(i).toString();
+
 			// Create a tab with text corresponding to the page title defined by
 			// the adapter. Also specify this Activity object, which implements
 			// the TabListener interface, as the callback (listener) for when
 			// this tab is selected.
 			actionBar.addTab(actionBar.newTab()
-					.setText(mViewPagerAdapter.getPageTitle(i))
-					.setTabListener(this));
+                     .setText(text)
+                     .setTabListener(this));
 		}
 		try {
 			BalanduinoActivity.appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
@@ -291,7 +318,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 		// Store the value for FILTER_COEFFICIENT and max angle at shutdown
 		Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		edit.putString("filterCoefficient",Float.toString(mSensorFusion.filter_coefficient));
+		edit.putString("filterCoefficient", Float.toString(mSensorFusion.filter_coefficient));
 		edit.putBoolean("backToSpot", backToSpot);
 		edit.putInt("maxAngle", maxAngle);
 		edit.putInt("maxTurning", maxTurning);
@@ -320,9 +347,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			Log.e(TAG, "- ON PAUSE -");
 		// Unregister sensor listeners to prevent the activity from draining the device's battery.
 		mSensorFusion.unregisterListeners();
-		if(mChatService != null) { // Send stop command and stop sending graph data command
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-				mChatService.write(sendStop + imuStop);
+		if (mChatService != null) { // Send stop command and stop sending graph data command
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+				mChatService.write(sendStop + imuStop + statusStop);
 			}
 		}
 	}
@@ -346,14 +373,22 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if (D)
-			Log.d(TAG,"onTabSelected: " + tab.getPosition());
+			Log.d(TAG, "onTabSelected: " + tab.getPosition());
 		currentTabSelected = tab.getPosition();
+
+        Resources mResources = getApplicationContext().getResources();
+        if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT) { // Check if the last tab is selected in landscape mode
+            currentTabSelected -= 1; // If so don't go any further
+            ActionBar bar = getSupportActionBar();
+            bar.selectTab(bar.getTabAt(currentTabSelected));
+        }
+
 		mUnderlinePageIndicator.setCurrentItem(currentTabSelected); // When the given tab is selected, switch to the corresponding page in the ViewPager
 		CustomViewPager.setPagingEnabled(true);
 		if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
-            mChatService.write(getKalman);
-            if (GraphFragment.mToggleButton != null) {
-                if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+                mChatService.write(getKalman);
+                if (GraphFragment.mToggleButton != null) {
                     if (GraphFragment.mToggleButton.isChecked())
                         mChatService.write(imuBegin); // Request data
                     else
@@ -361,10 +396,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 }
             }
 		} else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
-			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				mChatService.write(getInfo); // Update info
+                if (InfoFragment.mToggleButton != null) {
+                    if (InfoFragment.mToggleButton.isChecked())
+                        mChatService.write(statusBegin); // Request data
+                    else
+                        mChatService.write(statusStop); // Stop sending data
+                }
+            }
 		}
-        if(!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
+        if (!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
             imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
         }
@@ -372,16 +414,19 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-		if(D)
-			Log.d(TAG,"onTabUnselected: " + tab.getPosition() + " " + currentTabSelected);
-		if((checkTab(ViewPagerAdapter.IMU_FRAGMENT) || checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) && mChatService != null) { // Send stop command if the user selects another tab
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		if (D)
+			Log.d(TAG, "onTabUnselected: " + tab.getPosition() + " " + currentTabSelected);
+		if ((checkTab(ViewPagerAdapter.IMU_FRAGMENT) || checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) && mChatService != null) { // Send stop command if the user selects another tab
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(sendStop);
-		} else if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		} else if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(imuStop);
-		}
-        if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+		} else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
+            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+                mChatService.write(statusStop);
+        }
+        if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
 		}
@@ -398,8 +443,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if(D)
-			Log.e(TAG,"onPrepareOptionsMenu");
+		if (D)
+			Log.e(TAG, "onPrepareOptionsMenu");
 		MenuItem menuItem = menu.findItem(R.id.menu_connect); // Find item
 		if (mChatService == null)
 			menuItem.setIcon(R.drawable.device_access_bluetooth);
@@ -409,15 +454,15 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			else
 				menuItem.setIcon(R.drawable.device_access_bluetooth);
 		}
-		return super.onPrepareOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if(D)
-			Log.e(TAG,"onCreateOptionsMenu");
+		if (D)
+			Log.e(TAG, "onCreateOptionsMenu");
 		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
-		return super.onCreateOptionsMenu(menu);
+		return true;
 	}
 
 	@Override
@@ -449,9 +494,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	private void showToast(String message, int duration) {
         if (duration != Toast.LENGTH_SHORT && duration != Toast.LENGTH_LONG)
             throw new IllegalArgumentException();
-        if(mToast != null)
+        if (mToast != null)
 			mToast.cancel(); // Close the toast if it's already open
-		mToast = Toast.makeText(getApplicationContext(),message,duration);
+		mToast = Toast.makeText(getApplicationContext(), message, duration);
 		mToast.show();
 	}
 
@@ -474,7 +519,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
 					mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
-					if(mChatService == null)
+					if (mChatService == null)
 						return;
 					Handler mHandler = new Handler();
 					mHandler.postDelayed(new Runnable(){
@@ -482,21 +527,28 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				        	mChatService.write(getPIDValues + getEncoderValues + getSettings + getInfo + getKalman);
 				        }
 				    }, 1000); // Wait 1 second before sending the message
-					if(GraphFragment.mToggleButton != null) {
-						if(GraphFragment.mToggleButton.isChecked() && checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
-							mHandler.postDelayed(new Runnable(){
+					if (GraphFragment.mToggleButton != null) {
+						if (GraphFragment.mToggleButton.isChecked() && checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+							mHandler.postDelayed(new Runnable() {
 						        public void run() {
 						        	mChatService.write(imuBegin); // Request data
 						        }
 						    }, 1000); // Wait 1 second before sending the message
 						} else {
-							mHandler.postDelayed(new Runnable(){
+							mHandler.postDelayed(new Runnable() {
 								public void run() {
 									mChatService.write(imuStop); // Stop sending data
 								}
 							}, 1000); // Wait 1 second before sending the message
 						}
 					}
+                    if (checkTab(ViewPagerAdapter.INFO_FRAGMENT)) {
+                        mHandler.postDelayed(new Runnable() {
+                            public void run() {
+                                mChatService.write(statusBegin); // Request data
+                            }
+                        }, 1000); // Wait 1 second before sending the message
+                    }
 					break;
 				case BluetoothChatService.STATE_CONNECTING:
 					break;
@@ -509,21 +561,22 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     newEncoderValues = false;
 					PIDFragment.updateView();
 				}
-				if(newSettings)
+				if (newSettings)
 					newSettings = false;
-				if(newInfo) {
+				if (newInfo || newStatus) {
 					newInfo = false;
+                    newStatus = false;
 					InfoFragment.updateView();
 				}
-				if(newIMUValues) {
+				if (newIMUValues) {
 					newIMUValues = false;
 					GraphFragment.updateIMUValues();
 				}
-                if(newKalmanValues) {
+                if (newKalmanValues) {
                     newKalmanValues = false;
                     GraphFragment.updateKalmanValues();
                 }
-				if(pairingWithWii) {
+				if (pairingWithWii) {
 					pairingWithWii = false;
 					mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
 				}
@@ -538,7 +591,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				break;
 			case MESSAGE_RETRY:
-				if(D)
+				if (D)
 					Log.e(TAG, "MESSAGE_RETRY");
 				mBalanduinoActivity.connectDevice(null, true);
 				break;
@@ -571,8 +624,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	}
 
 	private void connectDevice(Intent data, boolean retry) {
-		if(retry) {
-			if(btDevice != null) {
+		if (retry) {
+			if (btDevice != null) {
 				mChatService.start(); // This will stop all the running threads
 				mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
 			}

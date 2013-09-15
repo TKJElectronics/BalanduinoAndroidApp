@@ -59,15 +59,15 @@ public class PIDFragment extends SherlockFragment {
 		mTargetAngleView = (TextView) v.findViewById(R.id.textView4);
 
         mKpSeekBar = (SeekBar) v.findViewById(R.id.KpSeekBar);
-        mKpSeekBar.setMax(200); // 0-20
+        mKpSeekBar.setMax(2000); // 0-20
         mKpSeekBar.setProgress(mKpSeekBar.getMax()/2);
         mKpSeekBarValue = (TextView) v.findViewById(R.id.KpValue);
-        mKpSeekBarValue.setText(Float.toString((float)mKpSeekBar.getMax()/20.0f));
+        mKpSeekBarValue.setText(Float.toString((float)mKpSeekBar.getMax()/200.0f));
 
         mKpSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newKpValue = (float)progress/10.0f; // Since the SeekBar can only handle integers, so this is needed
-                mKpSeekBarValue.setText(String.format("%.1f", newKpValue)); // One decimal place
+                newKpValue = (float)progress/100.0f; // Since the SeekBar can only handle integers, so this is needed
+                mKpSeekBarValue.setText(String.format("%.2f", newKpValue)); // Two decimal places
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
@@ -76,15 +76,15 @@ public class PIDFragment extends SherlockFragment {
         });
 
         mKiSeekBar = (SeekBar) v.findViewById(R.id.KiSeekBar);
-        mKiSeekBar.setMax(100); // 0-10
+        mKiSeekBar.setMax(2000); // 0-20
         mKiSeekBar.setProgress(mKiSeekBar.getMax()/2);
         mKiSeekBarValue = (TextView) v.findViewById(R.id.KiValue);
-        mKiSeekBarValue.setText(Float.toString(((float)mKiSeekBar.getMax())/20.0f));
+        mKiSeekBarValue.setText(Float.toString(((float)mKiSeekBar.getMax())/200.0f));
 
         mKiSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newKiValue = (float)progress/10.0f; // Since the SeekBar can only handle integers, so this is needed
-                mKiSeekBarValue.setText(String.format("%.1f", newKiValue)); // One decimal place
+                newKiValue = (float)progress/100.0f; // Since the SeekBar can only handle integers, so this is needed
+                mKiSeekBarValue.setText(String.format("%.2f", newKiValue)); // Two decimal places
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
@@ -93,15 +93,15 @@ public class PIDFragment extends SherlockFragment {
         });
 
         mKdSeekBar = (SeekBar) v.findViewById(R.id.KdSeekBar);
-        mKdSeekBar.setMax(100); // 0-0.1
+        mKdSeekBar.setMax(2000); // 0-20
         mKdSeekBar.setProgress(mKdSeekBar.getMax()/2);
         mKdSeekBarValue = (TextView) v.findViewById(R.id.KdValue);
-        mKdSeekBarValue.setText(Float.toString((float)mKdSeekBar.getMax()/2000.0f));
+        mKdSeekBarValue.setText(Float.toString((float)mKdSeekBar.getMax()/200.0f));
 
         mKdSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newKdValue = (float)progress/1000.0f; // Since the SeekBar can only handle integers, so this is needed
-                mKdSeekBarValue.setText(String.format("%.3f", newKdValue)); // Three decimal place
+                newKdValue = (float)progress/100.0f; // Since the SeekBar can only handle integers, so this is needed
+                mKdSeekBarValue.setText(String.format("%.2f", newKdValue)); // Two decimal places
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
@@ -118,7 +118,7 @@ public class PIDFragment extends SherlockFragment {
         mTargetAngleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
                 newTargetAngleValue = (float)progress/10.0f+150.0f; // It's not possible to set the minimum value either, so we will add a offset
-                mTargetAngleSeekBarValue.setText(String.format("%.1f", newTargetAngleValue)); // One decimal place
+                mTargetAngleSeekBarValue.setText(String.format("%.2f", newTargetAngleValue)); // Two decimal places
             }
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
@@ -235,8 +235,8 @@ public class PIDFragment extends SherlockFragment {
             mKpView.setText(Kp);
             if (!Kp.equals("")) {
                 float value = Float.parseFloat(Kp);
-                mKpSeekBarValue.setText(String.format("%.1f", value)); // One decimal places
-                mKpSeekBar.setProgress((int)(value*10.0f));
+                mKpSeekBarValue.setText(String.format("%.2f", value)); // Two decimal places
+                mKpSeekBar.setProgress((int)(value*100.0f));
             }
 		}
         if (mKiView != null && mKiSeekBar != null && mKiSeekBarValue != null) {
@@ -248,8 +248,8 @@ public class PIDFragment extends SherlockFragment {
             mKiView.setText(Ki);
             if (!Ki.equals("")) {
                 float value = Float.parseFloat(Ki);
-                mKiSeekBarValue.setText(String.format("%.1f", value)); // One decimal places
-                mKiSeekBar.setProgress((int)(value*10.0f));
+                mKiSeekBarValue.setText(String.format("%.2f", value)); // Two decimal places
+                mKiSeekBar.setProgress((int)(value*100.0f));
             }
         }
         if (mKdView != null && mKdSeekBar != null && mKdSeekBarValue != null) {
@@ -261,13 +261,13 @@ public class PIDFragment extends SherlockFragment {
             mKdView.setText(Kd);
             if (!Kd.equals("")) {
                 float value = Float.parseFloat(Kd);
-                mKdSeekBarValue.setText(String.format("%.3f", value)); // Three decimal places
-                mKdSeekBar.setProgress((int)(value*1000.0f));
+                mKdSeekBarValue.setText(String.format("%.2f", value)); // Two decimal places
+                mKdSeekBar.setProgress((int)(value*100.0f));
             }
         }
         if (mTargetAngleView != null && mTargetAngleSeekBar != null && mTargetAngleSeekBarValue != null && !BalanduinoActivity.targetAngleValue.isEmpty()) {
             mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
-            mTargetAngleSeekBarValue.setText(String.format("%.1f", Float.parseFloat(BalanduinoActivity.targetAngleValue))); // One decimal places
+            mTargetAngleSeekBarValue.setText(String.format("%.2f", Float.parseFloat(BalanduinoActivity.targetAngleValue))); // Two decimal places
             mTargetAngleSeekBar.setProgress((int)((Float.parseFloat(BalanduinoActivity.targetAngleValue)-150.0f)*10.0f));
         }
 	}

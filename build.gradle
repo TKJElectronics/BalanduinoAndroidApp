@@ -47,17 +47,14 @@ apply plugin: 'android'
 
 repositories {
     mavenCentral()
-    maven {
-        url 'https://github.com/dahlgren/vpi-aar/raw/master'
-    }
+    maven { url 'libs' }
 }
 
 dependencies {
-    //compile fileTree(dir: 'libs', include: '*.jar')
-    compile project(':libs:GraphView')
     compile 'com.android.support:support-v4:18.0.+'
+    compile 'com.jjoe64.graphview:graphview:3.1'
+    compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    compile 'com.viewpagerindicator:library:2.4.2-SNAPSHOT'
 }
 
 android {

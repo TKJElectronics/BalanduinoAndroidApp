@@ -33,7 +33,6 @@ import android.widget.ToggleButton;
 import android.widget.Button;
 
 import com.actionbarsherlock.app.SherlockFragment;
-import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
@@ -44,21 +43,14 @@ public class GraphFragment extends SherlockFragment {
     private static final String TAG = "GraphFragment";
 	private static final boolean D = BalanduinoActivity.D;
 
-	private static GraphView graphView;
-	private static GraphViewSeries accSeries;
-	private static GraphViewSeries gyroSeries;
-	private static GraphViewSeries kalmanSeries;
+	private static LineGraphView graphView;
+	private static GraphViewSeries accSeries, gyroSeries, kalmanSeries;
 	private static double counter = 100d;
-	public static ToggleButton mToggleButton;
 
-	private static CheckBox mCheckBox1;
-	private static CheckBox mCheckBox2;
-	private static CheckBox mCheckBox3;
-
-    private static EditText mQangle;
-    private static EditText mQbias;
-    private static EditText mRmeasure;
+	private static CheckBox mCheckBox1, mCheckBox2, mCheckBox3;
+    private static EditText mQangle, mQbias, mRmeasure;
     private static Button mButton;
+    public static ToggleButton mToggleButton;
 
 	private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
 
@@ -158,9 +150,9 @@ public class GraphFragment extends SherlockFragment {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 						if(((ToggleButton) v).isChecked())
-							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
+							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
 						else
-							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
+							BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
 					}
 				}
 			}
@@ -181,16 +173,16 @@ public class GraphFragment extends SherlockFragment {
                 BalanduinoActivity.Qangle = mQangle.getText().toString();
                 BalanduinoActivity.Qbias = mQbias.getText().toString();
                 BalanduinoActivity.Rmeasure = mRmeasure.getText().toString();
-                BalanduinoActivity.mChatService.write((BalanduinoActivity.setKalman + BalanduinoActivity.Qangle + "," + BalanduinoActivity.Qbias + "," + BalanduinoActivity.Rmeasure + ";").getBytes());
+                BalanduinoActivity.mChatService.write(BalanduinoActivity.setKalman + BalanduinoActivity.Qangle + "," + BalanduinoActivity.Qbias + "," + BalanduinoActivity.Rmeasure + ";");
             }
         });
 
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 				if(mToggleButton.isChecked())
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
 				else
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
 			}
 		}
 
@@ -254,9 +246,9 @@ public class GraphFragment extends SherlockFragment {
 		if (BalanduinoActivity.mChatService != null) {
 			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 				if(mToggleButton.isChecked())
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin.getBytes()); // Request data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
 				else
-					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop.getBytes()); // Stop sending data
+					BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
 			}
 		}
 	}
