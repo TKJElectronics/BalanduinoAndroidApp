@@ -33,3 +33,14 @@ mvn install:install-file \
 -Dfile=library/build/libs/library-2.4.1.aar \
 -DlocalRepositoryPath=../
 ```
+
+```
+mvn install:install-file \
+-DgroupId=com.physicaloid \
+-DartifactId=physicaloid \
+-Dversion=1.0 \
+-DgeneratePom=true \
+-Dpackaging=aar \
+-Dfile=build/libs/PhysicaloidLibrary.aar \
+-DlocalRepositoryPath=../../
+```

@@ -95,7 +95,7 @@ dependencies {
     compile 'com.jjoe64.graphview:graphview:3.1'
     compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-    usbCompile project(':libs:PhysicaloidLibrary:PhysicaloidLibrary') // Only supported on API level above 12
+    usbCompile 'com.physicaloid:physicaloid:1.0' // Only supported on API level above 12
 }
 
 // These values are all set in my global gradle.properties file
