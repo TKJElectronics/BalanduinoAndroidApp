@@ -57,13 +57,21 @@ android {
 
     productFlavors {
         standard {
-            packageName "com.tkjelectronics.balanduino"
+            //packageName "com.tkjelectronics.balanduino"
             minSdkVersion 10
         }
         usb {
-            packageName "com.tkjelectronics.balanduino.usb"
+            //packageName "com.tkjelectronics.balanduino.usb"
             minSdkVersion 12
         }
+    }
+
+    android.sourceSets.standard {
+        java.srcDirs = ['src_standard']
+    }
+
+    android.sourceSets.usb {
+        java.srcDirs = ['src_usb']
     }
 
     signingConfigs {
@@ -81,6 +89,7 @@ android {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
             res.srcDirs = ['res']
+            assets.srcDirs = ['assets']
         }
     }
 }
