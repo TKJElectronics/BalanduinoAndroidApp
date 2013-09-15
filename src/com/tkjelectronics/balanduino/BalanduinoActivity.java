@@ -310,7 +310,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 		// Store the value for FILTER_COEFFICIENT and max angle at shutdown
 		Editor edit = PreferenceManager.getDefaultSharedPreferences(this).edit();
-		edit.putString("filterCoefficient",Float.toString(mSensorFusion.filter_coefficient));
+		edit.putString("filterCoefficient", Float.toString(mSensorFusion.filter_coefficient));
 		edit.putBoolean("backToSpot", backToSpot);
 		edit.putInt("maxAngle", maxAngle);
 		edit.putInt("maxTurning", maxTurning);
@@ -339,8 +339,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 			Log.e(TAG, "- ON PAUSE -");
 		// Unregister sensor listeners to prevent the activity from draining the device's battery.
 		mSensorFusion.unregisterListeners();
-		if(mChatService != null) { // Send stop command and stop sending graph data command
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+		if (mChatService != null) { // Send stop command and stop sending graph data command
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 				mChatService.write(sendStop + imuStop + statusStop);
 			}
 		}
@@ -365,7 +365,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
 		if (D)
-			Log.d(TAG,"onTabSelected: " + tab.getPosition());
+			Log.d(TAG, "onTabSelected: " + tab.getPosition());
 		currentTabSelected = tab.getPosition();
 
         Resources mResources = getApplicationContext().getResources();
@@ -406,19 +406,19 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
-		if(D)
-			Log.d(TAG,"onTabUnselected: " + tab.getPosition() + " " + currentTabSelected);
-		if((checkTab(ViewPagerAdapter.IMU_FRAGMENT) || checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) && mChatService != null) { // Send stop command if the user selects another tab
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		if (D)
+			Log.d(TAG, "onTabUnselected: " + tab.getPosition() + " " + currentTabSelected);
+		if ((checkTab(ViewPagerAdapter.IMU_FRAGMENT) || checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) && mChatService != null) { // Send stop command if the user selects another tab
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(sendStop);
-		} else if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
-			if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		} else if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
+			if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
 				mChatService.write(imuStop);
-		} else if(checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
-            if(mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+		} else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
+            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
                 mChatService.write(statusStop);
         }
-        if(checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+        if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
 			InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard
 		    imm.hideSoftInputFromWindow(getWindow().getDecorView().getApplicationWindowToken(), 0);
 		}
@@ -435,8 +435,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		if(D)
-			Log.e(TAG,"onPrepareOptionsMenu");
+		if (D)
+			Log.e(TAG, "onPrepareOptionsMenu");
 		MenuItem menuItem = menu.findItem(R.id.menu_connect); // Find item
 		if (mChatService == null)
 			menuItem.setIcon(R.drawable.device_access_bluetooth);
@@ -451,8 +451,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if(D)
-			Log.e(TAG,"onCreateOptionsMenu");
+		if (D)
+			Log.e(TAG, "onCreateOptionsMenu");
 		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
 		return true;
 	}
@@ -486,9 +486,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	private void showToast(String message, int duration) {
         if (duration != Toast.LENGTH_SHORT && duration != Toast.LENGTH_LONG)
             throw new IllegalArgumentException();
-        if(mToast != null)
+        if (mToast != null)
 			mToast.cancel(); // Close the toast if it's already open
-		mToast = Toast.makeText(getApplicationContext(),message,duration);
+		mToast = Toast.makeText(getApplicationContext(), message, duration);
 		mToast.show();
 	}
 
@@ -511,7 +511,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				switch (msg.arg1) {
 				case BluetoothChatService.STATE_CONNECTED:
 					mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
-					if(mChatService == null)
+					if (mChatService == null)
 						return;
 					Handler mHandler = new Handler();
 					mHandler.postDelayed(new Runnable(){
@@ -548,26 +548,26 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				PIDFragment.updateButton();
 				break;
 			case MESSAGE_READ:
-				if(newPIDValues) {
+				if (newPIDValues) {
 					newPIDValues = false;
 					PIDFragment.updateView();
 				}
-				if(newSettings)
+				if (newSettings)
 					newSettings = false;
-				if(newInfo || newStatus) {
+				if (newInfo || newStatus) {
 					newInfo = false;
                     newStatus = false;
 					InfoFragment.updateView();
 				}
-				if(newIMUValues) {
+				if (newIMUValues) {
 					newIMUValues = false;
 					GraphFragment.updateIMUValues();
 				}
-                if(newKalmanValues) {
+                if (newKalmanValues) {
                     newKalmanValues = false;
                     GraphFragment.updateKalmanValues();
                 }
-				if(pairingWithWii) {
+				if (pairingWithWii) {
 					pairingWithWii = false;
 					mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
 				}
@@ -582,7 +582,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
 				break;
 			case MESSAGE_RETRY:
-				if(D)
+				if (D)
 					Log.e(TAG, "MESSAGE_RETRY");
 				mBalanduinoActivity.connectDevice(null, true);
 				break;
@@ -615,8 +615,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	}
 
 	private void connectDevice(Intent data, boolean retry) {
-		if(retry) {
-			if(btDevice != null) {
+		if (retry) {
+			if (btDevice != null) {
 				mChatService.start(); // This will stop all the running threads
 				mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
 			}
