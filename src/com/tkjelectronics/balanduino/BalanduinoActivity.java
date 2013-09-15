@@ -55,8 +55,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     private static final String TAG = "Balanduino";
     public static final boolean D = BuildConfig.DEBUG; // This is automatically set by Gradle
 
-    private static Activity activity;
-    private static Context context;
+    public static Activity activity;
+    public static Context context;
     private Toast mToast;
 
 	// Message types sent from the BluetoothChatService Handler
@@ -170,6 +170,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		super.onCreate(savedInstanceState);
         activity = this;
         context = getApplicationContext();
+
+        if (D)
+            Log.i(TAG, "Flavor: " + Upload.flavor);
+
+        Upload.UploadFirmware();
 
         if (!getResources().getBoolean(R.bool.isTablet))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT); // Set portrait mode only - for small screens like phones
