@@ -1,8 +1,8 @@
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-project.ext.set('versionName', '0.5b')
-project.ext.set('versionCode', 5)
+project.ext.set('versionName', '0.5.0')
+project.ext.set('versionCode', '050')
 
 project.ext.set('archivesBaseName', "BalanduinoAndroidApp-" + project.versionName)
 
@@ -27,20 +27,6 @@ task update { // Task to update accessory filter and manifest to match version n
     accessoryText = matcherVersionName.replaceAll("version=\"" + project.versionName + "\"")
 
     accessoryFile.write(firstLine + accessoryText)
-
-
-    def manifestFile = file("AndroidManifest.xml")
-    def manifestText = manifestFile.getText()
-
-    println "Updating AndroidManifest versionName to: " + project.versionName
-    matcherVersionName = Pattern.compile("android:versionName=\"(.*?)\"").matcher(manifestText)
-    manifestText = matcherVersionName.replaceAll("android:versionName=\"" + project.versionName + "\"")
-
-    println "Updating AndroidManifest versionCode to: " + project.versionCode
-    def matcherVersionCode = Pattern.compile("android:versionCode=\"(.*?)\"").matcher(manifestText)
-    manifestText = matcherVersionCode.replaceAll("android:versionCode=\"" + project.versionCode + "\"")
-
-    manifestFile.write(manifestText)
 }
 
 apply plugin: 'android'
@@ -52,17 +38,16 @@ android {
     defaultConfig {
         targetSdkVersion 18
         versionName = project.versionName
-        versionCode = project.versionCode
     }
 
     productFlavors {
         standard {
-            packageName "com.tkjelectronics.balanduino"
             minSdkVersion 10
+            versionCode = Integer.parseInt('1000' + project.versionCode)
         }
         usb {
-            packageName "com.tkjelectronics.balanduino.usb"
             minSdkVersion 12
+            versionCode = Integer.parseInt('1200' + project.versionCode)
         }
     }
 

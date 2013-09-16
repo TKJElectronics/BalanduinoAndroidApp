@@ -21,7 +21,7 @@ import com.physicaloid.lib.programmer.avr.UploadErrors;
 public class Upload {
     private static final String TAG = "Upload";
     private static final boolean D = BalanduinoActivity.D;
-    private static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
+    private static final String ACTION_USB_PERMISSION = "com.tkjelectronics.balanduino.USB_PERMISSION";
     private final static String usbError = "Error opening USB host communication";
     public final static String flavor = "Usb";
 
