@@ -57,11 +57,11 @@ android {
 
     productFlavors {
         standard {
-            //packageName "com.tkjelectronics.balanduino"
+            packageName "com.tkjelectronics.balanduino"
             minSdkVersion 10
         }
         usb {
-            //packageName "com.tkjelectronics.balanduino.usb"
+            packageName "com.tkjelectronics.balanduino.usb"
             minSdkVersion 12
         }
     }
