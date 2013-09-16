@@ -87,6 +87,7 @@ android {
             java.srcDirs = ['src_standard']
         }
         usb {
+            manifest.srcFile 'AndroidManifest_usb.xml'
             java.srcDirs = ['src_usb']
         }
     }
