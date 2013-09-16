@@ -15,7 +15,7 @@ buildscript {
     }
 }
 
-task update { // Task to update accessory filter and manifest to match version number and code
+task update { // Task to update version accessory filter
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
 
@@ -41,7 +41,7 @@ android {
     }
 
     productFlavors {
-        standard {
+        basic {
             minSdkVersion 10
             versionCode = Integer.parseInt('1000' + project.versionCode)
         }
@@ -67,15 +67,15 @@ android {
             java.srcDirs = ['src']
             res.srcDirs = ['res']
         }
-        standard {
-            java.srcDirs = ['standard/src']
-            res.srcDirs = ['standard/res']
+        basic {
+            java.srcDirs = ['flavors/basic/src']
+            res.srcDirs = ['flavors/basic/res']
         }
         usb {
-            manifest.srcFile 'usb/AndroidManifest.xml'
-            java.srcDirs = ['usb/src']
-            res.srcDirs = ['usb/res']
-            assets.srcDirs = ['usb/assets']
+            manifest.srcFile 'flavors/usb/AndroidManifest.xml'
+            java.srcDirs = ['flavors/usb/src']
+            res.srcDirs = ['flavors/usb/res']
+            assets.srcDirs = ['flavors/usb/assets']
         }
     }
 }
