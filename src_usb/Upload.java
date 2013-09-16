@@ -11,14 +11,12 @@ import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
-import java.lang.System;
 import java.util.Map;
 
 import com.physicaloid.lib.Boards;
 import com.physicaloid.lib.Physicaloid;
 import com.physicaloid.lib.Physicaloid.UploadCallBack;
 import com.physicaloid.lib.programmer.avr.UploadErrors;
-import com.tkjelectronics.balanduino.BalanduinoActivity;
 
 public class Upload {
     private static final String TAG = "Upload";
@@ -30,7 +28,18 @@ public class Upload {
     static Physicaloid mPhysicaloid;
     static boolean uploading = false;
 
-    public static void UploadFirmware() {
+    public static void close() {
+        if (mPhysicaloid != null) {
+            try {
+                mPhysicaloid.close();
+            } catch (RuntimeException e) {
+                if (D)
+                    Log.e(TAG, e.toString());
+            }
+        }
+    }
+
+    public static void uploadFirmware() {
         if (uploading)
             return;
 

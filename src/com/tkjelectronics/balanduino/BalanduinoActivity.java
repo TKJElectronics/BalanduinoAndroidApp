@@ -321,6 +321,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public void onBackPressed() {
         if (mChatService != null)
             mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
+        if (Upload.flavor.equals(("Usb")))
+        	Upload.close();
         finish(); // Exits the app
     }
 
@@ -475,7 +477,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				dialogFragment.show(getSupportFragmentManager(), null);
 				return true;
             case R.id.menu_upload:
-                Upload.UploadFirmware();
+                Upload.uploadFirmware();
                 return true;
 			case android.R.id.home:
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
