@@ -66,14 +66,16 @@ android {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src']
             res.srcDirs = ['res']
-            assets.srcDirs = ['assets']
         }
         standard {
-            java.srcDirs = ['src_standard']
+            java.srcDirs = ['standard/src']
+            res.srcDirs = ['standard/res']
         }
         usb {
-            manifest.srcFile 'AndroidManifest_usb.xml'
-            java.srcDirs = ['src_usb']
+            manifest.srcFile 'usb/AndroidManifest.xml'
+            java.srcDirs = ['usb/src']
+            res.srcDirs = ['usb/res']
+            assets.srcDirs = ['usb/assets']
         }
     }
 }
