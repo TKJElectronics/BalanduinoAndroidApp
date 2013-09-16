@@ -57,7 +57,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     public static Activity activity;
     public static Context context;
-    private Toast mToast;
+    private static Toast mToast;
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
@@ -170,11 +170,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		super.onCreate(savedInstanceState);
         activity = this;
         context = getApplicationContext();
-
-        if (D)
-            Log.i(TAG, "Flavor: " + Upload.flavor);
-
-        Upload.UploadFirmware();
 
         if (!getResources().getBoolean(R.bool.isTablet))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT); // Set portrait mode only - for small screens like phones
@@ -459,6 +454,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 		if (D)
 			Log.e(TAG, "onCreateOptionsMenu");
 		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
+
+        if (!Upload.flavor.equals(("Usb")))
+            menu.removeItem(R.id.menu_upload);
+
 		return true;
 	}
 
@@ -470,11 +469,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				Intent serverIntent = new Intent(this, DeviceListActivity.class);
 				startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
 				return true;
-			case R.id.settings:
+			case R.id.menu_settings:
 				// Open up the settings dialog
 				SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
 				dialogFragment.show(getSupportFragmentManager(), null);
 				return true;
+            case R.id.menu_upload:
+                Upload.UploadFirmware();
+                return true;
 			case android.R.id.home:
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
 				startActivity(browserIntent);
@@ -488,12 +490,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         return activity.getWindowManager().getDefaultDisplay().getRotation();
     }
 
-	private void showToast(String message, int duration) {
+	public static void showToast(String message, int duration) {
         if (duration != Toast.LENGTH_SHORT && duration != Toast.LENGTH_LONG)
             throw new IllegalArgumentException();
         if (mToast != null)
 			mToast.cancel(); // Close the toast if it's already open
-		mToast = Toast.makeText(getApplicationContext(), message, duration);
+		mToast = Toast.makeText(context, message, duration);
 		mToast.show();
 	}
 
