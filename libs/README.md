@@ -14,37 +14,4 @@ The aar dependencies for the libraries are then generated using the steps in thi
 * Source: <https://github.com/Lauszus/PhysicaloidLibrary>
 * Forked from: <https://github.com/ksksue/PhysicaloidLibrary>
 
-This is how I installed them respectively:
-
-```
-mvn install:install-file \
--DgroupId=com.jjoe64.graphview \
--DartifactId=graphview \
--Dversion=3.1 \
--DgeneratePom=true \
--Dpackaging=aar \
--Dfile=build/libs/GraphView.aar \
--DlocalRepositoryPath=../
-```
-
-```
-mvn install:install-file \
--DgroupId=com.viewpagerindicator \
--DartifactId=viewpagerindicator \
--Dversion=2.4.1 \
--DgeneratePom=true \
--Dpackaging=aar \
--Dfile=library/build/libs/library-2.4.1.aar \
--DlocalRepositoryPath=../
-```
-
-```
-mvn install:install-file \
--DgroupId=com.physicaloid \
--DartifactId=physicaloid \
--Dversion=1.0 \
--DgeneratePom=true \
--Dpackaging=aar \
--Dfile=PhysicaloidLibrary/build/libs/PhysicaloidLibrary-1.0.aar \
--DlocalRepositoryPath=../
-```
+See the [install.sh](install.sh) script to see how they can be installed.
