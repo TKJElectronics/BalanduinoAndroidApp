@@ -93,7 +93,7 @@ public class Upload {
             mPhysicaloid = new Physicaloid(BalanduinoActivity.activity);
 
         try {
-            mPhysicaloid.upload(Boards.BALANDUINO, BalanduinoActivity.context.getResources().getAssets().open("Blink.balanduino.hex"), mUploadCallback);
+            mPhysicaloid.upload(Boards.BALANDUINO, BalanduinoActivity.context.getResources().getAssets().open("Balanduino.hex"), mUploadCallback);
         } catch (RuntimeException e) {
             if (D)
                 Log.e(TAG, e.toString());
