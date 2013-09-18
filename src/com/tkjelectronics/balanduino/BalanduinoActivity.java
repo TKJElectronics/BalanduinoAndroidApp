@@ -19,8 +19,6 @@
 
 package com.tkjelectronics.balanduino;
 
-import java.lang.ref.WeakReference;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -50,6 +48,8 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
+
+import java.lang.ref.WeakReference;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "Balanduino";
@@ -272,7 +272,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onStart() {
 		super.onStart();
 		if (D)
-			Log.e(TAG, "++ ON START ++");
+			Log.d(TAG, "++ ON START ++");
 		// If BT is not on, request that it be enabled.
 		// setupChat() will then be called during onActivityResult
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -303,7 +303,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onStop() {
 		super.onStop();
 		if (D)
-			Log.e(TAG, "-- ON STOP --");
+			Log.d(TAG, "-- ON STOP --");
 		// unregister sensor listeners to prevent the activity from draining the
 		// device's battery.
 		mSensorFusion.unregisterListeners();
@@ -330,7 +330,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onDestroy() {
 		super.onDestroy();
 		if (D)
-			Log.e(TAG, "--- ON DESTROY ---");
+			Log.d(TAG, "--- ON DESTROY ---");
 		mSensorFusion.unregisterListeners();
 	}
 
@@ -338,7 +338,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	protected void onPause() {
 		super.onPause();
 		if (D)
-			Log.e(TAG, "- ON PAUSE -");
+			Log.d(TAG, "- ON PAUSE -");
 		// Unregister sensor listeners to prevent the activity from draining the device's battery.
 		mSensorFusion.unregisterListeners();
 		if (mChatService != null) { // Send stop command and stop sending graph data command
@@ -352,7 +352,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onResume() {
 		super.onResume();
 		if (D)
-			Log.e(TAG, "+ ON RESUME +");
+			Log.d(TAG, "+ ON RESUME +");
 		// Restore the sensor listeners when user resumes the application.
 		mSensorFusion.initListeners();
 	}
@@ -438,7 +438,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (D)
-			Log.e(TAG, "onPrepareOptionsMenu");
+			Log.d(TAG, "onPrepareOptionsMenu");
 		MenuItem menuItem = menu.findItem(R.id.menu_connect); // Find item
 		if (mChatService == null)
 			menuItem.setIcon(R.drawable.device_access_bluetooth);
@@ -454,7 +454,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (D)
-			Log.e(TAG, "onCreateOptionsMenu");
+			Log.d(TAG, "onCreateOptionsMenu");
 		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
 
         if (!Upload.flavor.equals(("Usb")))
@@ -592,7 +592,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				break;
 			case MESSAGE_RETRY:
 				if (D)
-					Log.e(TAG, "MESSAGE_RETRY");
+					Log.d(TAG, "MESSAGE_RETRY");
 				mBalanduinoActivity.connectDevice(null, true);
 				break;
 			}
