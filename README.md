@@ -19,7 +19,7 @@ A video filmed with a GoPro mounted on the robot can be seen here: <http://www.y
 
 # Screenshots
 
-[![Screenshots](http://www.tkjelectronics.com/uploads/Balanduino_Screenshots.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
+[![Screenshots](http://wiki.balanduino.net/images/2/25/Balanduino_Android_screenshots.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
 
 # How to build
 
