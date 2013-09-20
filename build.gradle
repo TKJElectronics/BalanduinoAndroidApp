@@ -69,7 +69,6 @@ android {
         }
         basic {
             java.srcDirs = ['flavors/basic/src']
-            res.srcDirs = ['flavors/basic/res']
         }
         usb {
             manifest.srcFile 'flavors/usb/AndroidManifest.xml'
