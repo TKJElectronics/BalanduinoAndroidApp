@@ -102,10 +102,10 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
 				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) {
                     if (!getResources().getBoolean(R.bool.isTablet) || !BalanduinoActivity.buttonState) { // Don't send stop if the button in the IMU fragment is pressed
                         if(joystickReleased || (xValue == 0 && yValue == 0))
-                            BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
+                            BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop);
                         else {
                             String message = BalanduinoActivity.sendJoystickValues + d.format(xValue) + ',' + d.format(yValue) + ";";
-                            BalanduinoActivity.mChatService.write(message.getBytes());
+                            BalanduinoActivity.mChatService.write(message);
                         }
                     }
 				}
