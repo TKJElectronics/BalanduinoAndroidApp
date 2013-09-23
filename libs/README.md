@@ -10,26 +10,8 @@ The aar dependencies for the libraries are then generated using the steps in thi
 * Source: <https://github.com/Lauszus/Android-ViewPagerIndicator>
 * Forked from: <https://github.com/JakeWharton/Android-ViewPagerIndicator>
 
-This is how I installed them respectively:
+### Physicaloid Library
+* Source: <https://github.com/Lauszus/PhysicaloidLibrary>
+* Forked from: <https://github.com/ksksue/PhysicaloidLibrary>
 
-```
-mvn install:install-file \
--DgroupId=com.jjoe64.graphview \
--DartifactId=graphview \
--Dversion=3.1 \
--DgeneratePom=true \
--Dpackaging=aar \
--Dfile=build/libs/GraphView.aar \
--DlocalRepositoryPath=../
-```
-
-```
-mvn install:install-file \
--DgroupId=com.viewpagerindicator \
--DartifactId=viewpagerindicator \
--Dversion=2.4.1 \
--DgeneratePom=true \
--Dpackaging=aar \
--Dfile=library/build/libs/library-2.4.1.aar \
--DlocalRepositoryPath=../
-```
+See the [install.sh](install.sh) script to see how they can be installed.

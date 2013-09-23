@@ -19,8 +19,6 @@
 
 package com.tkjelectronics.balanduino;
 
-import java.lang.ref.WeakReference;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -51,13 +49,15 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
+import java.lang.ref.WeakReference;
+
 public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "Balanduino";
     public static final boolean D = BuildConfig.DEBUG; // This is automatically set by Gradle
 
-    private static Activity activity;
-    private static Context context;
-    private Toast mToast;
+    public static Activity activity;
+    public static Context context;
+    private static Toast mToast;
 
 	// Message types sent from the BluetoothChatService Handler
 	public static final int MESSAGE_STATE_CHANGE = 1;
@@ -280,7 +280,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onStart() {
 		super.onStart();
 		if (D)
-			Log.e(TAG, "++ ON START ++");
+			Log.d(TAG, "++ ON START ++");
 		// If BT is not on, request that it be enabled.
 		// setupChat() will then be called during onActivityResult
 		if (!mBluetoothAdapter.isEnabled()) {
@@ -311,7 +311,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onStop() {
 		super.onStop();
 		if (D)
-			Log.e(TAG, "-- ON STOP --");
+			Log.d(TAG, "-- ON STOP --");
 		// unregister sensor listeners to prevent the activity from draining the
 		// device's battery.
 		mSensorFusion.unregisterListeners();
@@ -329,6 +329,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public void onBackPressed() {
         if (mChatService != null)
             mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
+        if (Upload.flavor.equals(("Usb")))
+        	Upload.close();
         finish(); // Exits the app
     }
 
@@ -336,7 +338,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onDestroy() {
 		super.onDestroy();
 		if (D)
-			Log.e(TAG, "--- ON DESTROY ---");
+			Log.d(TAG, "--- ON DESTROY ---");
 		mSensorFusion.unregisterListeners();
 	}
 
@@ -344,7 +346,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	protected void onPause() {
 		super.onPause();
 		if (D)
-			Log.e(TAG, "- ON PAUSE -");
+			Log.d(TAG, "- ON PAUSE -");
 		// Unregister sensor listeners to prevent the activity from draining the device's battery.
 		mSensorFusion.unregisterListeners();
 		if (mChatService != null) { // Send stop command and stop sending graph data command
@@ -358,7 +360,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	public void onResume() {
 		super.onResume();
 		if (D)
-			Log.e(TAG, "+ ON RESUME +");
+			Log.d(TAG, "+ ON RESUME +");
 		// Restore the sensor listeners when user resumes the application.
 		mSensorFusion.initListeners();
 	}
@@ -444,7 +446,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		if (D)
-			Log.e(TAG, "onPrepareOptionsMenu");
+			Log.d(TAG, "onPrepareOptionsMenu");
 		MenuItem menuItem = menu.findItem(R.id.menu_connect); // Find item
 		if (mChatService == null)
 			menuItem.setIcon(R.drawable.device_access_bluetooth);
@@ -460,8 +462,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if (D)
-			Log.e(TAG, "onCreateOptionsMenu");
+			Log.d(TAG, "onCreateOptionsMenu");
 		getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
+
+        if (!Upload.flavor.equals(("Usb")))
+            menu.removeItem(R.id.menu_upload);
+
 		return true;
 	}
 
@@ -473,11 +479,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				Intent serverIntent = new Intent(this, DeviceListActivity.class);
 				startActivityForResult(serverIntent,REQUEST_CONNECT_DEVICE);
 				return true;
-			case R.id.settings:
+			case R.id.menu_settings:
 				// Open up the settings dialog
 				SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
 				dialogFragment.show(getSupportFragmentManager(), null);
 				return true;
+            case R.id.menu_upload:
+                Upload.uploadFirmware();
+                return true;
 			case android.R.id.home:
 				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
 				startActivity(browserIntent);
@@ -491,12 +500,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         return activity.getWindowManager().getDefaultDisplay().getRotation();
     }
 
-	private void showToast(String message, int duration) {
+	public static void showToast(String message, int duration) {
         if (duration != Toast.LENGTH_SHORT && duration != Toast.LENGTH_LONG)
             throw new IllegalArgumentException();
         if (mToast != null)
 			mToast.cancel(); // Close the toast if it's already open
-		mToast = Toast.makeText(getApplicationContext(), message, duration);
+		mToast = Toast.makeText(context, message, duration);
 		mToast.show();
 	}
 
@@ -592,7 +601,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 				break;
 			case MESSAGE_RETRY:
 				if (D)
-					Log.e(TAG, "MESSAGE_RETRY");
+					Log.d(TAG, "MESSAGE_RETRY");
 				mBalanduinoActivity.connectDevice(null, true);
 				break;
 			}

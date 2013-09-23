@@ -19,7 +19,7 @@ A video filmed with a GoPro mounted on the robot can be seen here: <http://www.y
 
 # Screenshots
 
-[![Screenshots](http://www.tkjelectronics.com/uploads/Balanduino_Screenshots.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
+[![Screenshots](http://wiki.balanduino.net/images/2/25/Balanduino_Android_screenshots.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
 
 # How to build
 
@@ -30,5 +30,6 @@ This will automatically include the following third party libraries:
 * [ActionBarSherlock](https://github.com/JakeWharton/ActionBarSherlock)
 * [Android ViewPagerIndicator](https://github.com/Lauszus/Android-ViewPagerIndicator)
 * [GraphView library](https://github.com/Lauszus/GraphView)
+* [Physicaloid Library](https://github.com/Lauszus/PhysicaloidLibrary)
 
 For more information send me an email at <a href="mailto:kristianl@tkjelectronics.dk">kristianl@tkjelectronics.dk</a>.

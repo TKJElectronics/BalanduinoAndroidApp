@@ -1,8 +1,7 @@
-import java.util.regex.Matcher
 import java.util.regex.Pattern
 
-project.ext.set('versionName', '0.5b')
-project.ext.set('versionCode', 5)
+project.ext.set('versionName', '0.5.0')
+project.ext.set('versionCode', '050')
 
 project.ext.set('archivesBaseName', "BalanduinoAndroidApp-" + project.versionName)
 
@@ -15,7 +14,7 @@ buildscript {
     }
 }
 
-task update { // Task to update accessory filter and manifest to match version number and code
+task update { // Task to update version in accessory filter
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
 
@@ -27,45 +26,28 @@ task update { // Task to update accessory filter and manifest to match version n
     accessoryText = matcherVersionName.replaceAll("version=\"" + project.versionName + "\"")
 
     accessoryFile.write(firstLine + accessoryText)
-
-
-    def manifestFile = file("AndroidManifest.xml")
-    def manifestText = manifestFile.getText()
-
-    println "Updating AndroidManifest versionName to: " + project.versionName
-    matcherVersionName = Pattern.compile("android:versionName=\"(.*?)\"").matcher(manifestText)
-    manifestText = matcherVersionName.replaceAll("android:versionName=\"" + project.versionName + "\"")
-
-    println "Updating AndroidManifest versionCode to: " + project.versionCode
-    def matcherVersionCode = Pattern.compile("android:versionCode=\"(.*?)\"").matcher(manifestText)
-    manifestText = matcherVersionCode.replaceAll("android:versionCode=\"" + project.versionCode + "\"")
-
-    manifestFile.write(manifestText)
 }
 
 apply plugin: 'android'
 
-repositories {
-    mavenCentral()
-    maven { url 'libs' }
-}
-
-dependencies {
-    compile 'com.android.support:support-v4:18.0.+'
-    compile 'com.jjoe64.graphview:graphview:3.1'
-    compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
-    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
-}
-
 android {
     compileSdkVersion 18
-    buildToolsVersion '18.0.1'
+    buildToolsVersion '18.1.0'
 
     defaultConfig {
-        minSdkVersion 10
         targetSdkVersion 18
         versionName = project.versionName
-        versionCode = project.versionCode
+    }
+
+    productFlavors {
+        basic {
+            minSdkVersion 10
+            versionCode = Integer.parseInt('1000' + project.versionCode)
+        }
+        usb {
+            minSdkVersion 12
+            versionCode = Integer.parseInt('1200' + project.versionCode)
+        }
     }
 
     signingConfigs {
@@ -84,7 +66,28 @@ android {
             java.srcDirs = ['src']
             res.srcDirs = ['res']
         }
+        basic {
+            java.srcDirs = ['flavors/basic/src']
+        }
+        usb {
+            manifest.srcFile 'flavors/usb/AndroidManifest.xml'
+            java.srcDirs = ['flavors/usb/src']
+            res.srcDirs = ['flavors/usb/res']
+        }
     }
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'libs' }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:18.0.+'
+    compile 'com.jjoe64.graphview:graphview:3.1'
+    compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
+    compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
+    usbCompile 'com.physicaloid:physicaloid:1.0' // Only supported on API level above 12
 }
 
 // These values are all set in my global gradle.properties file

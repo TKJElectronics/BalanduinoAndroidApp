@@ -76,4 +76,5 @@
     <!-- Options Menu -->
     <string name="connect">Connect</string>
     <string name="settings">Settings</string>
+    <string name="upload">Upload</string>
 </resources>
