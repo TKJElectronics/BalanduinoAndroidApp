@@ -16,8 +16,6 @@
 
 package com.tkjelectronics.balanduino;
 
-import java.util.Set;
-
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -37,6 +35,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.Set;
+
 /**
  * This Activity appears as a dialog. It lists any paired devices and devices
  * detected in the area after discovery. When a device is chosen by the user,
@@ -49,8 +49,8 @@ public class DeviceListActivity extends Activity {
 	private static final boolean D = BalanduinoActivity.D;
 
 	// Return Intent extra
-	public static String EXTRA_DEVICE_ADDRESS = "device_address";
-	public static String EXTRA_NEW_DEVICE;
+	public static final String EXTRA_DEVICE_ADDRESS = "device_address";
+	public static final String EXTRA_NEW_DEVICE = "new_device";
 	public static boolean new_device;
 
 	// Member fields
