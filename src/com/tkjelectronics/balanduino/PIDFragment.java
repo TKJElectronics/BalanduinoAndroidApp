@@ -138,7 +138,7 @@ public class PIDFragment extends SherlockFragment {
                         oldKpValue = newKpValue;
                         mHandler.post(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setPValue + newKpValue + ";").getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setPValue + newKpValue + ";");
                             }
                         });
                         counter = 25;
@@ -147,7 +147,7 @@ public class PIDFragment extends SherlockFragment {
                         oldKiValue = newKiValue;
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setIValue + newKiValue + ";").getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setIValue + newKiValue + ";");
                             }
                         }, counter); // Wait before sending the message
                         counter += 25;
@@ -156,7 +156,7 @@ public class PIDFragment extends SherlockFragment {
                         oldKdValue = newKdValue;
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setDValue + newKdValue + ";").getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setDValue + newKdValue + ";");
                             }
                         }, counter); // Wait before sending the message
                         counter += 25;
@@ -165,7 +165,7 @@ public class PIDFragment extends SherlockFragment {
                         oldTargetAngleValue = newTargetAngleValue;
                         mHandler.postDelayed(new Runnable() {
                             public void run() {
-                                BalanduinoActivity.mChatService.write((BalanduinoActivity.setTargetAngle + newTargetAngleValue + ";").getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.setTargetAngle + newTargetAngleValue + ";");
                             }
                         }, counter); // Wait before sending the message
                         counter += 25;
@@ -173,7 +173,7 @@ public class PIDFragment extends SherlockFragment {
 					if (counter != 0) {
 						mHandler.postDelayed(new Runnable() {
 							public void run() {
-								BalanduinoActivity.mChatService.write(BalanduinoActivity.getPIDValues.getBytes());
+								BalanduinoActivity.mChatService.write(BalanduinoActivity.getPIDValues);
 							}
 						}, counter); // Wait before sending the message
 						if (D)

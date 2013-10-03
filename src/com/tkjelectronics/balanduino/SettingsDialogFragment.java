@@ -113,7 +113,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			public void onClick(View v) {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-						BalanduinoActivity.mChatService.write(BalanduinoActivity.restoreDefaultValues.getBytes());
+						BalanduinoActivity.mChatService.write(BalanduinoActivity.restoreDefaultValues);
 						Toast.makeText(getSherlockActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
 						dismiss();
 					}
@@ -126,7 +126,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			public void onClick(View v) {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendPairWithWii.getBytes());
+						BalanduinoActivity.mChatService.write(BalanduinoActivity.sendPairWithWii);
 						dismiss();
 					}
 				}
@@ -156,8 +156,8 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 						BalanduinoActivity.backToSpot = backToSpot;
 						if (BalanduinoActivity.mChatService != null) {
 							if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-								int val = backToSpot? 1 : 0;
-								BalanduinoActivity.mChatService.write((BalanduinoActivity.setMaxAngle + Integer.toString(maxAngle) + ";" + BalanduinoActivity.setMaxTurning + Integer.toString(maxTurning) + ";" + BalanduinoActivity.setBackToSpot + Integer.toString(val) + ";" + BalanduinoActivity.getSettings).getBytes());
+								int val = backToSpot ? 1 : 0;
+								BalanduinoActivity.mChatService.write(BalanduinoActivity.setMaxAngle + maxAngle + ";" + BalanduinoActivity.setMaxTurning + maxTurning + ";" + BalanduinoActivity.setBackToSpot + val + ";" + BalanduinoActivity.getSettings);
 							}
 						}
 					}
