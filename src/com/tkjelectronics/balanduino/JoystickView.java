@@ -3,9 +3,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
-
  * http://www.apache.org/licenses/LICENSE-2.0
-
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,19 +24,19 @@ import android.view.View;
 
 public class JoystickView extends View {
     private OnJoystickChangeListener listener;
-    
+
     final int holo_blue_dark = 0xff0099cc;
     final int buttonGray = 0xFF5C5C5C;
 
     private int buttonColor = buttonGray;
-    
+
     private float x, y; // These are in the intern coordinates
     private double lastX, lastY; // These are in the extern coordinates
     private float buttonRadius;
     private float joystickRadius = 0;
     private float centerX;
     private float centerY;
-    
+
     Paint p = new Paint();
 
     public JoystickView(Context context) {
@@ -53,7 +51,7 @@ public class JoystickView extends View {
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square        
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square
     }
 
     @Override
@@ -66,7 +64,7 @@ public class JoystickView extends View {
         	x = centerX;
         	y = centerY;
         }
-        
+
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(3);
         p.setColor(buttonGray);
@@ -77,7 +75,7 @@ public class JoystickView extends View {
         p.setStyle(Paint.Style.FILL);
         canvas.drawCircle(x, y, buttonRadius, p);
     }
-    
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
     	x = event.getX();
@@ -120,19 +118,19 @@ public class JoystickView extends View {
     	}
     	return false;
     }
-    
+
     public double getXValue() {
     	return (x-centerX)/joystickRadius; // X-axis is positive at the right side
     }
-    
+
     public double getYValue() {
     	return -((y-centerY)/joystickRadius); // Y-axis should be positive upwards
-    }   
+    }
 
     public void setOnJoystickChangeListener(OnJoystickChangeListener listener) {
     	this.listener = listener;
     }
-    
+
     public interface OnJoystickChangeListener {
     	public void setOnTouchListener(double xValue, double yValue);
     	public void setOnMovedListener(double xValue, double yValue);

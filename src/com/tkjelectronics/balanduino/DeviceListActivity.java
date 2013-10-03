@@ -60,7 +60,7 @@ public class DeviceListActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// Setup the window
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);		
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.device_list);
 
@@ -156,7 +156,7 @@ public class DeviceListActivity extends Activity {
 	private void doDiscovery() {
 		if (D)
 			Log.d(TAG, "doDiscovery()");
-		
+
 		// Indicate scanning in the title
 		setProgressBarIndeterminateVisibility(true);
 		setTitle(R.string.scanning);
@@ -184,7 +184,7 @@ public class DeviceListActivity extends Activity {
 
 			String address = info.substring(info.length() - 17);
             new_device = av.getId() == R.id.new_devices;
-			
+
 			// Create the result Intent and include the MAC address
 			Intent intent = new Intent();
 			intent.putExtra(EXTRA_DEVICE_ADDRESS, address);

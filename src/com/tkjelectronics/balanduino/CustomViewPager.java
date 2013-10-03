@@ -14,7 +14,7 @@
  * Kristian Lauszus, TKJ Electronics
  * Web      :  http://www.tkjelectronics.com
  * e-mail   :  kristianl@tkjelectronics.com
- * 
+ *
  ************************************************************************************/
 
 /*
