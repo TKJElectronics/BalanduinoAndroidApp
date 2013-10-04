@@ -61,6 +61,9 @@ public class Upload {
     private final static String fileUrl = "https://raw.github.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino.hex";
     private static String fileName;
 
+    /**
+     * Closes the serial communication.
+     */
     public static void close() {
         if (mPhysicaloid != null) {
             try {
@@ -72,17 +75,26 @@ public class Upload {
         }
     }
 
-    public static void uploadFirmware() {
-        if (uploading)
-            return;
+    /**
+     * Start the firmware upload.
+     * First it check if the Balanduino is actually connected and then check the permission.
+     * If permission is not granted it will ask for permission.
+     * After this it will download the firmware and then upload it to the Balanduino via the USB Host port.
+     * @return Returns true if a new upload has started.
+     */
+    public static boolean uploadFirmware() {
+        if (uploading) {
+            BalanduinoActivity.showToast("Upload is already in progress", Toast.LENGTH_SHORT);
+            return false;
+        }
 
         // Check permission before trying to do anything else
         UsbManager mUsbManager = (UsbManager) BalanduinoActivity.activity.getSystemService(BalanduinoActivity.USB_SERVICE);
         if (mUsbManager == null)
-            return;
+            return false;
         Map<String, UsbDevice> map = mUsbManager.getDeviceList();
         if (map == null)
-            return;
+            return false;
         if (D)
             Log.i(TAG, "UsbDevices: " + map);
 
@@ -103,8 +115,28 @@ public class Upload {
                 }
             }
         }
-        if (!deviceFound)
+        if (!deviceFound) {
             BalanduinoActivity.showToast("Please connect the Balanduino to the USB Host port", Toast.LENGTH_SHORT);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if USB Host is available on the device.
+     * I am not sure if this is actually needed or not.
+     * @return Return true if USB Host is available.
+     */
+    public static boolean isUsbHostAvailable() {
+        UsbManager mUsbManager = (UsbManager) BalanduinoActivity.activity.getSystemService(BalanduinoActivity.USB_SERVICE);
+        if (mUsbManager == null)
+            return false;
+        Map<String, UsbDevice> map = mUsbManager.getDeviceList();
+        if (map == null)
+            return false;
+
+        return true;
     }
 
     private static final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
@@ -174,7 +206,7 @@ public class Upload {
         }
     }
 
-    static UploadCallBack mUploadCallback = new UploadCallBack() {
+    private static UploadCallBack mUploadCallback = new UploadCallBack() {
         @Override
         public void onUploading(int value) {
             uploading = true;

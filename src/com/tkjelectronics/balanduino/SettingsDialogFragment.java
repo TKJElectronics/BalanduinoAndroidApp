@@ -34,11 +34,8 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockDialogFragment;
 
 public class SettingsDialogFragment extends SherlockDialogFragment {
-	Button mRestoreButton;
-	Button mPairButton;
-	int maxAngle;
-	int maxTurning;
-	boolean backToSpot;
+	private int maxAngle, maxTurning;
+	private boolean backToSpot;
 
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -59,7 +56,7 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			}
 		});
 
-		if(SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide seekbar and text
+		if (SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide seekbar and text
 			view.findViewById(R.id.seekText).setVisibility(View.GONE);
 			view.findViewById(R.id.coefficientLayout).setVisibility(View.GONE);
 			mSeekbarCoefficient.setVisibility(View.GONE);
@@ -107,20 +104,32 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 			}
 		});
 
-		mRestoreButton = (Button) view.findViewById(R.id.restore);
+		if (Upload.isUsbHostAvailable()) {
+            Button mUploadButton = (Button) view.findViewById(R.id.uploadButton);
+            mUploadButton.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+                    if (Upload.uploadFirmware()) // Check if a new upload was started
+                        dismiss();
+                }
+            });
+        } else
+			view.findViewById(R.id.uploadFirmware).setVisibility(View.GONE);
+
+		Button mRestoreButton = (Button) view.findViewById(R.id.restoreButton);
 		mRestoreButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				if (BalanduinoActivity.mChatService != null) {
 					if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
 						BalanduinoActivity.mChatService.write(BalanduinoActivity.restoreDefaultValues);
-						Toast.makeText(getSherlockActivity(),"Default values have been restored", Toast.LENGTH_SHORT).show();
+						Toast.makeText(getSherlockActivity(), "Default values have been restored", Toast.LENGTH_SHORT).show();
 						dismiss();
 					}
 				}
 			}
 		});
-		mPairButton = (Button) view.findViewById(R.id.pairButton);
+		Button mPairButton = (Button) view.findViewById(R.id.pairButton);
 		mPairButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
