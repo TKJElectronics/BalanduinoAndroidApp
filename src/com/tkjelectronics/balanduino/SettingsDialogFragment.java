@@ -105,15 +105,15 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 		});
 
 		if (Upload.isUsbHostAvailable()) {
-            Button mUploadButton = (Button) view.findViewById(R.id.uploadButton);
-            mUploadButton.setOnClickListener(new OnClickListener() {
+			Button mUploadButton = (Button) view.findViewById(R.id.uploadButton);
+			mUploadButton.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
-                    if (Upload.uploadFirmware()) // Check if a new upload was started
-                        dismiss();
-                }
-            });
-        } else
+					if (Upload.uploadFirmware()) // Check if a new upload was started
+						dismiss();
+				}
+			});
+		} else
 			view.findViewById(R.id.uploadFirmware).setVisibility(View.GONE);
 
 		Button mRestoreButton = (Button) view.findViewById(R.id.restoreButton);
