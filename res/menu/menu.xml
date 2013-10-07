@@ -1,13 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/menu_connect"
+    <item
+        android:id="@+id/menu_connect"
         android:icon="@drawable/device_access_bluetooth"
         android:title="@string/connect"
         android:showAsAction="ifRoom|withText" />
-    <item android:id="@+id/menu_settings"
+    <item
+        android:id="@+id/menu_settings"
         android:icon="@drawable/ic_menu_preferences"
         android:title="@string/settings"
         android:showAsAction="ifRoom|withText" />
-    <item android:id="@+id/menu_upload"
+    <item
+        android:id="@+id/menu_upload"
         android:icon="@drawable/ic_menu_upload"
         android:title="@string/upload"
         android:showAsAction="ifRoom|withText" />

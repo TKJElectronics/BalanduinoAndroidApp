@@ -26,29 +26,31 @@ import android.view.View;
 
 public class JoystickView extends View {
     private OnJoystickChangeListener listener;
-    
+
     final int holo_blue_dark = 0xff0099cc;
     final int buttonGray = 0xFF5C5C5C;
 
     private int buttonColor = buttonGray;
-    
+
     private float x, y; // These are in the intern coordinates
     private double lastX, lastY; // These are in the extern coordinates
     private float buttonRadius;
     private float joystickRadius = 0;
     private float centerX;
     private float centerY;
-    
+
     Paint p = new Paint();
 
     public JoystickView(Context context) {
         super(context);
     }
+
     public JoystickView(Context context, AttributeSet attrs) {
-    	super(context, attrs);
+        super(context, attrs);
     }
+
     public JoystickView(Context context, AttributeSet attrs, int defStyle) {
-    	super(context, attrs, defStyle);
+        super(context, attrs, defStyle);
     }
 
     @Override
@@ -59,33 +61,33 @@ public class JoystickView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         if (joystickRadius == 0) { // Check if it has been set yet
-        	joystickRadius = (float)getWidth()/3;
-        	buttonRadius = joystickRadius/2;
-        	centerX = (float)getWidth()/2;
-        	centerY = (float)getHeight()/2;
-        	x = centerX;
-        	y = centerY;
+            joystickRadius = (float) getWidth() / 3;
+            buttonRadius = joystickRadius / 2;
+            centerX = (float) getWidth() / 2;
+            centerY = (float) getHeight() / 2;
+            x = centerX;
+            y = centerY;
         }
-        
+
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(3);
         p.setColor(buttonGray);
         canvas.drawCircle(centerX, centerY, joystickRadius, p);
-        canvas.drawCircle(centerX, centerY, joystickRadius/2, p);
+        canvas.drawCircle(centerX, centerY, joystickRadius / 2, p);
 
         p.setColor(buttonColor);
         p.setStyle(Paint.Style.FILL);
         canvas.drawCircle(x, y, buttonRadius, p);
     }
-    
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-    	x = event.getX();
-    	y = event.getY();
-        float abs = (float) Math.sqrt((x-centerX)*(x-centerX) + (y-centerY)*(y-centerY));
+        x = event.getX();
+        y = event.getY();
+        float abs = (float) Math.sqrt((x - centerX) * (x - centerX) + (y - centerY) * (y - centerY));
         if (abs > joystickRadius) {
-        	x = ((x-centerX)*joystickRadius/abs + centerX);
-        	y = ((y-centerY)*joystickRadius/abs + centerY);
+            x = ((x - centerX) * joystickRadius / abs + centerX);
+            y = ((y - centerY) * joystickRadius / abs + centerY);
         }
 
         if (lastX == 0 && lastY == 0 && (getXValue() > 0.50 || getXValue() < -0.50 || getYValue() > 0.50 || getYValue() < -0.50)) {
@@ -98,13 +100,13 @@ public class JoystickView extends View {
 
         invalidate();
 
-    	if (listener != null) {
+        if (listener != null) {
             int actionMask = event.getActionMasked();
             if (actionMask == MotionEvent.ACTION_DOWN) {
                 buttonColor = holo_blue_dark;
                 listener.setOnTouchListener(getXValue(), getYValue());
                 return true;
-    	    } else if (actionMask == MotionEvent.ACTION_MOVE) {
+            } else if (actionMask == MotionEvent.ACTION_MOVE) {
                 buttonColor = holo_blue_dark;
                 listener.setOnMovedListener(getXValue(), getYValue());
                 return true;
@@ -114,28 +116,30 @@ public class JoystickView extends View {
                 y = centerY;
                 lastX = 0;
                 lastY = 0;
-                listener.setOnReleaseListener(0,0);
+                listener.setOnReleaseListener(0, 0);
                 return true;
             }
-    	}
-    	return false;
+        }
+        return false;
     }
-    
+
     public double getXValue() {
-    	return (x-centerX)/joystickRadius; // X-axis is positive at the right side
+        return (x - centerX) / joystickRadius; // X-axis is positive at the right side
     }
-    
+
     public double getYValue() {
-    	return -((y-centerY)/joystickRadius); // Y-axis should be positive upwards
-    }   
+        return -((y - centerY) / joystickRadius); // Y-axis should be positive upwards
+    }
 
     public void setOnJoystickChangeListener(OnJoystickChangeListener listener) {
-    	this.listener = listener;
+        this.listener = listener;
     }
-    
+
     public interface OnJoystickChangeListener {
-    	public void setOnTouchListener(double xValue, double yValue);
-    	public void setOnMovedListener(double xValue, double yValue);
-    	public void setOnReleaseListener(double xValue, double yValue);
+        public void setOnTouchListener(double xValue, double yValue);
+
+        public void setOnMovedListener(double xValue, double yValue);
+
+        public void setOnReleaseListener(double xValue, double yValue);
     }
 }

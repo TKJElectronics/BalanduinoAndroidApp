@@ -34,96 +34,104 @@ import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class PIDFragment extends SherlockFragment {
-	private static final String TAG = "PIDFragment";
-	private static final boolean D = BalanduinoActivity.D;
+    private static final String TAG = "PIDFragment";
+    private static final boolean D = BalanduinoActivity.D;
 
-	static Button mButton;
+    static Button mButton;
     static TextView mKpView, mKiView, mKdView, mTargetAngleView, mTargetAngleText, mTargetAngleSeekBarText;
-	static SeekBar mKpSeekBar, mKiSeekBar, mKdSeekBar, mTargetAngleSeekBar;
+    static SeekBar mKpSeekBar, mKiSeekBar, mKdSeekBar, mTargetAngleSeekBar;
     static TextView mKpSeekBarValue, mKiSeekBarValue, mKdSeekBarValue, mTargetAngleSeekBarValue;
     static RadioButton radio1, radio2;
 
     float newKpValue, newKiValue, newKdValue, newTargetAngleValue;
     float oldKpValue, oldKiValue, oldKdValue, oldTargetAngleValue;
 
-	Handler mHandler = new Handler();
-	int counter = 0;
+    Handler mHandler = new Handler();
+    int counter = 0;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.pid, container, false);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.pid, container, false);
 
-		mKpView = (TextView) v.findViewById(R.id.textView1);
-		mKiView = (TextView) v.findViewById(R.id.textView2);
-		mKdView = (TextView) v.findViewById(R.id.textView3);
-		mTargetAngleView = (TextView) v.findViewById(R.id.textView4);
+        mKpView = (TextView) v.findViewById(R.id.textView1);
+        mKiView = (TextView) v.findViewById(R.id.textView2);
+        mKdView = (TextView) v.findViewById(R.id.textView3);
+        mTargetAngleView = (TextView) v.findViewById(R.id.textView4);
         mTargetAngleText = (TextView) v.findViewById(R.id.targetAngleText);
         mTargetAngleSeekBarText = (TextView) v.findViewById(R.id.targetAngleSeekBarText);
 
         mKpSeekBar = (SeekBar) v.findViewById(R.id.KpSeekBar);
         mKpSeekBar.setMax(2000); // 0-20
-        mKpSeekBar.setProgress(mKpSeekBar.getMax()/2);
+        mKpSeekBar.setProgress(mKpSeekBar.getMax() / 2);
         mKpSeekBarValue = (TextView) v.findViewById(R.id.KpValue);
-        mKpSeekBarValue.setText(String.format("%.2f", (float)mKpSeekBar.getMax()/200.0f));
+        mKpSeekBarValue.setText(String.format("%.2f", (float) mKpSeekBar.getMax() / 200.0f));
 
         mKpSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newKpValue = (float)progress/100.0f; // Since the SeekBar can only handle integers, so this is needed
+                newKpValue = (float) progress / 100.0f; // Since the SeekBar can only handle integers, so this is needed
                 mKpSeekBarValue.setText(String.format("%.2f", newKpValue)); // Two decimal places
             }
+
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
         mKiSeekBar = (SeekBar) v.findViewById(R.id.KiSeekBar);
         mKiSeekBar.setMax(2000); // 0-20
-        mKiSeekBar.setProgress(mKiSeekBar.getMax()/2);
+        mKiSeekBar.setProgress(mKiSeekBar.getMax() / 2);
         mKiSeekBarValue = (TextView) v.findViewById(R.id.KiValue);
-        mKiSeekBarValue.setText(String.format("%.2f", (float)mKiSeekBar.getMax()/200.0f));
+        mKiSeekBarValue.setText(String.format("%.2f", (float) mKiSeekBar.getMax() / 200.0f));
 
         mKiSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newKiValue = (float)progress/100.0f; // Since the SeekBar can only handle integers, so this is needed
+                newKiValue = (float) progress / 100.0f; // Since the SeekBar can only handle integers, so this is needed
                 mKiSeekBarValue.setText(String.format("%.2f", newKiValue)); // Two decimal places
             }
+
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
         mKdSeekBar = (SeekBar) v.findViewById(R.id.KdSeekBar);
         mKdSeekBar.setMax(2000); // 0-20
-        mKdSeekBar.setProgress(mKdSeekBar.getMax()/2);
+        mKdSeekBar.setProgress(mKdSeekBar.getMax() / 2);
         mKdSeekBarValue = (TextView) v.findViewById(R.id.KdValue);
-        mKdSeekBarValue.setText(String.format("%.2f", (float)mKdSeekBar.getMax()/200.0f));
+        mKdSeekBarValue.setText(String.format("%.2f", (float) mKdSeekBar.getMax() / 200.0f));
 
         mKdSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newKdValue = (float)progress/100.0f; // Since the SeekBar can only handle integers, so this is needed
+                newKdValue = (float) progress / 100.0f; // Since the SeekBar can only handle integers, so this is needed
                 mKdSeekBarValue.setText(String.format("%.2f", newKdValue)); // Two decimal places
             }
+
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
 
         mTargetAngleSeekBar = (SeekBar) v.findViewById(R.id.TargetAngleSeekBar);
         mTargetAngleSeekBar.setMax(600); // 150-210
-        mTargetAngleSeekBar.setProgress(mTargetAngleSeekBar.getMax()/2);
+        mTargetAngleSeekBar.setProgress(mTargetAngleSeekBar.getMax() / 2);
         mTargetAngleSeekBarValue = (TextView) v.findViewById(R.id.TargetAngleValue);
-        mTargetAngleSeekBarValue.setText(String.format("%.2f", (float)mTargetAngleSeekBar.getMax()/20.0f+150.0f));
+        mTargetAngleSeekBarValue.setText(String.format("%.2f", (float) mTargetAngleSeekBar.getMax() / 20.0f + 150.0f));
 
         mTargetAngleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                newTargetAngleValue = (float)progress/10.0f+150.0f; // It's not possible to set the minimum value either, so we will add a offset
+                newTargetAngleValue = (float) progress / 10.0f + 150.0f; // It's not possible to set the minimum value either, so we will add a offset
                 mTargetAngleSeekBarValue.setText(String.format("%.2f", newTargetAngleValue)); // Two decimal places
             }
+
             public void onStartTrackingTouch(SeekBar seekBar) {
             }
+
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
@@ -139,16 +147,16 @@ public class PIDFragment extends SherlockFragment {
         radio2 = (RadioButton) v.findViewById(R.id.radio2);
         radio2.setOnClickListener(radioOnClickListener);
 
-		mButton = (Button) v.findViewById(R.id.button);
-		mButton.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (BalanduinoActivity.mChatService == null) {
-					if (D)
-						Log.e(TAG, "mChatService == null");
-					return;
-				}
-				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+        mButton = (Button) v.findViewById(R.id.button);
+        mButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (BalanduinoActivity.mChatService == null) {
+                    if (D)
+                        Log.e(TAG, "mChatService == null");
+                    return;
+                }
+                if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
                     if (newKpValue != oldKpValue) {
                         oldKpValue = newKpValue;
                         mHandler.post(new Runnable() {
@@ -200,31 +208,31 @@ public class PIDFragment extends SherlockFragment {
                         }, counter); // Wait before sending the message
                         counter += 25;
                     }
-					if (counter != 0) {
-						mHandler.postDelayed(new Runnable() {
-							public void run() {
+                    if (counter != 0) {
+                        mHandler.postDelayed(new Runnable() {
+                            public void run() {
                                 String getValues = BalanduinoActivity.getPIDValues;
                                 if (radio1.isChecked())
                                     getValues = BalanduinoActivity.getPIDValues;
                                 else if (radio2.isChecked())
                                     getValues = BalanduinoActivity.getEncoderValues;
-								BalanduinoActivity.mChatService.write(getValues);
-							}
-						}, counter); // Wait before sending the message
-						if (D)
-							Log.i(TAG, newKpValue + "," + newKiValue + "," + newKdValue + "," + newTargetAngleValue);
-					}
-					counter = 0; // Reset counter
-				}
-			}
-		});
-		updateView();
-		updateButton();
-		return v;
-	}
+                                BalanduinoActivity.mChatService.write(getValues);
+                            }
+                        }, counter); // Wait before sending the message
+                        if (D)
+                            Log.i(TAG, newKpValue + "," + newKiValue + "," + newKdValue + "," + newTargetAngleValue);
+                    }
+                    counter = 0; // Reset counter
+                }
+            }
+        });
+        updateView();
+        updateButton();
+        return v;
+    }
 
-	public static void updateView() {
-		if (mKpView != null && mKpSeekBar != null && mKpSeekBarValue != null) {
+    public static void updateView() {
+        if (mKpView != null && mKpSeekBar != null && mKpSeekBarValue != null) {
             String Kp = "";
             if (radio1.isChecked() && !BalanduinoActivity.pValue.isEmpty())
                 Kp = BalanduinoActivity.pValue;
@@ -234,9 +242,9 @@ public class PIDFragment extends SherlockFragment {
             if (!Kp.equals("")) {
                 float value = Float.parseFloat(Kp);
                 mKpSeekBarValue.setText(String.format("%.2f", value)); // Two decimal places
-                mKpSeekBar.setProgress((int)(value*100.0f));
+                mKpSeekBar.setProgress((int) (value * 100.0f));
             }
-		}
+        }
         if (mKiView != null && mKiSeekBar != null && mKiSeekBarValue != null) {
             String Ki = "";
             if (radio1.isChecked() && !BalanduinoActivity.iValue.isEmpty())
@@ -247,7 +255,7 @@ public class PIDFragment extends SherlockFragment {
             if (!Ki.equals("")) {
                 float value = Float.parseFloat(Ki);
                 mKiSeekBarValue.setText(String.format("%.2f", value)); // Two decimal places
-                mKiSeekBar.setProgress((int)(value*100.0f));
+                mKiSeekBar.setProgress((int) (value * 100.0f));
             }
         }
         if (mKdView != null && mKdSeekBar != null && mKdSeekBarValue != null) {
@@ -260,7 +268,7 @@ public class PIDFragment extends SherlockFragment {
             if (!Kd.equals("")) {
                 float value = Float.parseFloat(Kd);
                 mKdSeekBarValue.setText(String.format("%.2f", value)); // Two decimal places
-                mKdSeekBar.setProgress((int)(value*100.0f));
+                mKdSeekBar.setProgress((int) (value * 100.0f));
             }
         }
         if (radio1.isChecked()) {
@@ -269,11 +277,11 @@ public class PIDFragment extends SherlockFragment {
             if (mTargetAngleView != null && mTargetAngleSeekBar != null && mTargetAngleSeekBarValue != null && !BalanduinoActivity.targetAngleValue.isEmpty()) {
                 mTargetAngleView.setText(BalanduinoActivity.targetAngleValue);
                 mTargetAngleSeekBarValue.setText(String.format("%.2f", Float.parseFloat(BalanduinoActivity.targetAngleValue))); // Two decimal places
-                mTargetAngleSeekBar.setProgress((int)((Float.parseFloat(BalanduinoActivity.targetAngleValue)-150.0f)*10.0f));
+                mTargetAngleSeekBar.setProgress((int) ((Float.parseFloat(BalanduinoActivity.targetAngleValue) - 150.0f) * 10.0f));
             }
         } else
             setTargetAngleVisibility(View.GONE);
-	}
+    }
 
     private static void setTargetAngleVisibility(int visibility) {
         if (visibility != View.VISIBLE && visibility != View.INVISIBLE && visibility != View.GONE)
@@ -286,23 +294,23 @@ public class PIDFragment extends SherlockFragment {
         mTargetAngleSeekBarText.setVisibility(visibility);
     }
 
-	public static void updateButton() {
-		if (BalanduinoActivity.mChatService != null && mButton != null) {
-			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-				mButton.setText(R.string.updateValues);
-			else
-				mButton.setText(R.string.button);
-		}
-	}
+    public static void updateButton() {
+        if (BalanduinoActivity.mChatService != null && mButton != null) {
+            if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+                mButton.setText(R.string.updateValues);
+            else
+                mButton.setText(R.string.button);
+        }
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		// When the user resumes the view, then set the values again
-		if (BalanduinoActivity.mChatService != null) {
-			if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+    @Override
+    public void onResume() {
+        super.onResume();
+        // When the user resumes the view, then set the values again
+        if (BalanduinoActivity.mChatService != null) {
+            if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
                 updateView();
-			updateButton();
-		}
-	}
+            updateButton();
+        }
+    }
 }
