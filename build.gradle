@@ -18,8 +18,8 @@ task update { // Task to update version in accessory filter
     def accessoryFile = file("res/xml/accessory_filter.xml")
     def accessoryText = accessoryFile.getText()
 
-    def firstLine = accessoryText.substring(0, accessoryText.indexOf('>')+1) // We need to skip the first line in the xml file
-    accessoryText = accessoryText.substring(accessoryText.indexOf('>')+1)
+    def firstLine = accessoryText.substring(0, accessoryText.indexOf('>') + 1) // We need to skip the first line in the xml file
+    accessoryText = accessoryText.substring(accessoryText.indexOf('>') + 1)
 
     println "Updating accessory filter version to: " + project.versionName
     def matcherVersionName = Pattern.compile("version=\"(.*?)\"").matcher(accessoryText)

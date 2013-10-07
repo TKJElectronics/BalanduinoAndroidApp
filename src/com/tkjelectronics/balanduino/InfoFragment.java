@@ -31,21 +31,21 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class InfoFragment extends SherlockFragment {
-	static TextView mAppVersion, mFirmwareVersion, mEepromVersion, mMcu, mBatteryLevel, mRuntime;
-	static ToggleButton mToggleButton;
-	private static Handler mHandler = new Handler();
+    static TextView mAppVersion, mFirmwareVersion, mEepromVersion, mMcu, mBatteryLevel, mRuntime;
+    static ToggleButton mToggleButton;
+    private static Handler mHandler = new Handler();
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
-		View v = inflater.inflate(R.layout.info, container, false);
-		mAppVersion = (TextView) v.findViewById(R.id.appVersion);
-		mFirmwareVersion = (TextView) v.findViewById(R.id.firmwareVersion);
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.info, container, false);
+        mAppVersion = (TextView) v.findViewById(R.id.appVersion);
+        mFirmwareVersion = (TextView) v.findViewById(R.id.firmwareVersion);
         mEepromVersion = (TextView) v.findViewById(R.id.eepromVersion);
-		mMcu = (TextView) v.findViewById(R.id.mcu);
-		mBatteryLevel = (TextView) v.findViewById(R.id.batterylevel);
-		mRuntime = (TextView) v.findViewById(R.id.runtime);
+        mMcu = (TextView) v.findViewById(R.id.mcu);
+        mBatteryLevel = (TextView) v.findViewById(R.id.batterylevel);
+        mRuntime = (TextView) v.findViewById(R.id.runtime);
 
-		mToggleButton = (ToggleButton) v.findViewById(R.id.button);
+        mToggleButton = (ToggleButton) v.findViewById(R.id.button);
         mToggleButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,7 +56,7 @@ public class InfoFragment extends SherlockFragment {
 
                 if (BalanduinoActivity.mChatService != null) {
                     if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.INFO_FRAGMENT)) {
-                        if(((ToggleButton) v).isChecked())
+                        if (((ToggleButton) v).isChecked())
                             BalanduinoActivity.mChatService.write(BalanduinoActivity.statusBegin); // Request data
                         else
                             BalanduinoActivity.mChatService.write(BalanduinoActivity.statusStop); // Stop sending data
@@ -67,41 +67,41 @@ public class InfoFragment extends SherlockFragment {
 
         if (BalanduinoActivity.mChatService != null) {
             if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.INFO_FRAGMENT)) {
-                if(mToggleButton.isChecked())
+                if (mToggleButton.isChecked())
                     BalanduinoActivity.mChatService.write(BalanduinoActivity.statusBegin); // Request data
                 else
                     BalanduinoActivity.mChatService.write(BalanduinoActivity.statusStop); // Stop sending data
             }
         }
 
-		updateView();
-		return v;
-	}
+        updateView();
+        return v;
+    }
 
-	public static void updateView() {
-		if (mAppVersion != null && BalanduinoActivity.appVersion != null)
-			mAppVersion.setText(BalanduinoActivity.appVersion);
-		if (mFirmwareVersion != null && BalanduinoActivity.firmwareVersion != null)
-			mFirmwareVersion.setText(BalanduinoActivity.firmwareVersion);
+    public static void updateView() {
+        if (mAppVersion != null && BalanduinoActivity.appVersion != null)
+            mAppVersion.setText(BalanduinoActivity.appVersion);
+        if (mFirmwareVersion != null && BalanduinoActivity.firmwareVersion != null)
+            mFirmwareVersion.setText(BalanduinoActivity.firmwareVersion);
         if (mEepromVersion != null && BalanduinoActivity.eepromVersion != null)
             mEepromVersion.setText(BalanduinoActivity.eepromVersion);
-		if (mMcu != null && BalanduinoActivity.mcu != null)
-			mMcu.setText(BalanduinoActivity.mcu);
-		if (mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)
-			mBatteryLevel.setText(BalanduinoActivity.batteryLevel + 'V');
-		if (mRuntime != null && BalanduinoActivity.runtime != 0) {
-			String minutes = Integer.toString((int)Math.floor(BalanduinoActivity.runtime));
-			String seconds = Integer.toString((int)(BalanduinoActivity.runtime%1/(1.0/60.0)));
-			mRuntime.setText(minutes + " min " + seconds + " sec");
-		}
-	}
+        if (mMcu != null && BalanduinoActivity.mcu != null)
+            mMcu.setText(BalanduinoActivity.mcu);
+        if (mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)
+            mBatteryLevel.setText(BalanduinoActivity.batteryLevel + 'V');
+        if (mRuntime != null && BalanduinoActivity.runtime != 0) {
+            String minutes = Integer.toString((int) Math.floor(BalanduinoActivity.runtime));
+            String seconds = Integer.toString((int) (BalanduinoActivity.runtime % 1 / (1.0 / 60.0)));
+            mRuntime.setText(minutes + " min " + seconds + " sec");
+        }
+    }
 
-	@Override
-	public void onResume() {
-		super.onResume();
-		updateView(); // When the user resumes the view, then update the values
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateView(); // When the user resumes the view, then update the values
 
-		if (mToggleButton.isChecked())
+        if (mToggleButton.isChecked())
             mToggleButton.setText("Stop");
         else
             mToggleButton.setText("Start");
@@ -114,5 +114,5 @@ public class InfoFragment extends SherlockFragment {
                     BalanduinoActivity.mChatService.write(BalanduinoActivity.statusStop); // Stop sending data
             }
         }
-	}
+    }
 }

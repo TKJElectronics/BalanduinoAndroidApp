@@ -31,18 +31,18 @@ import com.actionbarsherlock.app.SherlockFragment;
  * of the sections/tabs/pages.
  */
 public class ViewPagerAdapter extends FragmentPagerAdapter {
-	public static final int IMU_FRAGMENT = 0;
-	public static final int JOYSTICK_FRAGMENT = 1;
-	public static final int GRAPH_FRAGMENT = 2;
-	public static final int PID_FRAGMENT = 3;
-	public static final int INFO_FRAGMENT = 4;
+    public static final int IMU_FRAGMENT = 0;
+    public static final int JOYSTICK_FRAGMENT = 1;
+    public static final int GRAPH_FRAGMENT = 2;
+    public static final int PID_FRAGMENT = 3;
+    public static final int INFO_FRAGMENT = 4;
 
     Context context;
 
-	public ViewPagerAdapter(Context context, FragmentManager fm) {
-		super(fm);
+    public ViewPagerAdapter(Context context, FragmentManager fm) {
+        super(fm);
         this.context = context;
-	}
+    }
 
     @Override
     public float getPageWidth(int position) {
@@ -52,44 +52,44 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
             return 1.0f;
     }
 
-	@Override
-	public SherlockFragment getItem(int position) {
-		switch (position) {
-		case 0:
-			return new ImuFragment();
-		case 1:
-			return new JoystickFragment();
-		case 2:
-			return new GraphFragment();
-		case 3:
-			return new PIDFragment();
-		case 4:
-			return new InfoFragment();
-		default:
-			return null;
-		}
-	}
+    @Override
+    public SherlockFragment getItem(int position) {
+        switch (position) {
+            case 0:
+                return new ImuFragment();
+            case 1:
+                return new JoystickFragment();
+            case 2:
+                return new GraphFragment();
+            case 3:
+                return new PIDFragment();
+            case 4:
+                return new InfoFragment();
+            default:
+                return null;
+        }
+    }
 
-	@Override
-	public int getCount() {
-		// Return number of tabs
-		return 5;
-	}
+    @Override
+    public int getCount() {
+        // Return number of tabs
+        return 5;
+    }
 
-	@Override
-	public CharSequence getPageTitle(int position) {
-		switch (position) {
-		case 0:
-			return "IMU";
-		case 1:
-			return "Joystick";
-		case 2:
-			return "Graph";
-		case 3:
-			return "PID";
-		case 4:
-			return "Info";
-		}
-		return null;
-	}
+    @Override
+    public CharSequence getPageTitle(int position) {
+        switch (position) {
+            case 0:
+                return "IMU";
+            case 1:
+                return "Joystick";
+            case 2:
+                return "Graph";
+            case 3:
+                return "PID";
+            case 4:
+                return "Info";
+        }
+        return null;
+    }
 }
