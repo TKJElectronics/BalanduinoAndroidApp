@@ -27,6 +27,7 @@ public class SquareLinearLayout extends LinearLayout {
     public SquareLinearLayout(Context context) {
         super(context);
     }
+
     public SquareLinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

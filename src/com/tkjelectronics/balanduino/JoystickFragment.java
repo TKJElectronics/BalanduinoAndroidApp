@@ -19,10 +19,6 @@
 
 package com.tkjelectronics.balanduino;
 
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Locale;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.LayoutInflater;
@@ -32,30 +28,34 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockFragment;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class JoystickFragment extends SherlockFragment implements JoystickView.OnJoystickChangeListener {
-	DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
-	JoystickView mJoystick;
-	TextView mText1;
-	private Handler mHandler = new Handler();
-	private Runnable mRunnable;
+    DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
+    JoystickView mJoystick;
+    TextView mText1;
+    private Handler mHandler = new Handler();
+    private Runnable mRunnable;
 
-	private double xValue, yValue;
-	private boolean joystickReleased;
+    private double xValue, yValue;
+    private boolean joystickReleased;
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.joystick, container, false);
 
-		mJoystick = (JoystickView) v.findViewById(R.id.joystick);
-		mJoystick.setOnJoystickChangeListener(this);
+        mJoystick = (JoystickView) v.findViewById(R.id.joystick);
+        mJoystick.setOnJoystickChangeListener(this);
 
-		mText1 = (TextView) v.findViewById(R.id.textView1);
-		mText1.setText(R.string.defaultJoystickValue);
+        mText1 = (TextView) v.findViewById(R.id.textView1);
+        mText1.setText(R.string.defaultJoystickValue);
 
         BalanduinoActivity.joystickReleased = true;
 
-		return v;
-	}
+        return v;
+    }
 
     private void newData(double xValue, double yValue, boolean joystickReleased) {
         if (xValue == 0 && yValue == 0)
@@ -70,69 +70,74 @@ public class JoystickFragment extends SherlockFragment implements JoystickView.O
     }
 
     @Override
-	public void setOnTouchListener(double xValue, double yValue) {
-        newData(xValue,yValue,false);
-	}
-    @Override
-	public void setOnMovedListener(double xValue, double yValue) {
-        newData(xValue,yValue,false);
-	}
-    @Override
-	public void setOnReleaseListener(double xValue, double yValue) {
-        newData(xValue,yValue,true);
-	}
+    public void setOnTouchListener(double xValue, double yValue) {
+        newData(xValue, yValue, false);
+    }
 
-	@Override
-	public void onStart() {
-		super.onStart();
-		mJoystick.invalidate();
-	}
-	@Override
-	public void onResume() {
-		super.onResume();
-		mJoystick.invalidate();
+    @Override
+    public void setOnMovedListener(double xValue, double yValue) {
+        newData(xValue, yValue, false);
+    }
+
+    @Override
+    public void setOnReleaseListener(double xValue, double yValue) {
+        newData(xValue, yValue, true);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mJoystick.invalidate();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mJoystick.invalidate();
         BalanduinoActivity.joystickReleased = true;
 
-		mRunnable = new Runnable() {
-			@Override
-			public void run() {
+        mRunnable = new Runnable() {
+            @Override
+            public void run() {
                 mHandler.postDelayed(this, 150); // Send data every 150ms
-				if (BalanduinoActivity.mChatService == null)
-					return;
-				if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) {
+                if (BalanduinoActivity.mChatService == null)
+                    return;
+                if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.JOYSTICK_FRAGMENT)) {
                     if (!getResources().getBoolean(R.bool.isTablet) || !BalanduinoActivity.buttonState) { // Don't send stop if the button in the IMU fragment is pressed
-                        if(joystickReleased || (xValue == 0 && yValue == 0))
+                        if (joystickReleased || (xValue == 0 && yValue == 0))
                             BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop);
                         else {
                             String message = BalanduinoActivity.sendJoystickValues + d.format(xValue) + ',' + d.format(yValue) + ";";
                             BalanduinoActivity.mChatService.write(message);
                         }
                     }
-				}
-			}
-		};
-		mHandler.postDelayed(mRunnable, 150); // Send data every 150ms
-	}
+                }
+            }
+        };
+        mHandler.postDelayed(mRunnable, 150); // Send data every 150ms
+    }
 
-	@Override
-	public void onPause() {
-		super.onPause();
-		mJoystick.invalidate();
+    @Override
+    public void onPause() {
+        super.onPause();
+        mJoystick.invalidate();
         BalanduinoActivity.joystickReleased = true;
-		CustomViewPager.setPagingEnabled(true);
-		mHandler.removeCallbacks(mRunnable);
-	}
-	@Override
-	public void onDestroyView() {
-		super.onDestroyView();
-		mJoystick.invalidate();
+        CustomViewPager.setPagingEnabled(true);
+        mHandler.removeCallbacks(mRunnable);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mJoystick.invalidate();
         BalanduinoActivity.joystickReleased = true;
-	}
-	@Override
-	public void onStop() {
-		super.onStop();
-		mJoystick.invalidate();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mJoystick.invalidate();
         BalanduinoActivity.joystickReleased = true;
-		CustomViewPager.setPagingEnabled(true);
-	}
+        CustomViewPager.setPagingEnabled(true);
+    }
 }

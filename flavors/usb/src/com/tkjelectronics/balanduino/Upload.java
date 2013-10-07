@@ -80,6 +80,7 @@ public class Upload {
      * First it check if the Balanduino is actually connected and then check the permission.
      * If permission is not granted it will ask for permission.
      * After this it will download the firmware and then upload it to the Balanduino via the USB Host port.
+     *
      * @return Returns true if a new upload has started.
      */
     public static boolean uploadFirmware() {
@@ -126,6 +127,7 @@ public class Upload {
     /**
      * Check if USB Host is available on the device.
      * I am not sure if this is actually needed or not.
+     *
      * @return Return true if USB Host is available.
      */
     public static boolean isUsbHostAvailable() {
@@ -147,8 +149,7 @@ public class Upload {
                         if (D)
                             Log.i(TAG, "Permission allowed");
                         showDialog();
-                    }
-                    else {
+                    } else {
                         if (D)
                             Log.e(TAG, "Permission denied");
                     }
@@ -286,7 +287,7 @@ public class Upload {
                 OutputStream output = null;
                 HttpURLConnection connection = null;
                 try {
-                    fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/')+1, sUrl[0].length());
+                    fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/') + 1, sUrl[0].length());
                     if (D)
                         Log.i(TAG, "FileName: " + fileName);
 
@@ -325,8 +326,8 @@ public class Upload {
                             output.close();
                         if (input != null)
                             input.close();
+                    } catch (IOException ignored) {
                     }
-                    catch (IOException ignored) { }
 
                     if (connection != null)
                         connection.disconnect();
@@ -370,7 +371,7 @@ public class Upload {
         }
 
         private String checkNetwork() {
-            ConnectivityManager mConnectivityManager =  (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (mConnectivityManager == null)
                 return "No connection available";
 
