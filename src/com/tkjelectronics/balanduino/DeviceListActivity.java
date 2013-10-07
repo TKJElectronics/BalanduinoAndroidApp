@@ -64,6 +64,8 @@ public class DeviceListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_list);
 
+        BalanduinoActivity.stopRetrying = true; // Stop retrying connecting to another device
+
         // Set result CANCELED incase the user backs out
         setResult(Activity.RESULT_CANCELED);
 
