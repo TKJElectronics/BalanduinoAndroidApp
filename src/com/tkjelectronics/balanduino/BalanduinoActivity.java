@@ -106,7 +106,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static boolean backToSpot;
     public static int maxAngle = 8; // Eight is the default value
     public static int maxTurning = 20; // Twenty is the default value
-    public static boolean newSettings;
 
     public static String appVersion;
     public static String firmwareVersion;
@@ -557,8 +556,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                         newPIDValues = false;
                         PIDFragment.updateView();
                     }
-                    if (newSettings)
-                        newSettings = false;
                     if (newInfo || newStatus) {
                         newInfo = false;
                         newStatus = false;

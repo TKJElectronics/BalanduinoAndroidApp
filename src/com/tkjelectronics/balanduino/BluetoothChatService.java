@@ -419,10 +419,6 @@ public class BluetoothChatService {
                         BalanduinoActivity.backToSpot = splitMessage[1].trim().equals("1");
                         BalanduinoActivity.maxAngle = Integer.parseInt(splitMessage[2].trim());
                         BalanduinoActivity.maxTurning = Integer.parseInt(splitMessage[3].trim());
-                        BalanduinoActivity.newSettings = true;
-
-                        // Send message back to the UI Activity
-                        mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget();
                     } else if (splitMessage[0].trim().equals(BalanduinoActivity.responseInfo) && splitMessage.length == BalanduinoActivity.responseInfoLength) {
                         BalanduinoActivity.firmwareVersion = splitMessage[1].trim();
                         BalanduinoActivity.eepromVersion = splitMessage[2].trim();
