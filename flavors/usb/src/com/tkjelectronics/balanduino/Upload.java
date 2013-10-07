@@ -67,7 +67,8 @@ public class Upload {
     public static void close() {
         if (mPhysicaloid != null) {
             try {
-                mPhysicaloid.close();
+                if (mPhysicaloid.isOpened())
+                    mPhysicaloid.close();
             } catch (RuntimeException e) {
                 if (D)
                     Log.e(TAG, e.toString());
