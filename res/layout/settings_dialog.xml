@@ -168,12 +168,37 @@
             android:text="@string/backToSpot" />
 
         <RelativeLayout
-            android:id="@+id/pairWithWii"
+            android:id="@+id/uploadFirmware"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/seekTextLayout"
             android:layout_alignRight="@id/seekTextLayout"
             android:layout_below="@id/checkBox"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp">
+
+            <TextView
+                android:id="@+id/uploadText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/uploadText" />
+
+            <Button
+                android:id="@+id/uploadButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/uploadText"
+                android:layout_margin="@dimen/margin"
+                android:text="@string/uploadButtonText" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pairWithWii"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/seekTextLayout"
+            android:layout_alignRight="@id/seekTextLayout"
+            android:layout_below="@id/uploadFirmware"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="7dp">
 
@@ -208,7 +233,7 @@
                 android:text="@string/restoreText" />
 
             <Button
-                android:id="@+id/restore"
+                android:id="@+id/restoreButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/restoreText"
@@ -218,8 +243,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="7dp"
-                android:layout_below="@id/restore" />
+                android:layout_below="@id/restoreButton" />
         </RelativeLayout>
+
     </RelativeLayout>
 
 </ScrollView>

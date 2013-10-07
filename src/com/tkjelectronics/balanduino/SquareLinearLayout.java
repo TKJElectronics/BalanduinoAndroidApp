@@ -19,23 +19,21 @@
 
 package com.tkjelectronics.balanduino;
 
-/**
- * This is just a dummy class used for the Basic flavor, so the code will compile.
- */
-public class Upload {
-    public final static String flavor = "Basic";
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.LinearLayout;
 
-    public static void close() {
-        // Empty in this flavor
+public class SquareLinearLayout extends LinearLayout {
+    public SquareLinearLayout(Context context) {
+        super(context);
     }
 
-    public static boolean uploadFirmware() {
-        // Always return false
-        return false;
+    public SquareLinearLayout(Context context, AttributeSet attrs) {
+        super(context, attrs);
     }
 
-    public static boolean isUsbHostAvailable() {
-        // Always return false
-        return false;
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square
     }
 }

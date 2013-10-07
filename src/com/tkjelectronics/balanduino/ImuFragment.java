@@ -102,12 +102,11 @@ public class ImuFragment extends SherlockFragment {
                         if (BalanduinoActivity.joystickReleased) {
                             if (buttonState) {
                                 lockRotation();
-                                String message = BalanduinoActivity.sendIMUValues + BalanduinoActivity.mSensorFusion.pitch + ',' + BalanduinoActivity.mSensorFusion.roll + ";";
-                                BalanduinoActivity.mChatService.write(message.getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.sendIMUValues + BalanduinoActivity.mSensorFusion.pitch + ',' + BalanduinoActivity.mSensorFusion.roll + ";");
                                 mButton.setText(R.string.sendingData);
                             } else {
                                 unlockRotation();
-                                BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop.getBytes());
+                                BalanduinoActivity.mChatService.write(BalanduinoActivity.sendStop);
                                 mButton.setText(R.string.notSendingData);
                             }
                         }

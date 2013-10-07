@@ -49,8 +49,8 @@ public class DeviceListActivity extends Activity {
     private static final boolean D = BalanduinoActivity.D;
 
     // Return Intent extra
-    public static String EXTRA_DEVICE_ADDRESS = "device_address";
-    public static String EXTRA_NEW_DEVICE;
+    public static final String EXTRA_DEVICE_ADDRESS = "device_address";
+    public static final String EXTRA_NEW_DEVICE = "new_device";
     public static boolean new_device;
 
     // Member fields
@@ -63,6 +63,8 @@ public class DeviceListActivity extends Activity {
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.device_list);
+
+        BalanduinoActivity.stopRetrying = true; // Stop retrying connecting to another device
 
         // Set result CANCELED incase the user backs out
         setResult(Activity.RESULT_CANCELED);

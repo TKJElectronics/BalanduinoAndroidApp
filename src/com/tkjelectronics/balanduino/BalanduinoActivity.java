@@ -80,8 +80,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static BluetoothChatService mChatService = null;
     public static SensorFusion mSensorFusion = null;
 
-    boolean btSecure; // If it's a new device we will pair with the device
     BluetoothDevice btDevice; // The BluetoothDevice object
+    boolean btSecure; // If it's a new device we will pair with the device
+    public static boolean stopRetrying;
 
     private UnderlinePageIndicator mUnderlinePageIndicator;
     public static int currentTabSelected;
@@ -330,7 +331,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         if (mChatService != null)
             mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
         if (Upload.flavor.equals(("Usb")))
-            Upload.close();
+            Upload.close(); // Close serial communication
         finish(); // Exits the app
     }
 
@@ -464,10 +465,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         if (D)
             Log.d(TAG, "onCreateOptionsMenu");
         getSupportMenuInflater().inflate(R.menu.menu, menu); // Inflate the menu
-
-        if (!Upload.flavor.equals(("Usb")))
-            menu.removeItem(R.id.menu_upload);
-
         return true;
     }
 
@@ -483,9 +480,6 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 // Open up the settings dialog
                 SettingsDialogFragment dialogFragment = new SettingsDialogFragment();
                 dialogFragment.show(getSupportFragmentManager(), null);
-                return true;
-            case R.id.menu_upload:
-                Upload.uploadFirmware();
                 return true;
             case android.R.id.home:
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://balanduino.net/"));
@@ -636,11 +630,12 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     private void connectDevice(Intent data, boolean retry) {
         if (retry) {
-            if (btDevice != null) {
+            if (btDevice != null && !stopRetrying) {
                 mChatService.start(); // This will stop all the running threads
                 mChatService.connect(btDevice, btSecure); // Attempt to connect to the device
             }
         } else { // It's a new connection
+            stopRetrying = false;
             mChatService.newConnection = true;
             mChatService.start(); // This will stop all the running threads
             String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address

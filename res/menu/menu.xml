@@ -9,9 +9,4 @@
         android:icon="@drawable/ic_menu_preferences"
         android:title="@string/settings"
         android:showAsAction="ifRoom|withText" />
-    <item
-        android:id="@+id/menu_upload"
-        android:icon="@drawable/ic_menu_upload"
-        android:title="@string/upload"
-        android:showAsAction="ifRoom|withText" />
 </menu>

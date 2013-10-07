@@ -21,10 +21,10 @@
     <string name="acc">Accelerometer</string>
     <string name="gyro">Gyro</string>
     <string name="kalman">Kalman filter</string>
-
     <string name="Qangle">Q<small><small>angle</small></small></string>
     <string name="Qbias">Q<small><small>bias</small></small></string>
     <string name="Rmeasure">R<small><small>measure</small></small></string>
+    <string name="update">Update</string>
 
     <!-- PID Fragment -->
     <string name="Kp">P:</string>
@@ -59,6 +59,8 @@
     <string name="turning">Maximum turning value:</string>
     <string name="backToSpotText">Set whenever the robot should stay in the same spot by using the checkbox below.</string>
     <string name="backToSpot">Enable back to spot</string>
+    <string name="uploadText">Press the button below to upload the newest firmware to the Balanduino via the USB host port.</string>
+    <string name="uploadButtonText">Upload firmware</string>
     <string name="wiiText">Press the button below to pair with a Wiimote or a Wii U Pro Controller.</string>
     <string name="wiiButtonText">Pair with Wiimote</string>
     <string name="restoreText">Press the button below to restore the default configuration values.</string>
@@ -76,5 +78,4 @@
     <!-- Options Menu -->
     <string name="connect">Connect</string>
     <string name="settings">Settings</string>
-    <string name="upload">Upload</string>
 </resources>
