@@ -6,17 +6,16 @@
             android:fillViewport="true"
             tools:context=".BalanduinoActivity">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
                   android:id="@+id/graph"
                   android:layout_width="match_parent"
                   android:layout_height="wrap_content"
                   android:orientation="vertical" >
 
-        <LinearLayout
-                android:id="@+id/linegraph"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="5"
+        <com.tkjelectronics.balanduino.SquareLinearLayout
+            android:id="@+id/linegraph"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin"
                 android:orientation="horizontal" />
 
@@ -113,8 +112,8 @@
 
         <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1" >
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/margin">
 
             <ToggleButton
                     android:id="@+id/toggleButton"
@@ -128,7 +127,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    android:text="Update" />
+                android:text="@string/update" />
 
         </LinearLayout>
 
