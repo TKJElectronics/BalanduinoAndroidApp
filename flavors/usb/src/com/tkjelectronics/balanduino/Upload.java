@@ -300,13 +300,12 @@ public class Upload {
                     if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
                         return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
 
-                    // This will be useful to display download percentage might be -1: server did not report the length
-                    int fileLength = connection.getContentLength();
+                    int fileLength = connection.getContentLength(); // This will be useful to display download percentage might be -1: server did not report the length
 
                     // Download the file
                     input = connection.getInputStream();
+                    context.deleteFile(fileName); // Delete old file - if the old hex file was corrupted the upload would for some reason fail
                     output = context.openFileOutput(fileName, Context.MODE_PRIVATE);
-
 
                     byte data[] = new byte[4096];
                     long total = 0;
