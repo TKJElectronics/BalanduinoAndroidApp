@@ -26,6 +26,6 @@
             </intent-filter>
             <meta-data android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" android:resource="@xml/device_filter" />
         </activity>
-        <activity android:name=".DeviceListActivity" android:launchMode="singleTask" android:label="@string/select_device" android:theme="@style/dialog_theme" />
+        <activity android:name=".DeviceListActivity" android:label="@string/select_device" android:theme="@style/dialog_theme" />
     </application>
 </manifest>
