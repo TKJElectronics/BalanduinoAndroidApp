@@ -3,7 +3,7 @@
     <!-- Activity string -->
     <string name="app_name">Balanduino</string>
     <string name="bt_not_enabled_leaving">Bluetooth was not enabled. Leaving The application!</string>
-    <string name="connecting">connecting&#8230;</string>
+    <string name="connecting">Connecting&#8230;</string>
     <string name="connected_to">Connected to:</string>
     <string name="button">Connect to a device first</string>
 
