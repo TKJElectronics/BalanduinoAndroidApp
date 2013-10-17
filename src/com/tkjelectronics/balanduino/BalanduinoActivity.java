@@ -63,7 +63,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_DEVICE_NAME = 3;
-    public static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_DISCONNECTED = 4;
     public static final int MESSAGE_RETRY = 5;
 
     // Key names received from the BluetoothChatService Handler
@@ -578,7 +578,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     // Save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     break;
-                case MESSAGE_TOAST:
+                case MESSAGE_DISCONNECTED:
                     mBalanduinoActivity.supportInvalidateOptionsMenu();
                     PIDFragment.updateButton();
                     mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);

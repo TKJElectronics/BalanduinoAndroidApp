@@ -239,7 +239,7 @@ public class BluetoothChatService {
             msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_RETRY);
         } else {
             // Send a failure message back to the Activity
-            msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
+            msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_DISCONNECTED);
             Bundle bundle = new Bundle();
             bundle.putString(BalanduinoActivity.TOAST, "Unable to connect to device");
             msg.setData(bundle);
@@ -255,7 +255,7 @@ public class BluetoothChatService {
      */
     private void connectionLost() { // Send a failure message back to the Activity
         setState(STATE_NONE);
-        Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_DISCONNECTED);
         Bundle bundle = new Bundle();
         bundle.putString(BalanduinoActivity.TOAST, "Device connection was lost");
         msg.setData(bundle);
@@ -267,7 +267,7 @@ public class BluetoothChatService {
 
     private void disconnectSuccess() {
         // Send a success message back to the Activity
-        Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_TOAST);
+        Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_DISCONNECTED);
         Bundle bundle = new Bundle();
         bundle.putString(BalanduinoActivity.TOAST, "Disconnected successfully");
         msg.setData(bundle);
