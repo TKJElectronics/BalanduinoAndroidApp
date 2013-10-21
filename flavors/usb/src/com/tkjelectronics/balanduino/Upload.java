@@ -42,11 +42,13 @@ import com.physicaloid.lib.Physicaloid.UploadCallBack;
 import com.physicaloid.lib.programmer.avr.UploadErrors;
 
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.security.DigestInputStream;
+import java.security.MessageDigest;
 import java.util.Map;
 
 public class Upload {
@@ -59,6 +61,7 @@ public class Upload {
     private static boolean uploading = false, cancelled = false;
     private static ProgressDialog mProgressDialog;
     private final static String fileUrl = "https://raw.github.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino.hex";
+    private final static String fileUrlMd5 = "https://raw.github.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino.md5";
     private static String fileName;
 
     /**
@@ -141,10 +144,7 @@ public class Upload {
         if (mUsbManager == null)
             return false;
         Map<String, UsbDevice> map = mUsbManager.getDeviceList();
-        if (map == null)
-            return false;
-
-        return true;
+        return map != null;
     }
 
     private static final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
@@ -184,7 +184,7 @@ public class Upload {
     private static void downloadFile() {
         // Execute this when the downloader must be fired
         final DownloadTask downloadTask = new DownloadTask(BalanduinoActivity.activity);
-        downloadTask.execute(fileUrl);
+        downloadTask.execute(fileUrl, fileUrlMd5);
 
         mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
@@ -300,13 +300,15 @@ public class Upload {
 
             try {
                 InputStream input = null;
-                OutputStream output = null;
+                DigestInputStream disInput = null;
+                FileOutputStream output = null;
                 HttpURLConnection connection = null;
                 try {
                     fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/') + 1, sUrl[0].length());
                     if (D)
                         Log.i(TAG, "FileName: " + fileName);
 
+                    // Download hex file
                     URL url = new URL(sUrl[0]);
                     connection = (HttpURLConnection) url.openConnection();
                     connection.connect();
@@ -315,24 +317,47 @@ public class Upload {
                     if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
                         return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
 
-                    int fileLength = connection.getContentLength(); // This will be useful to display download percentage might be -1: server did not report the length
+                    input = connection.getInputStream(); // Get input stream
+                    output = context.openFileOutput(fileName, Context.MODE_PRIVATE); // Open output stream
 
-                    // Download the file
-                    input = connection.getInputStream();
-                    context.deleteFile(fileName); // Delete old file - if the old hex file was corrupted the upload would for some reason fail
-                    output = context.openFileOutput(fileName, Context.MODE_PRIVATE);
+                    // Used to calculate MD5 checksum
+                    MessageDigest mMessageDigest = MessageDigest.getInstance("MD5");
+                    disInput = new DigestInputStream(input, mMessageDigest);
 
                     byte data[] = new byte[4096];
-                    long total = 0;
                     int count;
-                    while ((count = input.read(data)) != -1) {
+                    while ((count = disInput.read(data)) != -1) {
                         if (isCancelled()) // Allow canceling with back button
                             return null;
-                        total += count;
-                        if (fileLength > 0) // Only if total length is known
-                            publishProgress((int) (total * 100 / fileLength)); // Publishing the progress....
                         output.write(data, 0, count);
                     }
+                    String checksum = bytesToHex(mMessageDigest.digest()); // Calculated MD5 checksum of file
+
+                    // Download MD5 file
+                    url = new URL(sUrl[1]);
+                    connection = (HttpURLConnection) url.openConnection();
+                    connection.connect();
+
+                    // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
+                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                        return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+
+                    input = connection.getInputStream(); // Get input stream
+
+                    String md5 = "";
+                    while (input.read(data) != -1) {
+                        if (isCancelled()) // Allow canceling with back button
+                            return null;
+                        md5 += new String(data);
+                    }
+                    md5 = md5.substring(0, md5.indexOf(" *")).toUpperCase(); // MD5 file is in the coreutils format
+
+                    if (D)
+                        Log.e(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
+
+                    if (!checksum.equals(md5))
+                        return "Error in MD5 checksum";
+
                 } catch (Exception e) {
                     return e.toString();
                 } finally {
@@ -341,6 +366,8 @@ public class Upload {
                             output.close();
                         if (input != null)
                             input.close();
+                        if (disInput != null)
+                            disInput.close();
                     } catch (IOException ignored) {
                     }
 
@@ -351,6 +378,18 @@ public class Upload {
                 wl.release();
             }
             return null;
+        }
+
+        final protected static char[] hexArray = "0123456789ABCDEF".toCharArray();
+        private static String bytesToHex(byte[] bytes) {
+            char[] hexChars = new char[bytes.length * 2];
+            int v;
+            for (int j = 0; j < bytes.length; j++) {
+                v = bytes[j] & 0xFF;
+                hexChars[j * 2] = hexArray[v >>> 4];
+                hexChars[j * 2 + 1] = hexArray[v & 0x0F];
+            }
+            return new String(hexChars);
         }
 
         @Override
@@ -364,14 +403,6 @@ public class Upload {
                 mProgressDialog.setCancelable(true);
                 mProgressDialog.show();
             }
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... progress) {
-            super.onProgressUpdate(progress);
-            mProgressDialog.setIndeterminate(false); // If we get here, length is known, now set indeterminate to false
-            mProgressDialog.setMax(100);
-            mProgressDialog.setProgress(progress[0]);
         }
 
         @Override
@@ -402,7 +433,8 @@ public class Upload {
             } else if (infoWifi != null) {
                 if (infoWifi.getState() != NetworkInfo.State.CONNECTED)
                     return "No Wifi network available";
-            }
+            } else
+                return "No connection available";
             return null;
         }
     }
