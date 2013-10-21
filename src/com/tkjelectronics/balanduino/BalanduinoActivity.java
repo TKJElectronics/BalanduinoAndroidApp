@@ -514,7 +514,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                         Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
-                            mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
+                            BalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
                             if (mChatService == null)
                                 return;
                             Handler mHandler = new Handler();
@@ -571,7 +571,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     }
                     if (pairingWithWii) {
                         pairingWithWii = false;
-                        mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
+                        BalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
                     }
                     break;
                 case MESSAGE_DEVICE_NAME:
@@ -581,7 +581,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 case MESSAGE_DISCONNECTED:
                     mBalanduinoActivity.supportInvalidateOptionsMenu();
                     PIDFragment.updateButton();
-                    mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
+                    BalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
                     break;
                 case MESSAGE_RETRY:
                     if (D)
