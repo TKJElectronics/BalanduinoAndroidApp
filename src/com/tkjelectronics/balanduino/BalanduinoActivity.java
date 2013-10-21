@@ -49,8 +49,6 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
-import java.lang.ref.WeakReference;
-
 public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "Balanduino";
     public static final boolean D = BuildConfig.DEBUG; // This is automatically set when building
@@ -496,13 +494,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     // The Handler class that gets information back from the BluetoothChatService
     static class BluetoothHandler extends Handler {
-        private final WeakReference<BalanduinoActivity> mActivity;
         private final BalanduinoActivity mBalanduinoActivity;
         private String mConnectedDeviceName; // Name of the connected device
 
-        BluetoothHandler(BalanduinoActivity activity) {
-            mActivity = new WeakReference<BalanduinoActivity>(activity);
-            mBalanduinoActivity = mActivity.get();
+        BluetoothHandler(BalanduinoActivity mBalanduinoActivity) {
+            this.mBalanduinoActivity = mBalanduinoActivity;
         }
 
         @Override
