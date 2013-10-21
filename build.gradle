@@ -1,38 +1,35 @@
-import java.util.regex.Pattern
-
 project.ext.set('versionName', '0.5.0')
 project.ext.set('versionCode', '050')
 
-project.ext.set('archivesBaseName', "BalanduinoAndroidApp-" + project.versionName)
+project.ext.set('archivesBaseName', 'BalanduinoAndroidApp-' + project.versionName)
 
 buildscript {
     repositories {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.5.+'
+        classpath 'com.android.tools.build:gradle:0.6.+'
     }
 }
 
+import java.util.regex.Pattern
+
 task update { // Task to update version in accessory filter
-    def accessoryFile = file("res/xml/accessory_filter.xml")
+    def accessoryFile = file('res/xml/accessory_filter.xml')
     def accessoryText = accessoryFile.getText()
 
-    def firstLine = accessoryText.substring(0, accessoryText.indexOf('>') + 1) // We need to skip the first line in the xml file
-    accessoryText = accessoryText.substring(accessoryText.indexOf('>') + 1)
+    println 'Updating accessory filter version to: ' + project.versionName
+    def version = Pattern.compile('\"Balanduino\" version=\"(.*?)\"').matcher(accessoryText)
+    accessoryText = version.replaceAll('\"Balanduino\" version=\"' + project.versionName + '\"')
 
-    println "Updating accessory filter version to: " + project.versionName
-    def matcherVersionName = Pattern.compile("version=\"(.*?)\"").matcher(accessoryText)
-    accessoryText = matcherVersionName.replaceAll("version=\"" + project.versionName + "\"")
-
-    accessoryFile.write(firstLine + accessoryText)
+    accessoryFile.write(accessoryText)
 }
 
 apply plugin: 'android'
 
 android {
     compileSdkVersion 18
-    buildToolsVersion '18.1.0'
+    buildToolsVersion '18.1.1'
 
     defaultConfig {
         targetSdkVersion 18

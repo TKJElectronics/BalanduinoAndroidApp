@@ -49,11 +49,9 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.viewpagerindicator.UnderlinePageIndicator;
 
-import java.lang.ref.WeakReference;
-
 public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "Balanduino";
-    public static final boolean D = BuildConfig.DEBUG; // This is automatically set by Gradle
+    public static final boolean D = BuildConfig.DEBUG; // This is automatically set when building
 
     public static Activity activity;
     public static Context context;
@@ -63,7 +61,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static final int MESSAGE_STATE_CHANGE = 1;
     public static final int MESSAGE_READ = 2;
     public static final int MESSAGE_DEVICE_NAME = 3;
-    public static final int MESSAGE_TOAST = 4;
+    public static final int MESSAGE_DISCONNECTED = 4;
     public static final int MESSAGE_RETRY = 5;
 
     // Key names received from the BluetoothChatService Handler
@@ -207,7 +205,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         }
 
         // get sensorManager and initialize sensor listeners
-        SensorManager mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorFusion = new SensorFusion(getApplicationContext(), mSensorManager);
 
         // Set up the action bar.
@@ -247,7 +245,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 });
 
         int count = mViewPagerAdapter.getCount();
-        Resources mResources = getApplicationContext().getResources();
+        Resources mResources = getResources();
         boolean landscape = false;
         if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             landscape = true;
@@ -378,7 +376,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
             Log.d(TAG, "onTabSelected: " + tab.getPosition());
         currentTabSelected = tab.getPosition();
 
-        Resources mResources = getApplicationContext().getResources();
+        Resources mResources = getResources();
         if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT) { // Check if the last tab is selected in landscape mode
             currentTabSelected -= 1; // If so don't go any further
             ActionBar bar = getSupportActionBar();
@@ -504,13 +502,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     // The Handler class that gets information back from the BluetoothChatService
     static class BluetoothHandler extends Handler {
-        private final WeakReference<BalanduinoActivity> mActivity;
         private final BalanduinoActivity mBalanduinoActivity;
         private String mConnectedDeviceName; // Name of the connected device
 
-        BluetoothHandler(BalanduinoActivity activity) {
-            mActivity = new WeakReference<BalanduinoActivity>(activity);
-            mBalanduinoActivity = mActivity.get();
+        BluetoothHandler(BalanduinoActivity mBalanduinoActivity) {
+            this.mBalanduinoActivity = mBalanduinoActivity;
         }
 
         @Override
@@ -522,7 +518,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                         Log.i(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
                     switch (msg.arg1) {
                         case BluetoothChatService.STATE_CONNECTED:
-                            mBalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
+                            BalanduinoActivity.showToast(mBalanduinoActivity.getString(R.string.connected_to) + " " + mConnectedDeviceName, Toast.LENGTH_SHORT);
                             if (mChatService == null)
                                 return;
                             Handler mHandler = new Handler();
@@ -580,17 +576,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     }
                     if (pairingWithWii) {
                         pairingWithWii = false;
-                        mBalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
+                        BalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
                     }
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // Save the connected device's name
                     mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     break;
-                case MESSAGE_TOAST:
+                case MESSAGE_DISCONNECTED:
                     mBalanduinoActivity.supportInvalidateOptionsMenu();
                     PIDFragment.updateButton();
-                    mBalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
+                    BalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
                     break;
                 case MESSAGE_RETRY:
                     if (D)
