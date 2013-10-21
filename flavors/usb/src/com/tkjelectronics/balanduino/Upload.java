@@ -56,7 +56,7 @@ public class Upload {
     private static final String ACTION_USB_PERMISSION = "com.tkjelectronics.balanduino.USB_PERMISSION";
 
     private static Physicaloid mPhysicaloid;
-    private static boolean uploading = false;
+    private static boolean uploading = false, cancelled = false;
     private static ProgressDialog mProgressDialog;
     private final static String fileUrl = "https://raw.github.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino.hex";
     private static String fileName;
@@ -66,6 +66,11 @@ public class Upload {
      */
     public static void close() {
         if (mPhysicaloid != null) {
+            if (uploading) {
+                uploading = false;
+                mPhysicaloid.cancelUpload();
+                BalanduinoActivity.showToast("Upload cancelled", Toast.LENGTH_SHORT);
+            }
             try {
                 if (mPhysicaloid.isOpened())
                     mPhysicaloid.close();
@@ -231,6 +236,11 @@ public class Upload {
         @Override
         public void onPostUpload(boolean success) {
             uploading = false;
+            if (cancelled) {
+                cancelled = false;
+                return;
+            }
+
             if (success) {
                 BalanduinoActivity.activity.runOnUiThread(new Runnable() {
                     public void run() {
@@ -244,6 +254,11 @@ public class Upload {
                     }
                 });
             }
+        }
+
+        @Override
+        public void onCancel() {
+            cancelled = true;
         }
 
         @Override
