@@ -53,7 +53,7 @@ import java.lang.ref.WeakReference;
 
 public class BalanduinoActivity extends SherlockFragmentActivity implements ActionBar.TabListener {
     private static final String TAG = "Balanduino";
-    public static final boolean D = BuildConfig.DEBUG; // This is automatically set by Gradle
+    public static final boolean D = BuildConfig.DEBUG; // This is automatically set when building
 
     public static Activity activity;
     public static Context context;
@@ -199,7 +199,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         }
 
         // get sensorManager and initialize sensor listeners
-        SensorManager mSensorManager = (SensorManager) this.getSystemService(SENSOR_SERVICE);
+        SensorManager mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         mSensorFusion = new SensorFusion(getApplicationContext(), mSensorManager);
 
         // Set up the action bar.
@@ -239,7 +239,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 });
 
         int count = mViewPagerAdapter.getCount();
-        Resources mResources = getApplicationContext().getResources();
+        Resources mResources = getResources();
         boolean landscape = false;
         if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             landscape = true;
@@ -370,7 +370,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
             Log.d(TAG, "onTabSelected: " + tab.getPosition());
         currentTabSelected = tab.getPosition();
 
-        Resources mResources = getApplicationContext().getResources();
+        Resources mResources = getResources();
         if (mResources.getBoolean(R.bool.isTablet) && mResources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE && currentTabSelected == ViewPagerAdapter.INFO_FRAGMENT) { // Check if the last tab is selected in landscape mode
             currentTabSelected -= 1; // If so don't go any further
             ActionBar bar = getSupportActionBar();
