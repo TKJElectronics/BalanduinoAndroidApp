@@ -20,7 +20,6 @@
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -33,7 +32,6 @@ import com.actionbarsherlock.app.SherlockFragment;
 public class InfoFragment extends SherlockFragment {
     static TextView mAppVersion, mFirmwareVersion, mEepromVersion, mMcu, mBatteryLevel, mRuntime;
     static ToggleButton mToggleButton;
-    private static Handler mHandler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

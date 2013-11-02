@@ -486,19 +486,19 @@ public class BluetoothChatService {
             if (mmInStream != null) {
                 try {
                     mmInStream.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             if (mmOutStream != null) {
                 try {
                     mmOutStream.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
             if (mmSocket != null) {
                 try {
                     mmSocket.close();
-                } catch (Exception e) {
+                } catch (Exception ignored) {
                 }
             }
         }

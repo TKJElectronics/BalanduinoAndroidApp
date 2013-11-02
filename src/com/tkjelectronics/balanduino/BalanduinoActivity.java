@@ -27,6 +27,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -260,7 +261,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     .setTabListener(this));
         }
         try {
-            BalanduinoActivity.appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
+            PackageManager mPackageManager = getPackageManager();
+            if (mPackageManager != null)
+                BalanduinoActivity.appVersion = mPackageManager.getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -572,12 +575,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // Save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    if (msg.getData() != null)
+                        mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     break;
                 case MESSAGE_DISCONNECTED:
                     mBalanduinoActivity.supportInvalidateOptionsMenu();
                     PIDFragment.updateButton();
-                    BalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
+                    if (msg.getData() != null)
+                        BalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
                     break;
                 case MESSAGE_RETRY:
                     if (D)
@@ -622,6 +627,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
             stopRetrying = false;
             mChatService.newConnection = true;
             mChatService.start(); // This will stop all the running threads
+            if (data.getExtras() == null)
+                return;
             String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address
             btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
             btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object
