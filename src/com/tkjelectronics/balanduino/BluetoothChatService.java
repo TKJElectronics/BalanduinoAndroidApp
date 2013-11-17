@@ -65,8 +65,8 @@ public class BluetoothChatService {
      *
      * @param handler A Handler to send messages back to the UI Activity
      */
-    public BluetoothChatService(Handler handler) {
-        mAdapter = BluetoothAdapter.getDefaultAdapter();
+    public BluetoothChatService(Handler handler, BluetoothAdapter mBluetoothAdapter) {
+        mAdapter = mBluetoothAdapter;
         mState = STATE_NONE;
         mHandler = handler;
     }

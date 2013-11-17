@@ -22,6 +22,7 @@ package com.tkjelectronics.balanduino;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -75,6 +76,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothHandler mBluetoothHandler = null;
     // Member object for the chat services
     public static BluetoothChatService mChatService = null;
     public static SensorFusion mSensorFusion = null;
@@ -189,7 +191,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         setContentView(R.layout.activity_main);
 
         // Get local Bluetooth adapter
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+            mBluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        else
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             showToast("Bluetooth is not available", Toast.LENGTH_LONG);
@@ -281,10 +287,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 Log.d(TAG, "Request enable BT");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-        } else { // Otherwise, setup the chat session
-            if (mChatService == null)
-                setupBTService();
-        }
+        } else
+            setupBTService(); // Otherwise, setup the chat session
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // Create SharedPreferences instance
         String filterCoefficient = preferences.getString("filterCoefficient", null); // Read the stored value for filter coefficient
@@ -359,10 +363,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     }
 
     private void setupBTService() {
+        if (mChatService != null)
+            return;
+
         if (D)
             Log.d(TAG, "setupBTService()");
-        // Initialize the BluetoothChatService to perform Bluetooth connections
-        mChatService = new BluetoothChatService(new BluetoothHandler(this));
+        if (mBluetoothHandler == null)
+            mBluetoothHandler = new BluetoothHandler(this);
+        mChatService = new BluetoothChatService(mBluetoothHandler, mBluetoothAdapter); // Initialize the BluetoothChatService to perform Bluetooth connections
     }
 
     @Override
@@ -604,10 +612,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 break;
             case REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    setupBTService();
-                } else {
+                if (resultCode == Activity.RESULT_OK)
+                    setupBTService(); // Bluetooth is now enabled, so set up a chat session
+                else {
                     // User did not enable Bluetooth or an error occured
                     if (D)
                         Log.d(TAG, "BT not enabled");
