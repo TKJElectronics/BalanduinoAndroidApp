@@ -417,24 +417,10 @@ public class Upload {
 
         private String checkNetwork() {
             ConnectivityManager mConnectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (mConnectivityManager == null)
-                return "No connection available";
-
-            NetworkInfo infoMobile = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            NetworkInfo infoWifi = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-            if (infoMobile != null && infoWifi != null) {
-                if (infoMobile.getState() != NetworkInfo.State.CONNECTED && infoWifi.getState() != NetworkInfo.State.CONNECTED)
-                    return "No network available";
-            } else if (infoMobile != null) {
-                if (infoMobile.getState() != NetworkInfo.State.CONNECTED)
-                    return "No mobile network available";
-            } else if (infoWifi != null) {
-                if (infoWifi.getState() != NetworkInfo.State.CONNECTED)
-                    return "No Wifi network available";
-            } else
-                return "No connection available";
+            NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+            if (activeNetwork != null && activeNetwork.isConnected())
                 return null;
+            return "No internet connection available";
         }
     }
 }
