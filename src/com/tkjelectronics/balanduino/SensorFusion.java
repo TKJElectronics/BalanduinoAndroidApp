@@ -21,6 +21,8 @@
  * OR OTHER DEALINGS IN THE SOFTWARE.
  ************************************************************************************/
 
+// Source: http://www.thousand-thoughts.com/2012/03/android-sensor-fusion-tutorial/
+
 package com.tkjelectronics.balanduino;
 
 import android.content.Context;
