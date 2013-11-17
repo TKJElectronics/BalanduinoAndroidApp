@@ -53,7 +53,6 @@ import java.util.Map;
 
 public class Upload {
     private static final String TAG = "Upload";
-    public final static String flavor = "Usb";
     private static final boolean D = BalanduinoActivity.D;
     private static final String ACTION_USB_PERMISSION = "com.tkjelectronics.balanduino.USB_PERMISSION";
 
@@ -417,7 +416,7 @@ public class Upload {
         }
 
         private String checkNetwork() {
-            ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            ConnectivityManager mConnectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
             if (mConnectivityManager == null)
                 return "No connection available";
 
@@ -435,7 +434,7 @@ public class Upload {
                     return "No Wifi network available";
             } else
                 return "No connection available";
-            return null;
+                return null;
         }
     }
 }

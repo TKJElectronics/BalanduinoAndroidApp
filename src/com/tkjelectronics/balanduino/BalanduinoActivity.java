@@ -326,8 +326,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public void onBackPressed() {
         if (mChatService != null)
             mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
-        if (Upload.flavor.equals(("Usb")))
-            Upload.close(); // Close serial communication
+        Upload.close(); // Close serial communication
         finish(); // Exits the app
     }
 

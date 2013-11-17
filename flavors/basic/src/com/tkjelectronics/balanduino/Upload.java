@@ -23,19 +23,15 @@ package com.tkjelectronics.balanduino;
  * This is just a dummy class used for the Basic flavor, so the code will compile.
  */
 public class Upload {
-    public final static String flavor = "Basic";
-
     public static void close() {
         // Empty in this flavor
     }
 
     public static boolean uploadFirmware() {
-        // Always return false
-        return false;
+        return false; // Always return false
     }
 
     public static boolean isUsbHostAvailable() {
-        // Always return false
-        return false;
+        return false; // Always return false
     }
 }
