@@ -54,6 +54,7 @@ public class JoystickView extends View {
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
     }
 
     @Override
