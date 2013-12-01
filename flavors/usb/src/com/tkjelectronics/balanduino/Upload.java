@@ -51,6 +51,9 @@ import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.util.Map;
 
+// TODO: Make upload progress bar
+// https://github.com/TKJElectronics/BalanduinoAndroidApp/commit/1daab8f44eb0b9470f661e88a14e4eb1833cfcc9
+
 public class Upload {
     private static final String TAG = "Upload";
     private static final boolean D = BalanduinoActivity.D;
