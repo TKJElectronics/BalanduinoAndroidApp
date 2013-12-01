@@ -37,6 +37,7 @@ import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
+import com.jjoe64.graphview.GraphViewStyle;
 import com.jjoe64.graphview.LineGraphView;
 
 public class GraphFragment extends SherlockFragment {
@@ -104,6 +105,16 @@ public class GraphFragment extends SherlockFragment {
         graphView.scrollToEnd();
 
         LinearLayout layout = (LinearLayout) v.findViewById(R.id.linegraph);
+
+        GraphViewStyle mGraphViewStyle = new GraphViewStyle();
+        mGraphViewStyle.setNumHorizontalLabels(10);
+        mGraphViewStyle.setNumVerticalLabels(10);
+        mGraphViewStyle.setTextSize(15);
+        mGraphViewStyle.setLegendWidth(140);
+        mGraphViewStyle.setLegendMarginBottom(30);
+
+        graphView.setGraphViewStyle(mGraphViewStyle);
+
         layout.addView(graphView);
 
         mCheckBox1 = (CheckBox) v.findViewById(R.id.checkBox1);
