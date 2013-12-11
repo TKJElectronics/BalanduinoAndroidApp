@@ -324,9 +324,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     @Override
     public void onBackPressed() {
-        if (mChatService != null)
-            mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
         Upload.close(); // Close serial communication
+        if (mChatService != null) {
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
+                }
+            }, 1000); // Wait 1 second before closing the connection, this is needed as onPause() will send stop messages before closing
+        }
         finish(); // Exits the app
     }
 
@@ -346,9 +351,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         // Unregister sensor listeners to prevent the activity from draining the device's battery.
         mSensorFusion.unregisterListeners();
         if (mChatService != null) { // Send stop command and stop sending graph data command
-            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
                 mChatService.write(sendStop + imuStop + statusStop);
-            }
         }
     }
 
