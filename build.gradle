@@ -87,7 +87,7 @@ repositories {
 
 dependencies {
     compile 'com.android.support:support-v4:19.0.+'
-    compile 'com.jjoe64.graphview:graphview:3.1'
+    compile 'com.jjoe64.graphview:graphview:3.1.1'
     compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
     usbCompile 'com.physicaloid:physicaloid:1.0' // Only supported on API level above 12
