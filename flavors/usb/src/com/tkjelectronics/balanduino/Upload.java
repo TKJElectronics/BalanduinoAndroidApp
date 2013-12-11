@@ -355,7 +355,7 @@ public class Upload {
                     md5 = md5.substring(0, md5.indexOf(" *")).toUpperCase(); // MD5 file is in the coreutils format
 
                     if (D)
-                        Log.e(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
+                        Log.i(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
 
                     if (!checksum.equals(md5))
                         return "Error in MD5 checksum";
