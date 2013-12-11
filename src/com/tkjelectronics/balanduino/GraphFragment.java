@@ -107,8 +107,8 @@ public class GraphFragment extends SherlockFragment {
         LinearLayout layout = (LinearLayout) v.findViewById(R.id.linegraph);
 
         GraphViewStyle mGraphViewStyle = new GraphViewStyle();
-        mGraphViewStyle.setNumHorizontalLabels(10);
-        mGraphViewStyle.setNumVerticalLabels(10);
+        mGraphViewStyle.setNumHorizontalLabels(11);
+        mGraphViewStyle.setNumVerticalLabels(9);
         mGraphViewStyle.setTextSize(15);
         mGraphViewStyle.setLegendWidth(140);
         mGraphViewStyle.setLegendMarginBottom(30);
