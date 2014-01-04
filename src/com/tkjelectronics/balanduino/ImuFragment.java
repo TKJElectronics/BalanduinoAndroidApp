@@ -19,6 +19,7 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.annotation.TargetApi;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -121,6 +122,7 @@ public class ImuFragment extends SherlockFragment {
         mHandler.postDelayed(mRunnable, 50); // Update IMU data every 50ms
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void lockRotation() {
         if (getResources().getBoolean(R.bool.isTablet)) { // Check if the layout can rotate
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -142,6 +144,7 @@ public class ImuFragment extends SherlockFragment {
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     private void unlockRotation() {
         if (getResources().getBoolean(R.bool.isTablet)) { // Check if the layout can rotate
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)

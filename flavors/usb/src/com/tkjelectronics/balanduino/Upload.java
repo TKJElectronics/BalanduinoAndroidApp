@@ -19,6 +19,7 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -49,11 +50,13 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.Locale;
 import java.util.Map;
 
 // TODO: Make upload progress bar
 // https://github.com/TKJElectronics/BalanduinoAndroidApp/commit/1daab8f44eb0b9470f661e88a14e4eb1833cfcc9
 
+@TargetApi(12)
 public class Upload {
     private static final String TAG = "Upload";
     private static final boolean D = BalanduinoActivity.D;
@@ -300,85 +303,85 @@ public class Upload {
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
             wl.acquire();
 
+            InputStream input = null;
+            DigestInputStream disInput = null;
+            FileOutputStream output = null;
+            HttpURLConnection connection = null;
+
             try {
-                InputStream input = null;
-                DigestInputStream disInput = null;
-                FileOutputStream output = null;
-                HttpURLConnection connection = null;
-                try {
-                    fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/') + 1, sUrl[0].length());
-                    if (D)
-                        Log.i(TAG, "FileName: " + fileName);
+                fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/') + 1, sUrl[0].length());
+                if (D)
+                    Log.i(TAG, "FileName: " + fileName);
 
-                    // Download hex file
-                    URL url = new URL(sUrl[0]);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
+                // Download hex file
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
 
-                    // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                        return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+                // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                    return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
 
-                    input = connection.getInputStream(); // Get input stream
-                    output = context.openFileOutput(fileName, Context.MODE_PRIVATE); // Open output stream
+                input = connection.getInputStream(); // Get input stream
+                output = context.openFileOutput(fileName, Context.MODE_PRIVATE); // Open output stream
 
-                    // Used to calculate MD5 checksum
-                    MessageDigest mMessageDigest = MessageDigest.getInstance("MD5");
-                    disInput = new DigestInputStream(input, mMessageDigest);
+                // Used to calculate MD5 checksum
+                MessageDigest mMessageDigest = MessageDigest.getInstance("MD5");
+                disInput = new DigestInputStream(input, mMessageDigest);
 
-                    byte data[] = new byte[4096];
-                    int count;
-                    while ((count = disInput.read(data)) != -1) {
-                        if (isCancelled()) // Allow canceling with back button
-                            return null;
-                        output.write(data, 0, count);
-                    }
-                    String checksum = bytesToHex(mMessageDigest.digest()); // Calculated MD5 checksum of file
-
-                    // Download MD5 file
-                    url = new URL(sUrl[1]);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-
-                    // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                        return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
-
-                    input = connection.getInputStream(); // Get input stream
-
-                    String md5 = "";
-                    while (input.read(data) != -1) {
-                        if (isCancelled()) // Allow canceling with back button
-                            return null;
-                        md5 += new String(data);
-                    }
-                    md5 = md5.substring(0, md5.indexOf(" *")).toUpperCase(); // MD5 file is in the coreutils format
-
-                    if (D)
-                        Log.i(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
-
-                    if (!checksum.equals(md5))
-                        return "Error in MD5 checksum";
-
-                } catch (Exception e) {
-                    return e.toString();
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                        if (disInput != null)
-                            disInput.close();
-                    } catch (IOException ignored) {
-                    }
-
-                    if (connection != null)
-                        connection.disconnect();
+                byte data[] = new byte[4096];
+                int count;
+                while ((count = disInput.read(data)) != -1) {
+                    if (isCancelled()) // Allow canceling with back button
+                        return null;
+                    output.write(data, 0, count);
                 }
+                String checksum = bytesToHex(mMessageDigest.digest()); // Calculated MD5 checksum of file
+
+                // Download MD5 file
+                url = new URL(sUrl[1]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                    return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+
+                input = connection.getInputStream(); // Get input stream
+
+                String md5 = "";
+                while (input.read(data) != -1) {
+                    if (isCancelled()) // Allow canceling with back button
+                        return null;
+                    md5 += new String(data);
+                }
+                md5 = md5.substring(0, md5.indexOf(" *")).toUpperCase(Locale.ENGLISH); // MD5 file is in the coreutils format
+
+                if (D)
+                    Log.i(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
+
+                if (!checksum.equals(md5))
+                    return "Error in MD5 checksum";
+
+            } catch (Exception e) {
+                return e.toString();
             } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                    if (disInput != null)
+                        disInput.close();
+                } catch (IOException ignored) {
+                }
+
+                if (connection != null)
+                    connection.disconnect();
+
                 wl.release();
             }
+
             return null;
         }
 

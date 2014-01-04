@@ -79,10 +79,6 @@ android {
             res.srcDirs = ['flavors/usb/res']
         }
     }
-
-    lintOptions {
-        abortOnError false
-    }
 }
 
 repositories {
