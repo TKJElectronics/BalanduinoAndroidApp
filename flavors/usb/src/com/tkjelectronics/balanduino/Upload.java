@@ -53,9 +53,6 @@ import java.security.MessageDigest;
 import java.util.Locale;
 import java.util.Map;
 
-// TODO: Make upload progress bar
-// https://github.com/TKJElectronics/BalanduinoAndroidApp/commit/1daab8f44eb0b9470f661e88a14e4eb1833cfcc9
-
 @TargetApi(12)
 public class Upload {
     private static final String TAG = "Upload";
@@ -221,25 +218,47 @@ public class Upload {
     private static UploadCallBack mUploadCallback = new UploadCallBack() {
         @Override
         public void onUploading(int value) {
-            uploading = true;
             if (D)
                 Log.i(TAG, "Uploading: " + value);
+            mProgressDialog.setProgress(value);
         }
 
         @Override
         public void onPreUpload() {
+            if (D)
+                Log.i(TAG, "Upload start");
             uploading = true;
             BalanduinoActivity.activity.runOnUiThread(new Runnable() {
                 public void run() {
-                    Toast.makeText(BalanduinoActivity.context, "Uploading...", Toast.LENGTH_SHORT).show();
+                    mProgressDialog = new ProgressDialog(BalanduinoActivity.activity);
+                    mProgressDialog.setMessage("Uploading...");
+                    mProgressDialog.setIndeterminate(false);
+                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgressDialog.setCancelable(true);
+                    mProgressDialog.setMax(100);
+                    mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            mPhysicaloid.cancelUpload();
+                            try {
+                                if (mPhysicaloid.isOpened())
+                                    mPhysicaloid.close();
+                            } catch (RuntimeException e) {
+                                if (D)
+                                    Log.e(TAG, e.toString());
+                            }
+                        }
+                    });
+                    mProgressDialog.show();
                 }
             });
-            if (D)
-                Log.i(TAG, "Upload start");
         }
 
         @Override
         public void onPostUpload(boolean success) {
+            if (D)
+                Log.i(TAG, "Upload finished");
+            mProgressDialog.dismiss();
             uploading = false;
             if (cancelled) {
                 cancelled = false;
@@ -268,14 +287,15 @@ public class Upload {
 
         @Override
         public void onError(UploadErrors err) {
+            if (D)
+                Log.e(TAG, "Error: " + err.toString());
+            mProgressDialog.dismiss();
             uploading = false;
             BalanduinoActivity.activity.runOnUiThread(new Runnable() {
                 public void run() {
                     BalanduinoActivity.showToast("Uploading error", Toast.LENGTH_SHORT);
                 }
             });
-            if (D)
-                Log.e(TAG, "Error: " + err.toString());
         }
     };
 
