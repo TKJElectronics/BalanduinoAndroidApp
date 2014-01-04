@@ -175,8 +175,7 @@ public class BluetoothChatService {
         mConnectedThread.start();
 
         // Send the name of the connected device back to the UI Activity
-        Message msg = mHandler
-                .obtainMessage(BalanduinoActivity.MESSAGE_DEVICE_NAME);
+        Message msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_DEVICE_NAME);
         Bundle bundle = new Bundle();
         bundle.putString(BalanduinoActivity.DEVICE_NAME, device.getName());
         msg.setData(bundle);
@@ -295,13 +294,10 @@ public class BluetoothChatService {
             // Get a BluetoothSocket for a connection with the
             // given BluetoothDevice
             try {
-                if (secure) {
-                    tmp = device
-                            .createRfcommSocketToServiceRecord(UUID_RFCOMM_GENERIC);
-                } else {
-                    tmp = device
-                            .createInsecureRfcommSocketToServiceRecord(UUID_RFCOMM_GENERIC);
-                }
+                if (secure)
+                    tmp = mmDevice.createRfcommSocketToServiceRecord(UUID_RFCOMM_GENERIC);
+                else
+                    tmp = mmDevice.createInsecureRfcommSocketToServiceRecord(UUID_RFCOMM_GENERIC);
             } catch (IOException e) {
                 if (D)
                     Log.e(TAG, "Socket Type: " + mSocketType + "create() failed", e);
