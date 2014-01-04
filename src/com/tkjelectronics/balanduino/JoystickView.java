@@ -31,7 +31,7 @@ public class JoystickView extends View {
     private int buttonColor = buttonGray;
 
     private float x, y; // These are in the intern coordinates
-    private double lastX, lastY; // These are in the extern coordinates
+    private double lastX, lastY; // These are in the external coordinates
     private float buttonRadius;
     private float joystickRadius = 0;
     private float centerX;

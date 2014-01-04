@@ -57,7 +57,7 @@ public class BluetoothChatService {
     boolean stopReading; // This is used to stop it from reading on the inputStream
     public boolean newConnection; // Prevent it from calling connectionFailed() if it trying to start a new connection
 
-    private static final int MAXRETRIES = 100; // I know this might seem way too high! But it seems to work pretty well
+    private static final int MAX_RETRIES = 100; // I know this might seem way too high! But it seems to work pretty well
     public int nRetries = 0;
 
     /**
@@ -233,7 +233,7 @@ public class BluetoothChatService {
      */
     private void connectionFailed() {
         Message msg;
-        if (nRetries < MAXRETRIES) { // There is a bug in the Android core, so we need to connect twice for it to work all everytime
+        if (nRetries < MAX_RETRIES) { // There is a bug in the Android core, so we need to connect twice for it to work all every time
             nRetries++;
             // Send a retry message back to the Activity
             msg = mHandler.obtainMessage(BalanduinoActivity.MESSAGE_RETRY);

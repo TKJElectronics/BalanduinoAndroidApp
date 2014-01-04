@@ -77,7 +77,7 @@ public class Upload {
             if (uploading) {
                 uploading = false;
                 mPhysicaloid.cancelUpload();
-                BalanduinoActivity.showToast("Upload cancelled", Toast.LENGTH_SHORT);
+                BalanduinoActivity.showToast("Upload canceled", Toast.LENGTH_SHORT);
             }
             try {
                 if (mPhysicaloid.isOpened())

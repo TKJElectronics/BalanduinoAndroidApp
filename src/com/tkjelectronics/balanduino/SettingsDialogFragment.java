@@ -43,11 +43,11 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
 
         final TextView coefficientValue = (TextView) view.findViewById(R.id.coefficientValue);
         coefficientValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.filter_coefficient));
-        final SeekBar mSeekbarCoefficient = (SeekBar) view.findViewById(R.id.coefficientSeekBar);
-        mSeekbarCoefficient.setProgress((int) (BalanduinoActivity.mSensorFusion.filter_coefficient * mSeekbarCoefficient.getMax()));
-        mSeekbarCoefficient.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        final SeekBar mSeekBarCoefficient = (SeekBar) view.findViewById(R.id.coefficientSeekBar);
+        mSeekBarCoefficient.setProgress((int) (BalanduinoActivity.mSensorFusion.filter_coefficient * mSeekBarCoefficient.getMax()));
+        mSeekBarCoefficient.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                BalanduinoActivity.mSensorFusion.tempFilter_coefficient = ((float) progress) / mSeekbarCoefficient.getMax();
+                BalanduinoActivity.mSensorFusion.tempFilter_coefficient = ((float) progress) / mSeekBarCoefficient.getMax();
                 coefficientValue.setText(BalanduinoActivity.mSensorFusion.d.format(BalanduinoActivity.mSensorFusion.tempFilter_coefficient));
             }
 
@@ -58,20 +58,20 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
             }
         });
 
-        if (SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide seekbar and text
+        if (SensorFusion.IMUOutputSelection != 2) { // Check if a gyro is supported if not hide SeekBar and text
             view.findViewById(R.id.seekText).setVisibility(View.GONE);
             view.findViewById(R.id.coefficientLayout).setVisibility(View.GONE);
-            mSeekbarCoefficient.setVisibility(View.GONE);
+            mSeekBarCoefficient.setVisibility(View.GONE);
         }
 
         final TextView angleValue = (TextView) view.findViewById(R.id.angleValue);
         maxAngle = BalanduinoActivity.maxAngle;
         angleValue.setText(Integer.toString(maxAngle));
-        final SeekBar mSeekbarAngle = (SeekBar) view.findViewById(R.id.angleSeekBar);
-        mSeekbarAngle.setProgress(maxAngle);
-        mSeekbarAngle.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        final SeekBar mSeekBarAngle = (SeekBar) view.findViewById(R.id.angleSeekBar);
+        mSeekBarAngle.setProgress(maxAngle);
+        mSeekBarAngle.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                maxAngle = progress + 1; // The seekbar doesn't allow to set the mimimum value, so we will add 1
+                maxAngle = progress + 1; // The SeekBar doesn't allow to set the minimum value, so we will add 1
                 angleValue.setText(Integer.toString(maxAngle));
             }
 
@@ -85,11 +85,11 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
         final TextView turningValue = (TextView) view.findViewById(R.id.turningValue);
         maxTurning = BalanduinoActivity.maxTurning;
         turningValue.setText(Integer.toString(maxTurning));
-        final SeekBar mSeekbarTurning = (SeekBar) view.findViewById(R.id.turningSeekBar);
-        mSeekbarTurning.setProgress(maxTurning);
-        mSeekbarTurning.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        final SeekBar mSeekBarTurning = (SeekBar) view.findViewById(R.id.turningSeekBar);
+        mSeekBarTurning.setProgress(maxTurning);
+        mSeekBarTurning.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
-                maxTurning = progress + 1; // The seekbar doesn't allow to set the mimimum value, so we will add 1
+                maxTurning = progress + 1; // The SeekBar doesn't allow to set the minimum value, so we will add 1
                 turningValue.setText(Integer.toString(maxTurning));
             }
 

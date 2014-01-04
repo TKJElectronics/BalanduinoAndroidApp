@@ -30,7 +30,7 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class InfoFragment extends SherlockFragment {
-    static TextView mAppVersion, mFirmwareVersion, mEepromVersion, mMcu, mBatteryLevel, mRuntime;
+    static TextView mAppVersion, mFirmwareVersion, mEEPROMVersion, mMcu, mBatteryLevel, mRuntime;
     static ToggleButton mToggleButton;
 
     @Override
@@ -38,7 +38,7 @@ public class InfoFragment extends SherlockFragment {
         View v = inflater.inflate(R.layout.info, container, false);
         mAppVersion = (TextView) v.findViewById(R.id.appVersion);
         mFirmwareVersion = (TextView) v.findViewById(R.id.firmwareVersion);
-        mEepromVersion = (TextView) v.findViewById(R.id.eepromVersion);
+        mEEPROMVersion = (TextView) v.findViewById(R.id.eepromVersion);
         mMcu = (TextView) v.findViewById(R.id.mcu);
         mBatteryLevel = (TextView) v.findViewById(R.id.batterylevel);
         mRuntime = (TextView) v.findViewById(R.id.runtime);
@@ -81,8 +81,8 @@ public class InfoFragment extends SherlockFragment {
             mAppVersion.setText(BalanduinoActivity.appVersion);
         if (mFirmwareVersion != null && BalanduinoActivity.firmwareVersion != null)
             mFirmwareVersion.setText(BalanduinoActivity.firmwareVersion);
-        if (mEepromVersion != null && BalanduinoActivity.eepromVersion != null)
-            mEepromVersion.setText(BalanduinoActivity.eepromVersion);
+        if (mEEPROMVersion != null && BalanduinoActivity.eepromVersion != null)
+            mEEPROMVersion.setText(BalanduinoActivity.eepromVersion);
         if (mMcu != null && BalanduinoActivity.mcu != null)
             mMcu.setText(BalanduinoActivity.mcu);
         if (mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)
