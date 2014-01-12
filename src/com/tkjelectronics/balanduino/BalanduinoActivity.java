@@ -119,7 +119,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static double runtime;
     public static boolean newStatus;
 
-    public static boolean pairingWithWii;
+    public static boolean pairingWithDevice;
 
     public static boolean buttonState;
     public static boolean joystickReleased;
@@ -147,7 +147,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static String sendStop = "CS;";
     public final static String sendIMUValues = "CM,";
     public final static String sendJoystickValues = "CJ,";
-    public final static String sendPairWithWii = "CW;";
+    public final static String sendPairWithWii = "CPW;";
+    public final static String sendPairWithPS4 = "CPP;";
 
     public final static String restoreDefaultValues = "CR;";
 
@@ -157,7 +158,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static String responseInfo = "I";
     public final static String responseIMU = "V";
     public final static String responseStatus = "R";
-    public final static String responsePairWii = "WC";
+    public final static String responsePairConfirmation = "PC";
 
     public final static int responsePIDValuesLength = 5;
     public final static int responseKalmanValuesLength = 4;
@@ -165,7 +166,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static int responseInfoLength = 4;
     public final static int responseIMULength = 4;
     public final static int responseStatusLength = 3;
-    public final static int responsePairWiiLength = 1;
+    public final static int responsePairConfirmationLength = 1;
 
     @Override
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
@@ -581,9 +582,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                         newKalmanValues = false;
                         GraphFragment.updateKalmanValues();
                     }
-                    if (pairingWithWii) {
-                        pairingWithWii = false;
-                        BalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
+                    if (pairingWithDevice) {
+                        pairingWithDevice = false;
+                        BalanduinoActivity.showToast("Now enable discovery of your device", Toast.LENGTH_LONG);
                     }
                     break;
                 case MESSAGE_DEVICE_NAME:

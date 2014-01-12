@@ -135,8 +135,9 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
                 }
             }
         });
-        Button mPairButton = (Button) view.findViewById(R.id.pairButton);
-        mPairButton.setOnClickListener(new OnClickListener() {
+
+        Button mPairButtonWii = (Button) view.findViewById(R.id.pairButtonWii);
+        mPairButtonWii.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (BalanduinoActivity.mChatService != null) {
@@ -148,13 +149,28 @@ public class SettingsDialogFragment extends SherlockDialogFragment {
             }
         });
 
+        Button mPairButtonPS4 = (Button) view.findViewById(R.id.pairButtonPS4);
+        mPairButtonPS4.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (BalanduinoActivity.mChatService != null) {
+                    if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+                        BalanduinoActivity.mChatService.write(BalanduinoActivity.sendPairWithPS4);
+                        dismiss();
+                    }
+                }
+            }
+        });
+
         if (BalanduinoActivity.mChatService != null) {
             if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
                 mRestoreButton.setText(R.string.restoreButtonText);
-                mPairButton.setText(R.string.wiiButtonText);
+                mPairButtonWii.setText(R.string.wiiButtonText);
+                mPairButtonPS4.setText(R.string.ps4ButtonText);
             } else {
                 mRestoreButton.setText(R.string.button);
-                mPairButton.setText(R.string.button);
+                mPairButtonWii.setText(R.string.button);
+                mPairButtonPS4.setText(R.string.button);
             }
         }
 

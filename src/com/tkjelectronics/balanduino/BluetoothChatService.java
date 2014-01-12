@@ -397,6 +397,7 @@ public class BluetoothChatService {
 
                         String readMessage = new String(buffer, 0, bytes);
                         String[] splitMessage = readMessage.split(",");
+
                         if (D) {
                             Log.i(TAG, "Received string: " + readMessage);
                             for (int i = 0; i < splitMessage.length; i++)
@@ -441,8 +442,8 @@ public class BluetoothChatService {
                             BalanduinoActivity.newIMUValues = true;
 
                             mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget(); // Send message back to the UI Activity
-                        } else if (splitMessage[0].trim().equals(BalanduinoActivity.responsePairWii) && splitMessage.length == BalanduinoActivity.responsePairWiiLength) {
-                            BalanduinoActivity.pairingWithWii = true;
+                        } else if (splitMessage[0].trim().equals(BalanduinoActivity.responsePairConfirmation) && splitMessage.length == BalanduinoActivity.responsePairConfirmationLength) {
+                            BalanduinoActivity.pairingWithDevice = true;
 
                             mHandler.obtainMessage(BalanduinoActivity.MESSAGE_READ).sendToTarget(); // Send message back to the UI Activity
                         }

@@ -209,10 +209,35 @@
                 android:text="@string/wiiText" />
 
             <Button
-                android:id="@+id/pairButton"
+                android:id="@+id/pairButtonWii"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/wiiText"
+                android:layout_margin="@dimen/margin"
+                android:text="@string/button" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/pairWithPS4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/seekTextLayout"
+            android:layout_alignRight="@id/seekTextLayout"
+            android:layout_below="@id/pairWithWii"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="7dp">
+
+            <TextView
+                android:id="@+id/ps4Text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/ps4Text" />
+
+            <Button
+                android:id="@+id/pairButtonPS4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ps4Text"
                 android:layout_margin="@dimen/margin"
                 android:text="@string/button" />
         </RelativeLayout>
@@ -222,7 +247,7 @@
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/seekTextLayout"
             android:layout_alignRight="@id/seekTextLayout"
-            android:layout_below="@id/pairWithWii"
+            android:layout_below="@id/pairWithPS4"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="7dp">
 
