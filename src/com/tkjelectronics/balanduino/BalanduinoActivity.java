@@ -136,7 +136,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static String setTargetAngle = "ST,";
     public final static String setMaxAngle = "SA,";
     public final static String setMaxTurning = "SU,";
-    public final static String setBackToSpot = "SB";
+    public final static String setBackToSpot = "SB,";
 
     public final static String imuBegin = "IB;";
     public final static String imuStop = "IS;";
