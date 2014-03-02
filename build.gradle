@@ -112,3 +112,4 @@ if (project.hasProperty('storeFile') && project.hasProperty('storePassword') && 
 //    * Upload APK to release tab on Github as well
 // 5. Upload to Google Play Store
 //    * Also take new screenshots if necessary
+// 6. Update ADK version in Balanduino firmware
