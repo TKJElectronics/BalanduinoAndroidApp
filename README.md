@@ -2,7 +2,7 @@
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
 
-#### Developed by TKJ Electronics 2012-2014
+#### Developed by Kristian Lauszus, TKJ Electronics 2012-2014
 
 The code is released under the GNU General Public License.
 _________
@@ -36,4 +36,4 @@ This will automatically include the following third party libraries:
 * [GraphView library](https://github.com/Lauszus/GraphView)
 * [Physicaloid Library](https://github.com/Lauszus/PhysicaloidLibrary)
 
-For more information feel free to contact us at <a href="mailto:support@tkjelectronics.dk">support@tkjelectronics.dk</a>.
+For more information feel free to contact us at <support@tkjelectronics.dk>.
