@@ -11,7 +11,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.8.+'
+        classpath 'com.android.tools.build:gradle:0.9.+'
     }
 }
 
@@ -30,7 +30,7 @@ apply plugin: 'android'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion '19.0.2'
+    buildToolsVersion '19.0.3'
 
     defaultConfig {
         targetSdkVersion 19
@@ -87,7 +87,7 @@ repositories {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.0.+'
+    compile 'com.android.support:support-v4:19.1.+'
     compile 'com.jjoe64.graphview:graphview:3.1.1'
     compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
