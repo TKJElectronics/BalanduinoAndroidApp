@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ * Copyright (C) 2012-2014 Kristian Lauszus, TKJ Electronics. All rights reserved.
  *
  * This software may be distributed and modified under the terms of the GNU
  * General Public License version 2 (GPL2) as published by the Free Software
@@ -37,6 +37,7 @@ import com.jjoe64.graphview.GraphView.GraphViewData;
 import com.jjoe64.graphview.GraphView.LegendAlign;
 import com.jjoe64.graphview.GraphViewSeries;
 import com.jjoe64.graphview.GraphViewSeries.GraphViewSeriesStyle;
+import com.jjoe64.graphview.GraphViewStyle;
 import com.jjoe64.graphview.LineGraphView;
 
 public class GraphFragment extends SherlockFragment {
@@ -49,7 +50,6 @@ public class GraphFragment extends SherlockFragment {
 
     private static CheckBox mCheckBox1, mCheckBox2, mCheckBox3;
     private static EditText mQangle, mQbias, mRmeasure;
-    private static Button mButton;
     public static ToggleButton mToggleButton;
 
     private static double[][] buffer = new double[3][101]; // Used to store the 101 last readings
@@ -105,6 +105,16 @@ public class GraphFragment extends SherlockFragment {
         graphView.scrollToEnd();
 
         LinearLayout layout = (LinearLayout) v.findViewById(R.id.linegraph);
+
+        GraphViewStyle mGraphViewStyle = new GraphViewStyle();
+        mGraphViewStyle.setNumHorizontalLabels(11);
+        mGraphViewStyle.setNumVerticalLabels(9);
+        mGraphViewStyle.setTextSize(15);
+        mGraphViewStyle.setLegendWidth(140);
+        mGraphViewStyle.setLegendMarginBottom(30);
+
+        graphView.setGraphViewStyle(mGraphViewStyle);
+
         layout.addView(graphView);
 
         mCheckBox1 = (CheckBox) v.findViewById(R.id.checkBox1);
@@ -161,7 +171,7 @@ public class GraphFragment extends SherlockFragment {
         mQangle = (EditText) v.findViewById(R.id.editText1);
         mQbias = (EditText) v.findViewById(R.id.editText2);
         mRmeasure = (EditText) v.findViewById(R.id.editText3);
-        mButton = (Button) v.findViewById(R.id.updateButton);
+        Button mButton = (Button) v.findViewById(R.id.updateButton);
         mButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -170,9 +180,12 @@ public class GraphFragment extends SherlockFragment {
                         Log.e(TAG, "mChatService == null");
                     return;
                 }
-                BalanduinoActivity.Qangle = mQangle.getText().toString();
-                BalanduinoActivity.Qbias = mQbias.getText().toString();
-                BalanduinoActivity.Rmeasure = mRmeasure.getText().toString();
+                if (mQangle.getText() != null)
+                    BalanduinoActivity.Qangle = mQangle.getText().toString();
+                if (mQbias.getText() != null)
+                    BalanduinoActivity.Qbias = mQbias.getText().toString();
+                if (mRmeasure.getText() != null)
+                    BalanduinoActivity.Rmeasure = mRmeasure.getText().toString();
                 BalanduinoActivity.mChatService.write(BalanduinoActivity.setKalman + BalanduinoActivity.Qangle + "," + BalanduinoActivity.Qbias + "," + BalanduinoActivity.Rmeasure + ";");
             }
         });
@@ -190,15 +203,15 @@ public class GraphFragment extends SherlockFragment {
     }
 
     public static void updateKalmanValues() {
-        if (mQangle != null) {
+        if (mQangle != null && mQangle.getText() != null) {
             if (!(mQangle.getText().toString().equals(BalanduinoActivity.Qangle)))
                 mQangle.setText(BalanduinoActivity.Qangle);
         }
-        if (mQbias != null) {
+        if (mQbias != null && mQbias.getText() != null) {
             if (!(mQbias.getText().toString().equals(BalanduinoActivity.Qbias)))
                 mQbias.setText(BalanduinoActivity.Qbias);
         }
-        if (mRmeasure != null) {
+        if (mRmeasure != null && mRmeasure.getText() != null) {
             if (!(mRmeasure.getText().toString().equals(BalanduinoActivity.Rmeasure)))
                 mRmeasure.setText(BalanduinoActivity.Rmeasure);
         }

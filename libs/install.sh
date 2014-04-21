@@ -8,7 +8,7 @@ gradle clean assemble
 mvn install:install-file \
 -DgroupId=com.jjoe64.graphview \
 -DartifactId=graphview \
--Dversion=3.1 \
+-Dversion=3.1.1 \
 -DgeneratePom=true \
 -Dpackaging=aar \
 -Dfile=build/libs/GraphView.aar \

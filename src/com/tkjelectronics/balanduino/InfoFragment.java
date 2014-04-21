@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ * Copyright (C) 2012-2014 Kristian Lauszus, TKJ Electronics. All rights reserved.
  *
  * This software may be distributed and modified under the terms of the GNU
  * General Public License version 2 (GPL2) as published by the Free Software
@@ -20,7 +20,6 @@
 package com.tkjelectronics.balanduino;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -31,16 +30,15 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class InfoFragment extends SherlockFragment {
-    static TextView mAppVersion, mFirmwareVersion, mEepromVersion, mMcu, mBatteryLevel, mRuntime;
+    static TextView mAppVersion, mFirmwareVersion, mEEPROMVersion, mMcu, mBatteryLevel, mRuntime;
     static ToggleButton mToggleButton;
-    private static Handler mHandler = new Handler();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.info, container, false);
         mAppVersion = (TextView) v.findViewById(R.id.appVersion);
         mFirmwareVersion = (TextView) v.findViewById(R.id.firmwareVersion);
-        mEepromVersion = (TextView) v.findViewById(R.id.eepromVersion);
+        mEEPROMVersion = (TextView) v.findViewById(R.id.eepromVersion);
         mMcu = (TextView) v.findViewById(R.id.mcu);
         mBatteryLevel = (TextView) v.findViewById(R.id.batterylevel);
         mRuntime = (TextView) v.findViewById(R.id.runtime);
@@ -83,8 +81,8 @@ public class InfoFragment extends SherlockFragment {
             mAppVersion.setText(BalanduinoActivity.appVersion);
         if (mFirmwareVersion != null && BalanduinoActivity.firmwareVersion != null)
             mFirmwareVersion.setText(BalanduinoActivity.firmwareVersion);
-        if (mEepromVersion != null && BalanduinoActivity.eepromVersion != null)
-            mEepromVersion.setText(BalanduinoActivity.eepromVersion);
+        if (mEEPROMVersion != null && BalanduinoActivity.eepromVersion != null)
+            mEEPROMVersion.setText(BalanduinoActivity.eepromVersion);
         if (mMcu != null && BalanduinoActivity.mcu != null)
             mMcu.setText(BalanduinoActivity.mcu);
         if (mBatteryLevel != null && BalanduinoActivity.batteryLevel != null)

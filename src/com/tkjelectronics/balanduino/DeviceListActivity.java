@@ -16,13 +16,16 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -58,6 +61,7 @@ public class DeviceListActivity extends Activity {
     private CustomArrayAdapter mNewDevicesArrayAdapter;
 
     @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     protected void onCreate(Bundle savedInstanceState) {
         // Setup the window
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -102,7 +106,10 @@ public class DeviceListActivity extends Activity {
         this.registerReceiver(mReceiver, filter);
 
         // Get the local Bluetooth adapter
-        mBtAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+            mBtAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        else
+            mBtAdapter = BluetoothAdapter.getDefaultAdapter();
 
         // Get a set of currently paired devices
         Set<BluetoothDevice> pairedDevices = mBtAdapter.getBondedDevices();
@@ -178,14 +185,16 @@ public class DeviceListActivity extends Activity {
     // The on-click listener for all devices in the ListViews
     private OnItemClickListener mDeviceClickListener = new OnItemClickListener() {
         public void onItemClick(AdapterView<?> av, View v, int arg2, long arg3) {
-            // Get the device MAC address, which is the last 17 chars in the View
-            String info = ((TextView) v).getText().toString();
+            CharSequence text = ((TextView) v).getText();
+            if (text == null)
+                return;
+            String info = text.toString();
             if (D)
                 Log.d(TAG, "Info: " + info);
 
             mBtAdapter.cancelDiscovery(); // Cancel discovery because it's costly and we're about to connect
 
-            String address = info.substring(info.length() - 17);
+            String address = info.substring(info.length() - 17); // Get the device MAC address, which is the last 17 chars in the View
             new_device = av.getId() == R.id.new_devices;
 
             // Create the result Intent and include the MAC address

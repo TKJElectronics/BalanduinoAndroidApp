@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ * Copyright (C) 2012-2014 Kristian Lauszus, TKJ Electronics. All rights reserved.
  *
  * This software may be distributed and modified under the terms of the GNU
  * General Public License version 2 (GPL2) as published by the Free Software
@@ -19,14 +19,17 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -74,6 +77,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     // Local Bluetooth adapter
     private BluetoothAdapter mBluetoothAdapter = null;
+    private BluetoothHandler mBluetoothHandler = null;
     // Member object for the chat services
     public static BluetoothChatService mChatService = null;
     public static SensorFusion mSensorFusion = null;
@@ -120,7 +124,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static double runtime;
     public static boolean newStatus;
 
-    public static boolean pairingWithWii;
+    public static boolean pairingWithDevice;
 
     public static boolean buttonState;
     public static boolean joystickReleased;
@@ -138,7 +142,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static String setTargetAngle = "ST,";
     public final static String setMaxAngle = "SA,";
     public final static String setMaxTurning = "SU,";
-    public final static String setBackToSpot = "SB";
+    public final static String setBackToSpot = "SB,";
 
     public final static String imuBegin = "IB;";
     public final static String imuStop = "IS;";
@@ -149,7 +153,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static String sendStop = "CS;";
     public final static String sendIMUValues = "CM,";
     public final static String sendJoystickValues = "CJ,";
-    public final static String sendPairWithWii = "CW;";
+    public final static String sendPairWithWii = "CPW;";
+    public final static String sendPairWithPS4 = "CPP;";
 
     public final static String restoreDefaultValues = "CR;";
 
@@ -160,7 +165,7 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static String responseInfo = "I";
     public final static String responseIMU = "V";
     public final static String responseStatus = "R";
-    public final static String responsePairWii = "WC";
+    public final static String responsePairConfirmation = "PC";
 
     public final static int responsePIDValuesLength = 5;
     public final static int responseEncoderValuesLength = 4;
@@ -169,16 +174,17 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public final static int responseInfoLength = 4;
     public final static int responseIMULength = 4;
     public final static int responseStatusLength = 3;
-    public final static int responsePairWiiLength = 1;
+    public final static int responsePairConfirmationLength = 1;
 
     @Override
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         activity = this;
         context = getApplicationContext();
 
         if (!getResources().getBoolean(R.bool.isTablet))
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_USER_PORTRAIT); // Set portrait mode only - for small screens like phones
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // Set portrait mode only - for small screens like phones
         else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_USER); // Full screen rotation
@@ -196,7 +202,11 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         setContentView(R.layout.activity_main);
 
         // Get local Bluetooth adapter
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2)
+            mBluetoothAdapter = ((BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE)).getAdapter();
+        else
+            mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
         // If the adapter is null, then Bluetooth is not supported
         if (mBluetoothAdapter == null) {
             showToast("Bluetooth is not available", Toast.LENGTH_LONG);
@@ -268,7 +278,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                     .setTabListener(this));
         }
         try {
-            BalanduinoActivity.appVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
+            PackageManager mPackageManager = getPackageManager();
+            if (mPackageManager != null)
+                BalanduinoActivity.appVersion = mPackageManager.getPackageInfo(getPackageName(), 0).versionName; // Read the app version name
         } catch (NameNotFoundException e) {
             e.printStackTrace();
         }
@@ -286,10 +298,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 Log.d(TAG, "Request enable BT");
             Intent enableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableIntent, REQUEST_ENABLE_BT);
-        } else { // Otherwise, setup the chat session
-            if (mChatService == null)
-                setupBTService();
-        }
+        } else
+            setupBTService(); // Otherwise, setup the chat session
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this); // Create SharedPreferences instance
         String filterCoefficient = preferences.getString("filterCoefficient", null); // Read the stored value for filter coefficient
@@ -325,10 +335,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
 
     @Override
     public void onBackPressed() {
-        if (mChatService != null)
-            mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
-        if (Upload.flavor.equals(("Usb")))
-            Upload.close(); // Close serial communication
+        Upload.close(); // Close serial communication
+        if (mChatService != null) {
+            new Handler().postDelayed(new Runnable() {
+                public void run() {
+                    mChatService.stop(); // Stop the Bluetooth chat services if the user exits the app
+                }
+            }, 1000); // Wait 1 second before closing the connection, this is needed as onPause() will send stop messages before closing
+        }
         finish(); // Exits the app
     }
 
@@ -348,9 +362,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         // Unregister sensor listeners to prevent the activity from draining the device's battery.
         mSensorFusion.unregisterListeners();
         if (mChatService != null) { // Send stop command and stop sending graph data command
-            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
                 mChatService.write(sendStop + imuStop + statusStop);
-            }
         }
     }
 
@@ -364,10 +377,14 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     }
 
     private void setupBTService() {
+        if (mChatService != null)
+            return;
+
         if (D)
             Log.d(TAG, "setupBTService()");
-        // Initialize the BluetoothChatService to perform Bluetooth connections
-        mChatService = new BluetoothChatService(new BluetoothHandler(this));
+        if (mBluetoothHandler == null)
+            mBluetoothHandler = new BluetoothHandler(this);
+        mChatService = new BluetoothChatService(mBluetoothHandler, mBluetoothAdapter); // Initialize the BluetoothChatService to perform Bluetooth connections
     }
 
     @Override
@@ -574,19 +591,21 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                         newKalmanValues = false;
                         GraphFragment.updateKalmanValues();
                     }
-                    if (pairingWithWii) {
-                        pairingWithWii = false;
-                        BalanduinoActivity.showToast("Now press 1 & 2 on the Wiimote or press sync if you are using a Wii U Pro Controller", Toast.LENGTH_LONG);
+                    if (pairingWithDevice) {
+                        pairingWithDevice = false;
+                        BalanduinoActivity.showToast("Now enable discovery of your device", Toast.LENGTH_LONG);
                     }
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // Save the connected device's name
-                    mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
+                    if (msg.getData() != null)
+                        mConnectedDeviceName = msg.getData().getString(DEVICE_NAME);
                     break;
                 case MESSAGE_DISCONNECTED:
                     mBalanduinoActivity.supportInvalidateOptionsMenu();
                     PIDFragment.updateButton();
-                    BalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
+                    if (msg.getData() != null)
+                        BalanduinoActivity.showToast(msg.getData().getString(TOAST), Toast.LENGTH_SHORT);
                     break;
                 case MESSAGE_RETRY:
                     if (D)
@@ -608,10 +627,9 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                 break;
             case REQUEST_ENABLE_BT:
                 // When the request to enable Bluetooth returns
-                if (resultCode == Activity.RESULT_OK) {
-                    // Bluetooth is now enabled, so set up a chat session
-                    setupBTService();
-                } else {
+                if (resultCode == Activity.RESULT_OK)
+                    setupBTService(); // Bluetooth is now enabled, so set up a chat session
+                else {
                     // User did not enable Bluetooth or an error occured
                     if (D)
                         Log.d(TAG, "BT not enabled");
@@ -631,6 +649,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
             stopRetrying = false;
             mChatService.newConnection = true;
             mChatService.start(); // This will stop all the running threads
+            if (data.getExtras() == null)
+                return;
             String address = data.getExtras().getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS); // Get the device Bluetooth address
             btSecure = data.getExtras().getBoolean(DeviceListActivity.EXTRA_NEW_DEVICE); // If it's a new device we will pair with the device
             btDevice = mBluetoothAdapter.getRemoteDevice(address); // Get the BluetoothDevice object

@@ -4,7 +4,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.jjoe64.graphview</groupId>
   <artifactId>graphview</artifactId>
-  <version>3.1</version>
+  <version>3.1.1</version>
   <packaging>aar</packaging>
   <description>POM was created from install:install-file</description>
 </project>

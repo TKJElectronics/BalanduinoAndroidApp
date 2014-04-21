@@ -1,5 +1,5 @@
 /*************************************************************************************
- * Copyright (C) 2012 Kristian Lauszus, TKJ Electronics. All rights reserved.
+ * Copyright (C) 2012-2014 Kristian Lauszus, TKJ Electronics. All rights reserved.
  *
  * This software may be distributed and modified under the terms of the GNU
  * General Public License version 2 (GPL2) as published by the Free Software
@@ -35,5 +35,6 @@ public class SquareLinearLayout extends LinearLayout {
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
     }
 }

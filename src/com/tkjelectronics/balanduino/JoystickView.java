@@ -31,7 +31,7 @@ public class JoystickView extends View {
     private int buttonColor = buttonGray;
 
     private float x, y; // These are in the intern coordinates
-    private double lastX, lastY; // These are in the extern coordinates
+    private double lastX, lastY; // These are in the external coordinates
     private float buttonRadius;
     private float joystickRadius = 0;
     private float centerX;
@@ -54,6 +54,7 @@ public class JoystickView extends View {
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, widthMeasureSpec); // Make the layout square
+        setMeasuredDimension(getMeasuredWidth(), getMeasuredWidth());
     }
 
     @Override

@@ -2,7 +2,7 @@
 
 [![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
 
-#### Developed by Kristian Lauszus, TKJ Electronics 2012
+#### Developed by Kristian Lauszus, TKJ Electronics 2012-2014
 
 The code is released under the GNU General Public License.
 _________
@@ -13,9 +13,13 @@ More information can be found at our Kickstarter campaign: <http://www.kickstart
 
 The source code for the robot can be found at the following link: <https://github.com/TKJElectronics/Balanduino>.
 
-A video for the Kickstarter presentation of the robot can be found here: <http://www.youtube.com/watch?v=_kQniPbg9zc>.
+A video for the Kickstarter presentation can be seen below:
 
-A video filmed with a GoPro mounted on the robot can be seen here: <http://www.youtube.com/watch?v=CvFcnb_9anM>.
+<a href="http://www.youtube.com/watch?v=_kQniPbg9zc" target="_blank"><img src="http://img.youtube.com/vi/_kQniPbg9zc/0.jpg" alt="Kickstarter video presentation" width="240" height="180" border="10" /></a>
+
+A video filmed with a GoPro mounted on the robot can be seen below:
+
+<a href="http://www.youtube.com/watch?v=CvFcnb_9anM" target="_blank"><img src="http://img.youtube.com/vi/CvFcnb_9anM/0.jpg" alt="GoPro demonstration" width="240" height="180" border="10" /></a>
 
 # Screenshots
 
@@ -32,4 +36,4 @@ This will automatically include the following third party libraries:
 * [GraphView library](https://github.com/Lauszus/GraphView)
 * [Physicaloid Library](https://github.com/Lauszus/PhysicaloidLibrary)
 
-For more information send me an email at <a href="mailto:kristianl@tkjelectronics.dk">kristianl@tkjelectronics.dk</a>.
+For more information feel free to contact us at <support@tkjelectronics.dk>.

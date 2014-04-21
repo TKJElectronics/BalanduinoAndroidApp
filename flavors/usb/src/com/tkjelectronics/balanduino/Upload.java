@@ -19,6 +19,7 @@
 
 package com.tkjelectronics.balanduino;
 
+import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -49,11 +50,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.Locale;
 import java.util.Map;
 
+@TargetApi(12)
 public class Upload {
     private static final String TAG = "Upload";
-    public final static String flavor = "Usb";
     private static final boolean D = BalanduinoActivity.D;
     private static final String ACTION_USB_PERMISSION = "com.tkjelectronics.balanduino.USB_PERMISSION";
 
@@ -72,7 +74,7 @@ public class Upload {
             if (uploading) {
                 uploading = false;
                 mPhysicaloid.cancelUpload();
-                BalanduinoActivity.showToast("Upload cancelled", Toast.LENGTH_SHORT);
+                BalanduinoActivity.showToast("Upload canceled", Toast.LENGTH_SHORT);
             }
             try {
                 if (mPhysicaloid.isOpened())
@@ -216,25 +218,47 @@ public class Upload {
     private static UploadCallBack mUploadCallback = new UploadCallBack() {
         @Override
         public void onUploading(int value) {
-            uploading = true;
             if (D)
                 Log.i(TAG, "Uploading: " + value);
+            mProgressDialog.setProgress(value);
         }
 
         @Override
         public void onPreUpload() {
+            if (D)
+                Log.i(TAG, "Upload start");
             uploading = true;
             BalanduinoActivity.activity.runOnUiThread(new Runnable() {
                 public void run() {
-                    Toast.makeText(BalanduinoActivity.context, "Uploading...", Toast.LENGTH_SHORT).show();
+                    mProgressDialog = new ProgressDialog(BalanduinoActivity.activity);
+                    mProgressDialog.setMessage("Uploading...");
+                    mProgressDialog.setIndeterminate(false);
+                    mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                    mProgressDialog.setCancelable(true);
+                    mProgressDialog.setMax(100);
+                    mProgressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+                        @Override
+                        public void onCancel(DialogInterface dialog) {
+                            mPhysicaloid.cancelUpload();
+                            try {
+                                if (mPhysicaloid.isOpened())
+                                    mPhysicaloid.close();
+                            } catch (RuntimeException e) {
+                                if (D)
+                                    Log.e(TAG, e.toString());
+                            }
+                        }
+                    });
+                    mProgressDialog.show();
                 }
             });
-            if (D)
-                Log.i(TAG, "Upload start");
         }
 
         @Override
         public void onPostUpload(boolean success) {
+            if (D)
+                Log.i(TAG, "Upload finished");
+            mProgressDialog.dismiss();
             uploading = false;
             if (cancelled) {
                 cancelled = false;
@@ -263,14 +287,15 @@ public class Upload {
 
         @Override
         public void onError(UploadErrors err) {
+            if (D)
+                Log.e(TAG, "Error: " + err.toString());
+            mProgressDialog.dismiss();
             uploading = false;
             BalanduinoActivity.activity.runOnUiThread(new Runnable() {
                 public void run() {
                     BalanduinoActivity.showToast("Uploading error", Toast.LENGTH_SHORT);
                 }
             });
-            if (D)
-                Log.e(TAG, "Error: " + err.toString());
         }
     };
 
@@ -298,85 +323,85 @@ public class Upload {
             PowerManager.WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
             wl.acquire();
 
+            InputStream input = null;
+            DigestInputStream disInput = null;
+            FileOutputStream output = null;
+            HttpURLConnection connection = null;
+
             try {
-                InputStream input = null;
-                DigestInputStream disInput = null;
-                FileOutputStream output = null;
-                HttpURLConnection connection = null;
-                try {
-                    fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/') + 1, sUrl[0].length());
-                    if (D)
-                        Log.i(TAG, "FileName: " + fileName);
+                fileName = sUrl[0].substring(sUrl[0].lastIndexOf('/') + 1, sUrl[0].length());
+                if (D)
+                    Log.i(TAG, "FileName: " + fileName);
 
-                    // Download hex file
-                    URL url = new URL(sUrl[0]);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
+                // Download hex file
+                URL url = new URL(sUrl[0]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
 
-                    // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                        return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+                // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                    return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
 
-                    input = connection.getInputStream(); // Get input stream
-                    output = context.openFileOutput(fileName, Context.MODE_PRIVATE); // Open output stream
+                input = connection.getInputStream(); // Get input stream
+                output = context.openFileOutput(fileName, Context.MODE_PRIVATE); // Open output stream
 
-                    // Used to calculate MD5 checksum
-                    MessageDigest mMessageDigest = MessageDigest.getInstance("MD5");
-                    disInput = new DigestInputStream(input, mMessageDigest);
+                // Used to calculate MD5 checksum
+                MessageDigest mMessageDigest = MessageDigest.getInstance("MD5");
+                disInput = new DigestInputStream(input, mMessageDigest);
 
-                    byte data[] = new byte[4096];
-                    int count;
-                    while ((count = disInput.read(data)) != -1) {
-                        if (isCancelled()) // Allow canceling with back button
-                            return null;
-                        output.write(data, 0, count);
-                    }
-                    String checksum = bytesToHex(mMessageDigest.digest()); // Calculated MD5 checksum of file
-
-                    // Download MD5 file
-                    url = new URL(sUrl[1]);
-                    connection = (HttpURLConnection) url.openConnection();
-                    connection.connect();
-
-                    // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
-                        return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
-
-                    input = connection.getInputStream(); // Get input stream
-
-                    String md5 = "";
-                    while (input.read(data) != -1) {
-                        if (isCancelled()) // Allow canceling with back button
-                            return null;
-                        md5 += new String(data);
-                    }
-                    md5 = md5.substring(0, md5.indexOf(" *")).toUpperCase(); // MD5 file is in the coreutils format
-
-                    if (D)
-                        Log.e(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
-
-                    if (!checksum.equals(md5))
-                        return "Error in MD5 checksum";
-
-                } catch (Exception e) {
-                    return e.toString();
-                } finally {
-                    try {
-                        if (output != null)
-                            output.close();
-                        if (input != null)
-                            input.close();
-                        if (disInput != null)
-                            disInput.close();
-                    } catch (IOException ignored) {
-                    }
-
-                    if (connection != null)
-                        connection.disconnect();
+                byte data[] = new byte[4096];
+                int count;
+                while ((count = disInput.read(data)) != -1) {
+                    if (isCancelled()) // Allow canceling with back button
+                        return null;
+                    output.write(data, 0, count);
                 }
+                String checksum = bytesToHex(mMessageDigest.digest()); // Calculated MD5 checksum of file
+
+                // Download MD5 file
+                url = new URL(sUrl[1]);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.connect();
+
+                // Expect HTTP 200 OK, so we do not mistakenly save error report instead of the file
+                if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+                    return "Server returned HTTP " + connection.getResponseCode() + " " + connection.getResponseMessage();
+
+                input = connection.getInputStream(); // Get input stream
+
+                String md5 = "";
+                while (input.read(data) != -1) {
+                    if (isCancelled()) // Allow canceling with back button
+                        return null;
+                    md5 += new String(data);
+                }
+                md5 = md5.substring(0, md5.indexOf(" *")).toUpperCase(Locale.ENGLISH); // MD5 file is in the coreutils format
+
+                if (D)
+                    Log.i(TAG, "Checksum: " + checksum + " " + md5 + " " + checksum.equals(md5));
+
+                if (!checksum.equals(md5))
+                    return "Error in MD5 checksum";
+
+            } catch (Exception e) {
+                return e.toString();
             } finally {
+                try {
+                    if (output != null)
+                        output.close();
+                    if (input != null)
+                        input.close();
+                    if (disInput != null)
+                        disInput.close();
+                } catch (IOException ignored) {
+                }
+
+                if (connection != null)
+                    connection.disconnect();
+
                 wl.release();
             }
+
             return null;
         }
 
@@ -417,25 +442,11 @@ public class Upload {
         }
 
         private String checkNetwork() {
-            ConnectivityManager mConnectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-            if (mConnectivityManager == null)
-                return "No connection available";
-
-            NetworkInfo infoMobile = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            NetworkInfo infoWifi = mConnectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-            if (infoMobile != null && infoWifi != null) {
-                if (infoMobile.getState() != NetworkInfo.State.CONNECTED && infoWifi.getState() != NetworkInfo.State.CONNECTED)
-                    return "No network available";
-            } else if (infoMobile != null) {
-                if (infoMobile.getState() != NetworkInfo.State.CONNECTED)
-                    return "No mobile network available";
-            } else if (infoWifi != null) {
-                if (infoWifi.getState() != NetworkInfo.State.CONNECTED)
-                    return "No Wifi network available";
-            } else
-                return "No connection available";
-            return null;
+            ConnectivityManager mConnectivityManager = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = mConnectivityManager.getActiveNetworkInfo();
+            if (activeNetwork != null && activeNetwork.isConnected())
+                return null;
+            return "No internet connection available";
         }
     }
 }

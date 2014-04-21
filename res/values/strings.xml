@@ -46,7 +46,6 @@
     <string name="mcu">MCU:</string>
     <string name="batterylevel">Battery level:</string>
     <string name="runtime">Runtime:</string>
-    <string name="updateInfo">Press to update information</string>
 
     <!-- Settings Dialog Fragment -->
     <string name="dialog_title">Settings</string>
@@ -63,6 +62,8 @@
     <string name="uploadButtonText">Upload firmware</string>
     <string name="wiiText">Press the button below to pair with a Wiimote or a Wii U Pro Controller.</string>
     <string name="wiiButtonText">Pair with Wiimote</string>
+    <string name="ps4Text">Press the button below to pair with a PS4 Controller.</string>
+    <string name="ps4ButtonText">Pair with PS4 controller</string>
     <string name="restoreText">Press the button below to restore the default configuration values.</string>
     <string name="restoreButtonText">Restore values</string>
 
