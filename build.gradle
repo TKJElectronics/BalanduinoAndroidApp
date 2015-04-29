@@ -8,10 +8,10 @@ project.ext {
 
 buildscript {
     repositories {
-        mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.9.+'
+        classpath 'com.android.tools.build:gradle:1.2.2'
     }
 }
 
@@ -26,14 +26,14 @@ task update { // Task to update version in accessory filter
     accessoryFile.write(accessoryText)
 }
 
-apply plugin: 'android'
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion '19.0.3'
+    compileSdkVersion 22
+    buildToolsVersion '22.0.1'
 
     defaultConfig {
-        targetSdkVersion 19
+        targetSdkVersion 22
         versionName = project.versionName
     }
 
@@ -82,12 +82,12 @@ android {
 }
 
 repositories {
-    mavenCentral()
+    jcenter()
     maven { url 'libs' }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:19.1.+'
+    compile 'com.android.support:support-v4:22.0.0'
     compile 'com.jjoe64:graphview:3.1.4'
     compile 'com.viewpagerindicator:viewpagerindicator:2.4.1'
     compile 'com.actionbarsherlock:actionbarsherlock:4.4.0@aar'
