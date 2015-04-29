@@ -106,7 +106,7 @@ if (project.hasProperty('storeFile') && project.hasProperty('storePassword') && 
 
 // Releasing:
 // 1. Update versionName and versionCode
-// 2. Run 'gradle clean build'
+// 2. Run './gradlew clean build'
 // 3. Move APK to releases directory
 // 4. Upload to Github and create tag
 //    * Upload APK to release tab on Github as well
