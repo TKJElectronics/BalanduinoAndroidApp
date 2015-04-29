@@ -35,6 +35,9 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.PowerManager;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.physicaloid.lib.Boards;
@@ -62,8 +65,10 @@ public class Upload {
     private static Physicaloid mPhysicaloid;
     private static boolean uploading = false, cancelled = false;
     private static ProgressDialog mProgressDialog;
-    private final static String fileUrl = "https://raw.github.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino.hex";
-    private final static String fileUrlMd5 = "https://raw.github.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino.md5";
+    private final static String fileUrl_rev12 = "https://raw.githubusercontent.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino_rev12.hex";
+    private final static String fileUrlMd5_rev12 = "https://raw.githubusercontent.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino_rev12.md5";
+    private final static String fileUrl_rev13 = "https://raw.githubusercontent.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino_rev13.hex";
+    private final static String fileUrlMd5_rev13 = "https://raw.githubusercontent.com/TKJElectronics/Balanduino/master/Firmware/Balanduino/Balanduino_rev13.md5";
     private static String fileName;
 
     /**
@@ -169,22 +174,29 @@ public class Upload {
 
     private static void showDialog() {
         if (!BalanduinoActivity.activity.isFinishing()) {
+            LayoutInflater inflater = LayoutInflater.from(BalanduinoActivity.context);
+            View view = inflater.inflate(R.layout.upload_dialog, null);
+            final RadioButton rev12 = (RadioButton) view.findViewById(R.id.radio_rev12);
+
             new AlertDialog.Builder(BalanduinoActivity.activity)
                     .setIcon(R.drawable.ic_dialog_usb)
                     .setTitle("Download firmware")
-                    .setMessage("This will download the newest firmware and upload it to the Balanduino via the USB host port")
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            downloadFile();
+                            if (rev12.isChecked())
+                                downloadFile(fileUrl_rev12, fileUrlMd5_rev12);
+                            else
+                                downloadFile(fileUrl_rev13, fileUrlMd5_rev13);
                         }
                     })
                     .setNegativeButton("Cancel", null)
+                    .setView(view)
                     .create().show();
         }
     }
 
-    private static void downloadFile() {
+    private static void downloadFile(String fileUrl, String fileUrlMd5) {
         // Execute this when the downloader must be fired
         final DownloadTask downloadTask = new DownloadTask(BalanduinoActivity.activity);
         downloadTask.execute(fileUrl, fileUrlMd5);

@@ -65,6 +65,11 @@
     <string name="restoreText">Press the button below to restore the default configuration values.</string>
     <string name="restoreButtonText">Restore values</string>
 
+    <!-- Upload dialog -->
+    <string name="uploadFirmware">Select your PCB revision below and then press OK to download the newest firmware and upload it to the Balanduino via the USB host port</string>
+    <string name="rev12">Revision 1.2 or older</string>
+    <string name="rev13">Revision 1.3</string>
+
     <!--  DeviceListActivity -->
     <string name="scanning">Scanning for devices&#8230;</string>
     <string name="select_device">Select a device to connect</string>
