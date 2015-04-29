@@ -125,6 +125,7 @@ public class Upload {
                     BalanduinoActivity.activity.registerReceiver(mUsbReceiver, new IntentFilter(ACTION_USB_PERMISSION));
                     mUsbManager.requestPermission(mUsbDevice, mPermissionIntent);
                 }
+                break;
             }
         }
         if (!deviceFound) {
