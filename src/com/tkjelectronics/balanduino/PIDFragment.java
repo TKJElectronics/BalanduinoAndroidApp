@@ -58,10 +58,7 @@ public class PIDFragment extends SherlockFragment {
 
         mKpSeekBar = (SeekBar) v.findViewById(R.id.KpSeekBar);
         mKpSeekBar.setMax(2000); // 0-20
-        mKpSeekBar.setProgress(mKpSeekBar.getMax() / 2);
         mKpSeekBarValue = (TextView) v.findViewById(R.id.KpValue);
-        mKpSeekBarValue.setText(String.format("%.2f", (float) mKpSeekBar.getMax() / 200.0f));
-
         mKpSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
                 newKpValue = (float) progress / 100.0f; // Since the SeekBar can only handle integers, so this is needed
@@ -74,13 +71,11 @@ public class PIDFragment extends SherlockFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        mKpSeekBar.setProgress(mKpSeekBar.getMax() / 2);
 
         mKiSeekBar = (SeekBar) v.findViewById(R.id.KiSeekBar);
         mKiSeekBar.setMax(2000); // 0-20
-        mKiSeekBar.setProgress(mKiSeekBar.getMax() / 2);
         mKiSeekBarValue = (TextView) v.findViewById(R.id.KiValue);
-        mKiSeekBarValue.setText(String.format("%.2f", (float) mKiSeekBar.getMax() / 200.0f));
-
         mKiSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
                 newKiValue = (float) progress / 100.0f; // Since the SeekBar can only handle integers, so this is needed
@@ -93,13 +88,11 @@ public class PIDFragment extends SherlockFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        mKiSeekBar.setProgress(mKiSeekBar.getMax() / 2); // Call this after the OnSeekBarChangeListener is created
 
         mKdSeekBar = (SeekBar) v.findViewById(R.id.KdSeekBar);
         mKdSeekBar.setMax(2000); // 0-20
-        mKdSeekBar.setProgress(mKdSeekBar.getMax() / 2);
         mKdSeekBarValue = (TextView) v.findViewById(R.id.KdValue);
-        mKdSeekBarValue.setText(String.format("%.2f", (float) mKdSeekBar.getMax() / 200.0f));
-
         mKdSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
                 newKdValue = (float) progress / 100.0f; // Since the SeekBar can only handle integers, so this is needed
@@ -112,13 +105,11 @@ public class PIDFragment extends SherlockFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        mKdSeekBar.setProgress(mKdSeekBar.getMax() / 2);
 
         mTargetAngleSeekBar = (SeekBar) v.findViewById(R.id.TargetAngleSeekBar);
         mTargetAngleSeekBar.setMax(600); // 150-210
-        mTargetAngleSeekBar.setProgress(mTargetAngleSeekBar.getMax() / 2);
         mTargetAngleSeekBarValue = (TextView) v.findViewById(R.id.TargetAngleValue);
-        mTargetAngleSeekBarValue.setText(String.format("%.2f", (float) mTargetAngleSeekBar.getMax() / 20.0f + 150.0f));
-
         mTargetAngleSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromTouch) {
                 newTargetAngleValue = (float) progress / 10.0f + 150.0f; // It's not possible to set the minimum value either, so we will add a offset
@@ -131,6 +122,7 @@ public class PIDFragment extends SherlockFragment {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
+        mTargetAngleSeekBar.setProgress(mTargetAngleSeekBar.getMax() / 2);
 
         mButton = (Button) v.findViewById(R.id.button);
         mButton.setOnClickListener(new OnClickListener() {
