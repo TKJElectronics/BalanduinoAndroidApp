@@ -1,21 +1,5 @@
 #! /bin/sh -e
 
-echo "Installing GrapView"
-cd GraphView
-
-gradle clean assemble
-
-mvn install:install-file \
--DgroupId=com.jjoe64.graphview \
--DartifactId=graphview \
--Dversion=3.1.1 \
--DgeneratePom=true \
--Dpackaging=aar \
--Dfile=build/libs/GraphView.aar \
--DlocalRepositoryPath=../
-
-cd ../
-
 echo "Installing Android ViewPagerIndicator"
 cd Android-ViewPagerIndicator
 
