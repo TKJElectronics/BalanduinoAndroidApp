@@ -218,7 +218,7 @@ public class DeviceListActivity extends Activity {
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE); // Get the BluetoothDevice object from the Intent
                 if (device != null) {
                     if (D)
-                        Log.e(TAG, "Device name: " + device.getName());
+                        Log.i(TAG, "Device name: " + device.getName());
                     if (device.getBondState() != BluetoothDevice.BOND_BONDED) // If it's already paired, skip it, because it's been listed already
                         mNewDevicesArrayAdapter.add(device.getName() + "\n" + device.getAddress());
                 }
