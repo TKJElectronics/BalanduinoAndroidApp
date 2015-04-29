@@ -455,14 +455,10 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         if (D)
             Log.d(TAG, "onPrepareOptionsMenu");
         MenuItem menuItem = menu.findItem(R.id.menu_connect); // Find item
-        if (mChatService == null)
+        if (mChatService != null && mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
+            menuItem.setIcon(R.drawable.device_access_bluetooth_connected);
+        else
             menuItem.setIcon(R.drawable.device_access_bluetooth);
-        else {
-            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-                menuItem.setIcon(R.drawable.device_access_bluetooth_connected);
-            else
-                menuItem.setIcon(R.drawable.device_access_bluetooth);
-        }
         return true;
     }
 
