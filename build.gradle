@@ -1,8 +1,8 @@
 import java.util.regex.Pattern
 
 project.ext {
-    versionCode = '062'
-    versionName = '0.6.2'
+    versionCode = '063'
+    versionName = '0.6.3'
     archivesBaseName = project.name + '-' + project.versionName
 }
 
