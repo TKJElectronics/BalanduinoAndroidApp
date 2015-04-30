@@ -27,7 +27,7 @@ mvn install:install-file \
 -Dversion=1.0 \
 -DgeneratePom=true \
 -Dpackaging=aar \
--Dfile=PhysicaloidLibrary/build/libs/PhysicaloidLibrary-1.0.aar \
+-Dfile=PhysicaloidLibrary/build/outputs/aar/PhysicaloidLibrary-release.aar \
 -DlocalRepositoryPath=../
 
 echo "Done installing libraries"
