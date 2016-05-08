@@ -1,6 +1,6 @@
 # Balanduino Android App
 
-[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino)
+<a href="http://play.google.com/store/apps/details?id=com.tkjelectronics.balanduino"><img src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png" alt="Google Play" width="200px"/></a>
 
 #### Developed by Kristian Lauszus, TKJ Electronics 2012-2014
 
