@@ -36,16 +36,16 @@ public class PIDFragment extends SherlockFragment {
     private static final String TAG = "PIDFragment";
     private static final boolean D = BalanduinoActivity.D;
 
-    static Button mButton;
-    static TextView mKpView, mKiView, mKdView, mTargetAngleView;
-    static SeekBar mKpSeekBar, mKiSeekBar, mKdSeekBar, mTargetAngleSeekBar;
-    static TextView mKpSeekBarValue, mKiSeekBarValue, mKdSeekBarValue, mTargetAngleSeekBarValue;
+    private static Button mButton;
+    private static TextView mKpView, mKiView, mKdView, mTargetAngleView;
+    private static SeekBar mKpSeekBar, mKiSeekBar, mKdSeekBar, mTargetAngleSeekBar;
+    private static TextView mKpSeekBarValue, mKiSeekBarValue, mKdSeekBarValue, mTargetAngleSeekBarValue;
 
-    float newKpValue, newKiValue, newKdValue, newTargetAngleValue;
-    float oldKpValue, oldKiValue, oldKdValue, oldTargetAngleValue;
+    private float newKpValue, newKiValue, newKdValue, newTargetAngleValue;
+    private float oldKpValue, oldKiValue, oldKdValue, oldTargetAngleValue;
 
-    Handler mHandler = new Handler();
-    int counter = 0;
+    private Handler mHandler = new Handler();
+    private int counter = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -54,7 +54,7 @@ public class BluetoothChatService {
     public static final int STATE_CONNECTING = 1; // now initiating an outgoing connection
     public static final int STATE_CONNECTED = 2; // now connected to a remote device
 
-    boolean stopReading; // This is used to stop it from reading on the inputStream
+    private boolean stopReading; // This is used to stop it from reading on the inputStream
     public boolean newConnection; // Prevent it from calling connectionFailed() if it trying to start a new connection
 
     private static final int MAX_RETRIES = 100; // I know this might seem way too high! But it seems to work pretty well

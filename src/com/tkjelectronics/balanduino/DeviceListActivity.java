@@ -127,7 +127,7 @@ public class DeviceListActivity extends Activity {
     }
 
     private class CustomArrayAdapter extends ArrayAdapter<String> {
-        boolean selectable;
+        private boolean selectable;
 
         public CustomArrayAdapter(Context context, int resource) {
             super(context, resource);

@@ -37,7 +37,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     public static final int PID_FRAGMENT = 3;
     public static final int INFO_FRAGMENT = 4;
 
-    Context context;
+    private Context context;
 
     public ViewPagerAdapter(Context context, FragmentManager fm) {
         super(fm);

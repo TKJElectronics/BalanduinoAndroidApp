@@ -25,8 +25,8 @@ import android.view.View;
 public class JoystickView extends View {
     private OnJoystickChangeListener listener;
 
-    final int holo_blue_dark = 0xff0099cc;
-    final int buttonGray = 0xFF5C5C5C;
+    private final int holo_blue_dark = 0xff0099cc;
+    private final int buttonGray = 0xFF5C5C5C;
 
     private int buttonColor = buttonGray;
 
@@ -37,7 +37,7 @@ public class JoystickView extends View {
     private float centerX;
     private float centerY;
 
-    Paint p = new Paint();
+    private Paint p = new Paint();
 
     public JoystickView(Context context) {
         super(context);

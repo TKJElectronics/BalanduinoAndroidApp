@@ -82,8 +82,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
     public static BluetoothChatService mChatService = null;
     public static SensorFusion mSensorFusion = null;
 
-    BluetoothDevice btDevice; // The BluetoothDevice object
-    boolean btSecure; // If it's a new device we will pair with the device
+    private BluetoothDevice btDevice; // The BluetoothDevice object
+    private boolean btSecure; // If it's a new device we will pair with the device
     public static boolean stopRetrying;
 
     private UnderlinePageIndicator mUnderlinePageIndicator;

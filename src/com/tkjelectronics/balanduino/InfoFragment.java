@@ -30,8 +30,8 @@ import android.widget.ToggleButton;
 import com.actionbarsherlock.app.SherlockFragment;
 
 public class InfoFragment extends SherlockFragment {
-    static TextView mAppVersion, mFirmwareVersion, mEEPROMVersion, mMcu, mBatteryLevel, mRuntime;
-    static ToggleButton mToggleButton;
+    private static TextView mAppVersion, mFirmwareVersion, mEEPROMVersion, mMcu, mBatteryLevel, mRuntime;
+    protected static ToggleButton mToggleButton;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
