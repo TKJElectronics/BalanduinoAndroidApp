@@ -6,6 +6,7 @@
 
 The code is released under the GNU General Public License.
 _________
+[![Build Status](https://travis-ci.org/TKJElectronics/BalanduinoAndroidApp.svg?branch=master)](https://travis-ci.org/TKJElectronics/BalanduinoAndroidApp)
 
 This is the code for the Android application to control the Balanduino, the Balancing robot.
 
