@@ -45,7 +45,7 @@ public class ImuFragment extends SherlockFragment {
     private Handler mHandler = new Handler();
     private Runnable mRunnable;
     private int counter = 0;
-    boolean buttonState;
+    private boolean buttonState;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

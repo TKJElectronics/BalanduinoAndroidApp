@@ -84,7 +84,7 @@ public class SensorFusion implements SensorEventListener {
     public Handler mHandler = new Handler();
 
     public static int IMUOutputSelection = -1;
-    DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
+    protected DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
 
     public SensorFusion(Context context, SensorManager manager) {
         this.context = context;

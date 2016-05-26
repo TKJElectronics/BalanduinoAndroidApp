@@ -33,9 +33,9 @@ import java.text.NumberFormat;
 import java.util.Locale;
 
 public class JoystickFragment extends SherlockFragment implements JoystickView.OnJoystickChangeListener {
-    DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
-    JoystickView mJoystick;
-    TextView mText1;
+    private DecimalFormat d = (DecimalFormat) NumberFormat.getNumberInstance(Locale.ENGLISH);
+    private JoystickView mJoystick;
+    private TextView mText1;
     private Handler mHandler = new Handler();
     private Runnable mRunnable;
 
