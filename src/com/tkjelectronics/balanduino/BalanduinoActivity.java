@@ -353,9 +353,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
             Log.d(TAG, "- ON PAUSE -");
         // Unregister sensor listeners to prevent the activity from draining the device's battery.
         mSensorFusion.unregisterListeners();
-        if (mChatService != null) { // Send stop command and stop sending graph data command
-            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-                mChatService.write(sendStop + imuStop + statusStop);
+        if (mChatService != null && mChatService.getState() == BluetoothChatService.STATE_CONNECTED) { // Send stop command and stop sending graph data command
+            mChatService.write(sendStop + imuStop + statusStop);
         }
     }
 
@@ -404,15 +403,13 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
                         mChatService.write(imuStop); // Stop sending data
                 }
             }
-        } else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
-            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
-                mChatService.write(getInfo); // Update info
-                if (InfoFragment.mToggleButton != null) {
-                    if (InfoFragment.mToggleButton.isChecked())
-                        mChatService.write(statusBegin); // Request data
-                    else
-                        mChatService.write(statusStop); // Stop sending data
-                }
+        } else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null && mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            mChatService.write(getInfo); // Update info
+            if (InfoFragment.mToggleButton != null) {
+                if (InfoFragment.mToggleButton.isChecked())
+                    mChatService.write(statusBegin); // Request data
+                else
+                    mChatService.write(statusStop); // Stop sending data
             }
         }
         if (!checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) { // Needed when the user rotates the screen
@@ -431,9 +428,8 @@ public class BalanduinoActivity extends SherlockFragmentActivity implements Acti
         } else if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT) && mChatService != null) {
             if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
                 mChatService.write(imuStop);
-        } else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null) {
-            if (mChatService.getState() == BluetoothChatService.STATE_CONNECTED)
-                mChatService.write(statusStop);
+        } else if (checkTab(ViewPagerAdapter.INFO_FRAGMENT) && mChatService != null && mChatService.getState() == BluetoothChatService.STATE_CONNECTED) {
+            mChatService.write(statusStop);
         }
         if (checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE); // Hide the keyboard

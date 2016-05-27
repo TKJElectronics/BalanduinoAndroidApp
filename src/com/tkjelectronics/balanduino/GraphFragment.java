@@ -157,13 +157,14 @@ public class GraphFragment extends SherlockFragment {
                 else
                     mToggleButton.setText("Start");
 
-                if (BalanduinoActivity.mChatService != null) {
-                    if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
-                        if (((ToggleButton) v).isChecked())
-                            BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
-                        else
-                            BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
-                    }
+                if (BalanduinoActivity.mChatService != null &&
+                        BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED &&
+                        BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT))
+                {
+                    if (((ToggleButton) v).isChecked())
+                        BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
+                    else
+                        BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
                 }
             }
         });
@@ -190,30 +191,30 @@ public class GraphFragment extends SherlockFragment {
             }
         });
 
-        if (BalanduinoActivity.mChatService != null) {
-            if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
-                if (mToggleButton.isChecked())
-                    BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
-                else
-                    BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
-            }
+        if (BalanduinoActivity.mChatService != null &&
+                BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED &&
+                BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+            if (mToggleButton.isChecked())
+                BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
+            else
+                BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
         }
 
         return v;
     }
 
     public static void updateKalmanValues() {
-        if (mQangle != null && mQangle.getText() != null) {
-            if (!(mQangle.getText().toString().equals(BalanduinoActivity.Qangle)))
-                mQangle.setText(BalanduinoActivity.Qangle);
+        if (mQangle != null && mQangle.getText() != null &&
+                !(mQangle.getText().toString().equals(BalanduinoActivity.Qangle))) {
+            mQangle.setText(BalanduinoActivity.Qangle);
         }
-        if (mQbias != null && mQbias.getText() != null) {
-            if (!(mQbias.getText().toString().equals(BalanduinoActivity.Qbias)))
+        if (mQbias != null && mQbias.getText() != null &&
+                !(mQbias.getText().toString().equals(BalanduinoActivity.Qbias))) {
                 mQbias.setText(BalanduinoActivity.Qbias);
         }
-        if (mRmeasure != null && mRmeasure.getText() != null) {
-            if (!(mRmeasure.getText().toString().equals(BalanduinoActivity.Rmeasure)))
-                mRmeasure.setText(BalanduinoActivity.Rmeasure);
+        if (mRmeasure != null && mRmeasure.getText() != null &&
+                !(mRmeasure.getText().toString().equals(BalanduinoActivity.Rmeasure))) {
+            mRmeasure.setText(BalanduinoActivity.Rmeasure);
         }
     }
 
@@ -256,13 +257,13 @@ public class GraphFragment extends SherlockFragment {
         else
             mToggleButton.setText("Start");
 
-        if (BalanduinoActivity.mChatService != null) {
-            if (BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED && BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
-                if (mToggleButton.isChecked())
-                    BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
-                else
-                    BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
-            }
+        if (BalanduinoActivity.mChatService != null &&
+                BalanduinoActivity.mChatService.getState() == BluetoothChatService.STATE_CONNECTED &&
+                BalanduinoActivity.checkTab(ViewPagerAdapter.GRAPH_FRAGMENT)) {
+            if (mToggleButton.isChecked())
+                BalanduinoActivity.mChatService.write(BalanduinoActivity.imuBegin); // Request data
+            else
+                BalanduinoActivity.mChatService.write(BalanduinoActivity.imuStop); // Stop sending data
         }
     }
 }
