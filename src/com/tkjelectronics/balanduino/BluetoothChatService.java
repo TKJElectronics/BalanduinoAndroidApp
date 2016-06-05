@@ -27,6 +27,7 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.UUID;
 
 /**
@@ -224,7 +225,7 @@ public class BluetoothChatService {
     }
 
     public void write(String string) {
-        write(string.getBytes());
+        write(string.getBytes(StandardCharsets.UTF_8));
     }
 
     /**
@@ -395,7 +396,7 @@ public class BluetoothChatService {
                     if (mmInStream.available() > 0) { // Check if new data is available
                         bytes = mmInStream.read(buffer); // Read from the InputStream
 
-                        String readMessage = new String(buffer, 0, bytes);
+                        String readMessage = new String(buffer, 0, bytes, StandardCharsets.UTF_8);
                         String[] splitMessage = readMessage.split(",");
 
                         if (D) {
